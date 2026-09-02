@@ -2,10 +2,13 @@ model Report {
   id        String   @id @default(cuid())
   userAId   String
   userBId   String
+  reason    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
   userA User @relation("ReportUserA", fields: [userAId], references: [id], onDelete: Cascade)
   userB User @relation("ReportUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@unique([userAId, userBId])
 }
