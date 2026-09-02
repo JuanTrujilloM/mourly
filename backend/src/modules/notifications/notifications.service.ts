@@ -1,81 +1,32 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { WhatsappNotifierService } from '../whatsapp/whatsapp-notifier.service';
-import { NotificationEmailsService } from './notification-emails.service';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import type { Notification } from './notification';
 import {
-  DateProposalNotification,
-  MatchInviteNotification,
-  MoreAvailabilityNotification,
-  Recipient,
-} from './notification-payloads';
+  NOTIFICATION_CHANNELS,
+  type NotificationChannel,
+} from './notification-channel';
 
-// Fans each notification out to WhatsApp + email. dispatch() never rejects:
-// one channel failing must not sink the other, nor the caller's flow (e.g. the
-// confirmation that already committed its transaction).
 @Injectable()
 export class NotificationsService {
   private readonly logger = new Logger(NotificationsService.name);
 
   constructor(
-    private readonly whatsapp: WhatsappNotifierService,
-    private readonly emails: NotificationEmailsService,
+    @Inject(NOTIFICATION_CHANNELS)
+    private readonly channels: NotificationChannel[],
   ) {}
 
-  notifyMatchInvite(notification: MatchInviteNotification): Promise<void> {
-    return this.dispatch('match invite', [
-      this.whatsapp.sendAvailabilityInvite({
-        cellphone: notification.recipient.cellphone,
-        partnerName: notification.partner.name,
-        availabilityUrl: notification.availabilityUrl,
-      }),
-      this.emails.sendMatchInvite(notification),
-    ]);
-  }
+  async send(notification: Notification): Promise<void> {
+    const results = await Promise.allSettled(
+      this.channels.map((channel) => channel.send(notification)),
+    );
 
-  notifyDateProposal(notification: DateProposalNotification): Promise<void> {
-    return this.dispatch('date proposal', [
-      this.whatsapp.sendDateProposal({
-        cellphone: notification.recipient.cellphone,
-        partnerName: notification.partnerName,
-        whenText: notification.whenText,
-        venueName: notification.venueName,
-      }),
-      this.emails.sendDateProposal(notification),
-    ]);
-  }
-
-  notifyMoreAvailabilityRequest(
-    notification: MoreAvailabilityNotification,
-  ): Promise<void> {
-    return this.dispatch('more availability request', [
-      this.whatsapp.sendMoreAvailabilityRequest({
-        cellphone: notification.recipient.cellphone,
-        partnerName: notification.partnerName,
-        availabilityUrl: notification.availabilityUrl,
-      }),
-      this.emails.sendMoreAvailabilityRequest(notification),
-    ]);
-  }
-
-  notifyMatchRejected(recipient: Recipient): Promise<void> {
-    return this.dispatch('match rejected', [
-      this.whatsapp.sendMatchRejected(recipient.cellphone),
-      this.emails.sendMatchRejected(recipient),
-    ]);
-  }
-
-  notifyReschedulingFailed(recipient: Recipient): Promise<void> {
-    return this.dispatch('rescheduling failed', [
-      this.whatsapp.sendReschedulingFailed(recipient.cellphone),
-      this.emails.sendReschedulingFailed(recipient),
-    ]);
-  }
-
-  private async dispatch(label: string, sends: Promise<void>[]): Promise<void> {
-    const results = await Promise.allSettled(sends);
-    for (const result of results) {
+    results.forEach((result, index) => {
       if (result.status === 'rejected') {
-        this.logger.error(`${label} send failed`, result.reason as Error);
+        const reason: unknown = result.reason;
+        this.logger.error(
+          `${this.channels[index].name} send failed for ${notification.kind}`,
+          reason instanceof Error ? reason.stack : String(reason),
+        );
       }
-    }
+    });
   }
 }
