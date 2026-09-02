@@ -24,10 +24,10 @@ export function AvailabilityToggle({ status }: { status: AvailabilityStatus }) {
         type="button"
         disabled={isPending}
         onClick={() => mutate(next)}
-        className={`rounded-full px-6 py-2.5 text-sm font-semibold transition disabled:opacity-60 ${
+        className={`w-full rounded-2xl px-6 py-4 text-base font-bold transition-transform disabled:opacity-60 active:scale-[0.99] ${
           searching
-            ? 'bg-cyan text-navy-deep hover:brightness-110'
-            : 'bg-blush text-navy-deep hover:brightness-110'
+            ? 'from-teal-soft to-teal text-navy-deep bg-gradient-to-r shadow-[0_14px_30px_-10px_rgba(57,198,221,0.6),inset_0_1px_0_rgba(255,255,255,0.5)]'
+            : 'bg-navy-card border-white/10 text-slate border shadow-[0_10px_24px_-12px_rgba(0,0,0,0.6)]'
         }`}
       >
         {searching ? '🔍 ' : '⏸ '}
@@ -35,7 +35,7 @@ export function AvailabilityToggle({ status }: { status: AvailabilityStatus }) {
       </button>
       <p className="text-slate mt-3 text-sm">
         {searching
-          ? 'Cada domingo a las 7pm la IA buscará tu match de la semana.'
+          ? 'Cada jueves a las 7pm la IA buscará tu match de la semana.'
           : 'En pausa: no recibirás match hasta que reanudes la búsqueda.'}
       </p>
     </div>

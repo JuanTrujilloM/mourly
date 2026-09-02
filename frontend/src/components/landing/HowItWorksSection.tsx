@@ -14,7 +14,7 @@ const STEPS = [
     icon: '🤖',
     title: 'La IA encuentra tu match',
     description:
-      'Cada domingo nuestro algoritmo elige a una persona compatible contigo.',
+      'Cada jueves nuestro algoritmo elige a una persona compatible contigo.',
     accent: 'text-blush',
     chip: 'bg-blush/10 ring-blush/30',
     glow: 'hover:shadow-[0_18px_40px_-18px_rgba(255,107,139,0.45)]',

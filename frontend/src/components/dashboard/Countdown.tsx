@@ -18,12 +18,12 @@ export function Countdown({ target }: { target: Date }) {
       {cells.map((cell) => (
         <div
           key={cell.label}
-          className="border-white/10 flex-1 rounded-2xl border bg-white/[0.04] py-3 text-center"
+          className="border-white/10 flex-1 rounded-2xl border bg-gradient-to-b from-white/[0.07] to-white/[0.02] py-3.5 text-center"
         >
-          <p className="text-cream text-2xl font-extrabold tabular-nums">
+          <p className="font-serif text-accent text-3xl font-semibold tabular-nums">
             {String(cell.value).padStart(2, '0')}
           </p>
-          <p className="text-slate mt-1 text-[10px] tracking-widest uppercase">
+          <p className="text-slate mt-1 text-[10px] font-semibold tracking-[0.18em] uppercase">
             {cell.label}
           </p>
         </div>

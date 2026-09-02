@@ -44,11 +44,11 @@ export function ConfirmedDateHero({
   ];
 
   return (
-    <section className="border-gold/25 relative overflow-hidden rounded-3xl border bg-gradient-to-br from-gold/[0.14] to-navy-soft/50 p-6">
-      <span className="border-gold/35 bg-gold/[0.14] text-gold inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold">
+    <section className="glass-card border-amber/25 relative overflow-hidden bg-gradient-to-br from-amber/[0.1] to-white/[0.03] p-6">
+      <span className="border-amber/35 bg-amber/[0.12] text-amber inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold">
         ✓ Cita confirmada
       </span>
-      <h1 className="text-cream mt-3.5 text-xl font-bold">
+      <h1 className="font-serif text-cream mt-4 text-2xl leading-tight font-semibold">
         Tu cita con {partnerName}
       </h1>
 

@@ -8,7 +8,7 @@ const APP_HELP = `
   cita real en un lugar físico. Nada de scrollear sin parar.
 
 ¿Cuándo recibo mi match?
-  Cada domingo a las 7:00 p. m. (hora Colombia) generamos los matches de la semana.
+  Cada jueves a las 7:00 p. m. (hora Colombia) generamos los matches de la semana.
 
 ¿Cómo confirmo una cita?
   Cuando recibas tu match, eliges tus horarios disponibles, ambos escogen lugar y, si

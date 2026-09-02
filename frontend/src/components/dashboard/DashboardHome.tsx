@@ -9,10 +9,8 @@ import { PausedHero } from '@/components/dashboard/heroes/PausedHero';
 import { NewMatchHero } from '@/components/dashboard/heroes/NewMatchHero';
 import { ConfirmedDateHero } from '@/components/dashboard/heroes/ConfirmedDateHero';
 import { FeedbackHero } from '@/components/dashboard/heroes/FeedbackHero';
-import { StatsRow } from '@/components/dashboard/StatsRow';
 import { ProfileCompleteness } from '@/components/dashboard/ProfileCompleteness';
-import { VibeChips } from '@/components/dashboard/VibeChips';
-import { QuickLinks } from '@/components/dashboard/QuickLinks';
+import { DashboardBottomNav } from '@/components/dashboard/DashboardBottomNav';
 import { useCurrentMatch } from '@/hooks/useCurrentMatch';
 import { useMyProfile } from '@/hooks/useMyProfile';
 import { usePendingFeedback } from '@/hooks/usePendingFeedback';
@@ -41,7 +39,9 @@ export function DashboardHome({ user }: { user: AuthUser }) {
   const hasActiveMatch = isConfirmed || isPending;
 
   return (
-    <>
+    // Full-height flex column so the bottom nav's mt-auto reaches the frame edge.
+    // Mobile bottom padding clears the fixed nav pill (see DashboardBottomNav).
+    <div className="flex min-h-full flex-col pb-16 sm:pb-0">
       <div className="flex items-center justify-between">
         <Logo />
         <LogoutButton />
@@ -49,7 +49,7 @@ export function DashboardHome({ user }: { user: AuthUser }) {
 
       <div className="mt-6">
         {loading ? (
-          <div className="border-white/10 rounded-3xl border bg-white/[0.03] p-6">
+          <div className="glass-card p-6">
             <p className="text-slate animate-pulse text-sm">
               Cargando tu semana...
             </p>
@@ -67,14 +67,11 @@ export function DashboardHome({ user }: { user: AuthUser }) {
         )}
       </div>
 
-      <StatsRow />
-
       {/* Profile context and the pause control only matter while waiting — during
           an active match or a feedback prompt they'd distract from the action. */}
       {!hasActiveMatch && !pendingFeedback && !loading && (
         <>
           <ProfileCompleteness />
-          <VibeChips />
 
           <div className="mt-5">
             <Card
@@ -87,9 +84,7 @@ export function DashboardHome({ user }: { user: AuthUser }) {
         </>
       )}
 
-      <div className="mt-5">
-        <QuickLinks isAdmin={user.isAdmin} />
-      </div>
-    </>
+      <DashboardBottomNav isAdmin={user.isAdmin} />
+    </div>
   );
 }

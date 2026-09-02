@@ -11,11 +11,11 @@ const variants: Record<Variant, string> = {
   // Primary CTA is warm across the app; `sunset` kept as an explicit alias.
   primary: SUNSET,
   sunset: SUNSET,
-  // Cyan fill kept for the rare identity-forward action.
-  cyan: 'bg-cyan text-navy-deep hover:brightness-110 shadow-[0_8px_30px_-8px_rgba(0,229,255,0.6)]',
-  // Blush outline for secondary actions.
+  // Teal gradient for the identity-forward action (availability, confirmations).
+  cyan: 'bg-gradient-to-r from-teal-soft to-teal text-navy-deep hover:brightness-105 shadow-[0_14px_30px_-10px_rgba(57,198,221,0.6),inset_0_1px_0_rgba(255,255,255,0.5)]',
+  // Quiet glass pill for secondary actions (e.g. "Cerrar sesión").
   secondary:
-    'border border-blush/60 text-cream hover:bg-blush/10 hover:border-blush',
+    'border border-white/15 bg-white/[0.06] text-slate backdrop-blur-md hover:text-cream hover:border-white/25',
   // Transparent for low-emphasis actions.
   ghost: 'text-slate hover:text-cream',
 };

@@ -382,3 +382,6 @@ AMPLIFY_APP_ID
 - Uniandes → uniandes.edu.co
 - Rosario → urosario.edu.co
 - Externado → externado.edu.co
+## Vault link
+
+Project context: `../../_project.md` · Tasks (single source of truth): `../../TASKS.md` — read them at session start; edit tasks there, never here. Vault root: `~/vault-jero` (this repo is gitignored by the vault; it keeps its own git).

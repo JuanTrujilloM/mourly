@@ -4,24 +4,26 @@
    color/animation utilities (bg-navy, text-cyan, animate-float, ...). Keep every
    brand color here so no component hardcodes a hex value. */
 @theme {
-  --color-navy: #0a2540;
-  --color-navy-deep: #061a2e;
-  --color-navy-soft: #0e2e4d;
-  --color-navy-card: #102a47;
-  --color-cyan: #00e5ff;
-  --color-blush: #ff6b8b;
-  --color-gold: #d4af37;
-  --color-cream: #f8f9fa;
-  --color-slate: #6c757d;
+  --color-navy: #0a1626;
+  --color-navy-deep: #05080f;
+  --color-navy-soft: #0e1e34;
+  --color-navy-card: #132840;
+  --color-cyan: #39c6dd;
+  --color-blush: #ff7e9d;
+  --color-gold: #f5b451;
+  --color-cream: #eaf2fb;
+  --color-slate: #93a6c0;
 
-  /* Warm "Atardecer" accents. Navy stays the base and cyan the identity; these
-     drive the primary CTA (coral→flame gradient), badges and highlights. */
-  --color-coral: #ff5a5f;
-  --color-flame: #ff8a3d;
-  --color-amber: #ffb703;
+  /* "Midnight glass" accents. Teal is the identity (cyan kept as a legacy
+     alias with the same value); coral→flame drives the primary CTA gradient. */
+  --color-teal: #39c6dd;
+  --color-teal-soft: #6fe0ef;
+  --color-coral: #ff7a59;
+  --color-flame: #ff9d7e;
+  --color-amber: #f5b451;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
 
   /* Animation tokens. Components reference these via animate-* utilities. */
   --animate-float: float 6s ease-in-out infinite;
@@ -65,11 +67,11 @@
   0%,
   100% {
     opacity: 1;
-    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.5);
+    box-shadow: 0 0 0 0 rgba(57, 198, 221, 0.5);
   }
   50% {
     opacity: 0.85;
-    box-shadow: 0 0 0 10px rgba(0, 229, 255, 0);
+    box-shadow: 0 0 0 10px rgba(57, 198, 221, 0);
   }
 }
 
@@ -80,6 +82,46 @@
   100% {
     background-position: 200% 0;
   }
+}
+
+/* Frosted glass surface shared by cards across the app. A utility (not a
+   component class) so variants compose: `glass-card rounded-2xl` overrides
+   the default radius. */
+@utility glass-card {
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.09),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 26px;
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  box-shadow:
+    0 20px 40px -24px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Coral→amber gradient text for italic accent words and display numbers. */
+@utility text-accent {
+  background-image: linear-gradient(
+    90deg,
+    var(--color-flame),
+    var(--color-amber)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Film-grain overlay: inline SVG fractal noise, no image asset needed. */
+@utility grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
 }
 
 /* The product is dark-only for now; pin the document to the navy brand surface. */

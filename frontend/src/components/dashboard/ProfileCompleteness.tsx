@@ -13,15 +13,17 @@ export function ProfileCompleteness() {
   return (
     <Link
       href="/perfil"
-      className="border-white/10 mt-3 block rounded-2xl border bg-white/[0.03] p-4 transition hover:bg-white/[0.05]"
+      className="glass-card mt-3.5 block p-4.5 transition hover:brightness-110"
     >
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-cream">Perfil completo</span>
-        <span className="text-cyan font-bold tabular-nums">{pct}%</span>
+      <div className="flex items-center justify-between">
+        <span className="text-cream text-sm font-semibold">Perfil completo</span>
+        <span className="font-serif text-teal-soft text-lg font-semibold tabular-nums">
+          {pct}%
+        </span>
       </div>
-      <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-white/10">
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
         <div
-          className="from-cyan h-full rounded-full bg-gradient-to-r to-[#5df2ff]"
+          className="from-teal to-coral h-full rounded-full bg-gradient-to-r shadow-[0_0_14px_rgba(57,198,221,0.5)]"
           style={{ width: `${pct}%` }}
         />
       </div>
