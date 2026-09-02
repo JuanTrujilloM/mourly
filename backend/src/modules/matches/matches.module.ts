@@ -47,6 +47,7 @@ import { MatchHistoryService } from './match-history.service';
     MatchConfirmationService,
     MatchInviteService,
     MatchResponseService,
+    WeeklyMatchingService,
   ],
 })
 export class MatchesModule {}

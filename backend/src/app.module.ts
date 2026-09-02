@@ -23,6 +23,7 @@ import { CatalogModule } from './modules/catalog/catalog.module';
 import { UniversitiesModule } from './modules/universities/universities.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { ReportsModule } from './modules/reports/reports.module';
+import { HobbiesModule } from './modules/hobbies/hobbies.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ReportsModule } from './modules/reports/reports.module';
     CatalogModule,
     FeedbackModule,
     ReportsModule,
+    HobbiesModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },

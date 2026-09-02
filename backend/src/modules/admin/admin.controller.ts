@@ -1,9 +1,21 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AdminGuard } from '../../common/guards/admin.guard';
 import { AdminUsersService } from './admin-users.service';
 import { AdminMatchesService } from './admin-matches.service';
 import { AdminModerationService } from './admin-moderation.service';
+import { AdminStatsService } from './admin-stats.service';
+import { AdminOperationsService } from './admin-operations.service';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
 
 @Controller('admin')
@@ -13,6 +25,8 @@ export class AdminController {
     private readonly users: AdminUsersService,
     private readonly matches: AdminMatchesService,
     private readonly moderation: AdminModerationService,
+    private readonly stats: AdminStatsService,
+    private readonly operations: AdminOperationsService,
   ) {}
 
   @Get('users')
@@ -53,5 +67,16 @@ export class AdminController {
   @Get('reports')
   listReports() {
     return this.moderation.listReports();
+  }
+
+  @Get('stats')
+  getStats() {
+    return this.stats.get();
+  }
+
+  @Post('matching/run')
+  @HttpCode(HttpStatus.OK)
+  runMatching() {
+    return this.operations.runWeeklyMatching();
   }
 }
