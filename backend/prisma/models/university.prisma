@@ -1,0 +1,9 @@
+model University {
+  id        String   @id @default(cuid())
+  domain    String   @unique
+  name      String
+  city      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
