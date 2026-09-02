@@ -4,6 +4,11 @@ model Date {
   venueId     String
   scheduledAt DateTime
   status      String
+
+  feedbackRequestedAt DateTime?
+  feedbackReminderAt  DateTime?
+  feedbackClosedAt    DateTime?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

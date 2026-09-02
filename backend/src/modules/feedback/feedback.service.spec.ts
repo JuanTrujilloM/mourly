@@ -5,6 +5,7 @@ import { FeedbackService } from './feedback.service';
 const PAST_DATE = {
   id: 'd1',
   scheduledAt: new Date('2026-07-01T20:00:00Z'),
+  feedbackClosedAt: null,
 };
 
 function setup(overrides: { date?: unknown; existing?: unknown } = {}) {
@@ -68,12 +69,26 @@ describe('FeedbackService', () => {
 
   it('refuses to rate a date that has not happened yet', async () => {
     const { service } = setup({
-      date: { id: 'd1', scheduledAt: new Date('2026-07-10T20:00:00Z') },
+      date: {
+        id: 'd1',
+        scheduledAt: new Date('2026-07-10T20:00:00Z'),
+        feedbackClosedAt: null,
+      },
     });
 
     await expect(
       service.submit('u1', 'd1', { occurred: true, rating: 5 }),
     ).rejects.toThrow(/once it has happened/);
+  });
+
+  it('refuses an answer once the window has closed', async () => {
+    const { service } = setup({
+      date: { ...PAST_DATE, feedbackClosedAt: new Date('2026-07-05') },
+    });
+
+    await expect(
+      service.submit('u1', 'd1', { occurred: true, rating: 5 }),
+    ).rejects.toThrow(/window for this date is closed/);
   });
 
   it('refuses a second answer from the same user', async () => {

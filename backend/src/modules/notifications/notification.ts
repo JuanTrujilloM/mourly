@@ -34,6 +34,18 @@ export type Notification =
       partnerName: string;
       availabilityUrl: string;
     }
+  | {
+      kind: 'feedback_request';
+      recipient: Recipient;
+      partnerName: string;
+      venueName: string;
+    }
+  | {
+      kind: 'feedback_reminder';
+      recipient: Recipient;
+      partnerName: string;
+      venueName: string;
+    }
   | { kind: 'match_rejected'; recipient: Recipient }
   | { kind: 'rescheduling_failed'; recipient: Recipient };
 

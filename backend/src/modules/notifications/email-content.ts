@@ -1,4 +1,5 @@
 import { dateConfirmationEmail } from '../mail/templates/date-confirmation.template';
+import { feedbackEmail } from '../mail/templates/feedback-request.template';
 import { matchInviteEmail } from '../mail/templates/match-invite.template';
 import { matchRejectedEmail } from '../mail/templates/match-rejected.template';
 import { moreAvailabilityEmail } from '../mail/templates/more-availability.template';
@@ -34,6 +35,14 @@ export function emailContentFor(notification: Notification): EmailContent {
         recipientName,
         partnerName: notification.partnerName,
         availabilityUrl: notification.availabilityUrl,
+      });
+    case 'feedback_request':
+    case 'feedback_reminder':
+      return feedbackEmail({
+        recipientName,
+        partnerName: notification.partnerName,
+        venueName: notification.venueName,
+        isReminder: notification.kind === 'feedback_reminder',
       });
     case 'match_rejected':
       return matchRejectedEmail(recipientName);

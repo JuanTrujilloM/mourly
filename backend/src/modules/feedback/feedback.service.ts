@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  GoneException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ export class FeedbackService {
 
   async submit(userId: string, dateId: string, dto: CreateFeedbackDto) {
     const date = await this.requireParticipantDate(dateId, userId);
+    this.assertWindowIsOpen(date.feedbackClosedAt);
     assertDateAlreadyHappened(date.scheduledAt, new Date());
     assertAnswerIsCoherent(dto);
     await this.assertNotAnsweredYet(dateId, userId);
@@ -39,13 +41,19 @@ export class FeedbackService {
     return feedback;
   }
 
+  private assertWindowIsOpen(closedAt: Date | null): void {
+    if (closedAt) {
+      throw new GoneException('The feedback window for this date is closed.');
+    }
+  }
+
   private async requireParticipantDate(dateId: string, userId: string) {
     const date = await this.prisma.date.findFirst({
       where: {
         id: dateId,
         match: { OR: [{ userAId: userId }, { userBId: userId }] },
       },
-      select: { id: true, scheduledAt: true },
+      select: { id: true, scheduledAt: true, feedbackClosedAt: true },
     });
     if (!date) {
       throw new NotFoundException('Date not found.');
