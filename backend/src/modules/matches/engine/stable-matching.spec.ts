@@ -1,7 +1,6 @@
 import { stableMatch } from './stable-matching';
 import { makeCandidate } from './test-helpers';
 
-// Helpers to build a woman/man that are mutually eligible with the defaults.
 const man = (id: string, over = {}) =>
   makeCandidate({
     userId: id,
@@ -21,7 +20,6 @@ describe('stableMatch', () => {
   it('pairs a single eligible couple exactly once', () => {
     const pairs = stableMatch([man('m'), woman('w')]);
     expect(pairs).toHaveLength(1);
-    // Pair is ordered by id so the row is deterministic.
     expect(pairs[0]).toMatchObject({ userAId: 'm', userBId: 'w' });
   });
 
@@ -32,7 +30,6 @@ describe('stableMatch', () => {
   });
 
   it('prefers the higher-scoring partner (maximizes compatibility)', () => {
-    // m shares 2 hobbies with w1, 0 with w2 -> should pair with w1.
     const m = man('m', { hobbies: ['cine', 'gym'] });
     const w1 = woman('w1', { hobbies: ['cine', 'gym'] });
     const w2 = woman('w2', { hobbies: ['ajedrez'] });
@@ -43,7 +40,6 @@ describe('stableMatch', () => {
   });
 
   it('leaves users with no eligible partner unmatched', () => {
-    // Two men who want women only: no eligible edge between them.
     const pairs = stableMatch([man('m1'), man('m2')]);
     expect(pairs).toHaveLength(0);
   });
@@ -59,8 +55,6 @@ describe('stableMatch', () => {
   });
 
   it('produces a stable matching with no blocking pair', () => {
-    // Symmetric scores: m1 and w1 are each other's best (2 shared hobbies),
-    // so a stable matching must pair them, not cross-match.
     const m1 = man('m1', { hobbies: ['a', 'b'] });
     const m2 = man('m2', { hobbies: ['c'] });
     const w1 = woman('w1', { hobbies: ['a', 'b'] });

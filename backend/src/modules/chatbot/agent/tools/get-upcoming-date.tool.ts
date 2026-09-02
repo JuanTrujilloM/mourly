@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../config/prisma.service';
 
-// AC #5: the user's confirmed upcoming date. Returns place/address/time plus the
-// match's first name only — never the partner's contact details.
 @Injectable()
 export class GetUpcomingDateTool {
   constructor(private readonly prisma: PrismaService) {}
@@ -21,8 +19,6 @@ export class GetUpcomingDateTool {
       },
     });
 
-    // A date exists and is in the future = scheduled. The date's status word
-    // doesn't gate this; the match query already limits to confirmed matches.
     const date = match?.date;
     if (!match || !date || date.scheduledAt <= new Date()) {
       return 'NO_DATE_SCHEDULED';

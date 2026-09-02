@@ -3,40 +3,19 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../config/prisma.service';
 import { AvailabilityLinkService } from '../availability-link/availability-link.service';
 import { NotificationsService } from '../notifications/notifications.service';
-import { buildPartnerSummary } from '../notifications/notification-payloads';
+import { buildPartnerSummary } from '../notifications/partner-summary';
+import { recipientOf } from './match-recipients';
+import {
+  INVITE_USER_SELECT,
+  type InviteResult,
+  type InviteUser,
+  type MatchWithUsers,
+} from './invite-user.query';
 import { MatchPair } from './engine/types';
 
-export interface InviteResult {
-  userId: string;
-  cellphone: string;
-  url: string;
-}
+const DEFAULT_FRONTEND_URL = 'http://localhost:3000';
+const HOURS_PER_DAY = 24;
 
-// Match with the fields the invite needs: each user's contact info and the
-// partner's card data (name, age, university, photo) for the email.
-type MatchWithUsers = {
-  id: string;
-  userAId: string;
-  userBId: string;
-  userA: InviteUser;
-  userB: InviteUser;
-};
-type InviteUser = {
-  id: string;
-  email: string;
-  cellphone: string;
-  profile: {
-    name: string;
-    dateOfBirth: Date;
-    university: string;
-    major: string;
-    photos: { url: string; isPrimary: boolean }[];
-  } | null;
-};
-
-// HU-05: turns a freshly generated match into the first notification (WhatsApp
-// + email) — a tokenized availability link per user. Separate from the matching
-// engine so a notification failure never rolls back a match that was persisted.
 @Injectable()
 export class MatchInviteService {
   private readonly logger = new Logger(MatchInviteService.name);
@@ -48,20 +27,24 @@ export class MatchInviteService {
     private readonly notifications: NotificationsService,
   ) {}
 
-  // Cron path: invite both users of every pair created this cycle.
   async inviteForPairs(pairs: MatchPair[]): Promise<void> {
     for (const pair of pairs) {
-      const match = await this.findMatch(pair.userAId, pair.userBId);
-      if (!match) continue;
-      await this.inviteForMatch(match.id);
+      const match = await this.prisma.match.findFirst({
+        where: { userAId: pair.userAId, userBId: pair.userBId },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true },
+      });
+      if (match) {
+        await this.inviteForMatch(match.id);
+      }
     }
   }
 
-  // Issues a link per user, sends (or dev-logs) the invite, and returns the URLs
-  // so scripts can print them. Per-user try/catch: one bad send can't block the other.
   async inviteForMatch(matchId: string): Promise<InviteResult[]> {
     const match = await this.loadMatch(matchId);
-    if (!match) return [];
+    if (!match) {
+      return [];
+    }
 
     const results: InviteResult[] = [];
     for (const [user, partner] of [
@@ -73,7 +56,7 @@ export class MatchInviteService {
       } catch (error) {
         this.logger.error(
           `Failed to send availability invite to user ${user.id}`,
-          error as Error,
+          error instanceof Error ? error.stack : String(error),
         );
       }
     }
@@ -86,66 +69,32 @@ export class MatchInviteService {
     partner: InviteUser,
   ): Promise<InviteResult> {
     const token = await this.links.issueForMatchUser(matchId, user.id);
-    // Entry point is place selection (HU-06); time selection (HU-09) follows.
     const url = `${this.frontendUrl()}/flow/${token}/places`;
-    await this.notifications.notifyMatchInvite({
-      recipient: {
-        name: user.profile?.name ?? '',
-        email: user.email,
-        cellphone: user.cellphone,
-      },
+
+    await this.notifications.send({
+      kind: 'match_invite',
+      recipient: recipientOf(user),
       partner: buildPartnerSummary(partner.profile),
       availabilityUrl: url,
-      // Days derived from the same TTL that expires the token.
-      expiresInDays: Math.ceil(this.links.ttlHours() / 24),
+      expiresInDays: Math.ceil(this.links.ttlHours() / HOURS_PER_DAY),
     });
     return { userId: user.id, cellphone: user.cellphone, url };
   }
 
-  private async findMatch(
-    userAId: string,
-    userBId: string,
-  ): Promise<{ id: string } | null> {
-    return this.prisma.match.findFirst({
-      where: { userAId, userBId },
-      orderBy: { createdAt: 'desc' },
-      select: { id: true },
-    });
-  }
-
-  private async loadMatch(matchId: string): Promise<MatchWithUsers | null> {
+  private loadMatch(matchId: string): Promise<MatchWithUsers | null> {
     return this.prisma.match.findUnique({
       where: { id: matchId },
       select: {
         id: true,
         userAId: true,
         userBId: true,
-        userA: this.inviteUserSelect(),
-        userB: this.inviteUserSelect(),
+        userA: INVITE_USER_SELECT,
+        userB: INVITE_USER_SELECT,
       },
     });
   }
 
-  private inviteUserSelect() {
-    return {
-      select: {
-        id: true,
-        email: true,
-        cellphone: true,
-        profile: {
-          select: {
-            name: true,
-            dateOfBirth: true,
-            university: true,
-            major: true,
-            photos: { select: { url: true, isPrimary: true } },
-          },
-        },
-      },
-    };
-  }
-
   private frontendUrl(): string {
-    return this.config.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
+    return this.config.get<string>('FRONTEND_URL') ?? DEFAULT_FRONTEND_URL;
   }
 }

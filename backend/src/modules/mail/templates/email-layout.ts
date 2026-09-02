@@ -1,10 +1,5 @@
-// Shared chrome for notification emails: header band, content card, footer.
-// Everything is inline-styled — email clients strip <style> blocks — and kept to
-// simple divs; layout tricks like flex/absolute don't survive Outlook/Gmail.
-
 const BRAND = 'TheConnection';
 
-// User-provided values (names, venues) are interpolated into HTML; escape them.
 export function escapeHtml(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -32,7 +27,6 @@ export function emailLayout(bodyHtml: string): string {
   `;
 }
 
-// Primary CTA: a padded <a> instead of <button> — buttons don't link in email.
 export function ctaButton(label: string, url: string): string {
   return `
     <div style="text-align: center; margin: 24px 0 8px;">

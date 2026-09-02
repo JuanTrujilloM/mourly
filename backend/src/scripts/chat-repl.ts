@@ -4,9 +4,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { ChatbotService } from '../modules/chatbot/chatbot.service';
 
-// Dev REPL to talk to the chatbot brain without the WhatsApp transport. Memory
-// persists for the life of the process, so it shows multi-turn behavior.
-// Usage (after `npm run build`): node dist/scripts/chat-repl.js <cellphone>
 async function main(): Promise<void> {
   const cellphone = process.argv[2];
   if (!cellphone) {

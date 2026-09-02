@@ -5,10 +5,18 @@ import { AvailabilityLinkModule } from '../availability-link/availability-link.m
 import { NotificationsModule } from '../notifications/notifications.module';
 import { MatchesController } from './matches.controller';
 import { MatchesService } from './matches.service';
+import { VenueSelectionService } from './venue-selection.service';
+import { VenueRankingService } from './venue-ranking.service';
 import { MatchInviteService } from './match-invite.service';
 import { MatchConfirmationService } from './match-confirmation.service';
+import { MatchLoaderService } from './match-loader.service';
+import { MatchReschedulerService } from './match-rescheduler.service';
+import { MatchRecyclerService } from './match-recycler.service';
 import { MatchResponseService } from './match-response.service';
+import { MatchTimeoutService } from './match-timeout.service';
 import { WeeklyMatchingService } from './weekly-matching.service';
+import { CandidateLoaderService } from './candidate-loader.service';
+import { MatchHistoryService } from './match-history.service';
 
 @Module({
   imports: [
@@ -20,17 +28,22 @@ import { WeeklyMatchingService } from './weekly-matching.service';
   controllers: [MatchesController],
   providers: [
     MatchesService,
+    VenueSelectionService,
+    VenueRankingService,
     MatchInviteService,
     MatchConfirmationService,
+    MatchLoaderService,
+    MatchReschedulerService,
+    MatchRecyclerService,
     MatchResponseService,
+    MatchTimeoutService,
     WeeklyMatchingService,
+    CandidateLoaderService,
+    MatchHistoryService,
   ],
-  // MatchesService: reused by the public availability flow (HU-06 place logic).
-  // MatchConfirmationService: called by the availability flow's last step (HU-08).
-  // MatchInviteService: reused by the manual link-issuing script.
-  // MatchResponseService: reused by the chatbot's reject_match tool.
   exports: [
     MatchesService,
+    VenueSelectionService,
     MatchConfirmationService,
     MatchInviteService,
     MatchResponseService,

@@ -14,7 +14,6 @@ describe('areMutuallyEligible', () => {
 
   it('rejects when attraction is not mutual', () => {
     const man = makeCandidate({ userId: 'm', genderInterest: 'Mujeres' });
-    // Another man who wants women: the first is not attracted back.
     const otherMan = makeCandidate({ userId: 'm2', genderInterest: 'Mujeres' });
     expect(areMutuallyEligible(man, otherMan)).toBe(false);
   });
@@ -37,7 +36,6 @@ describe('areMutuallyEligible', () => {
       genderInterest: 'Hombres',
       age: 28,
     });
-    // young.maxAge (21) < older.age (28): fails one direction.
     expect(areMutuallyEligible(young, older)).toBe(false);
   });
 

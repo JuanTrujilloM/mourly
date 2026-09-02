@@ -1,161 +1,160 @@
 import { ConfigService } from '@nestjs/config';
+import { createHash } from 'crypto';
 import { PrismaService } from '../../config/prisma.service';
 import { AvailabilityLinkService } from './availability-link.service';
 
-interface Row {
-  id: string;
-  matchId: string;
-  userId: string;
-  tokenHash: string;
-  step: string;
-  expiresAt: Date;
-  consumedAt: Date | null;
+function sha256(value: string): string {
+  return createHash('sha256').update(value).digest('hex');
 }
 
-// In-memory availabilityLink table just rich enough for the service's queries.
-function makeStore(ttlHours = '72') {
-  const rows: Row[] = [];
+function setup(env: Record<string, string> = {}) {
+  const create = jest.fn().mockResolvedValue({ id: 'link-1' });
+  const deleteMany = jest.fn().mockResolvedValue({ count: 0 });
+  const findUnique = jest.fn().mockResolvedValue(null);
+  const update = jest.fn().mockResolvedValue({});
+  const updateMany = jest.fn().mockResolvedValue({ count: 1 });
+
   const prisma = {
-    availabilityLink: {
-      deleteMany: ({
-        where,
-      }: {
-        where: { matchId: string; userId: string };
-      }) => {
-        for (let i = rows.length - 1; i >= 0; i--) {
-          if (
-            rows[i].matchId === where.matchId &&
-            rows[i].userId === where.userId
-          ) {
-            rows.splice(i, 1);
-          }
-        }
-        return Promise.resolve({ count: 0 });
-      },
-      create: ({ data }: { data: Omit<Row, 'id' | 'consumedAt'> }) => {
-        const row: Row = {
-          id: `link-${rows.length}`,
-          consumedAt: null,
-          ...data,
-        };
-        rows.push(row);
-        return Promise.resolve(row);
-      },
-      findUnique: ({ where }: { where: { tokenHash: string } }) =>
-        Promise.resolve(
-          rows.find((r) => r.tokenHash === where.tokenHash) ?? null,
-        ),
-      update: ({
-        where,
-        data,
-      }: {
-        where: { id: string };
-        data: Partial<Row>;
-      }) => {
-        const row = rows.find((r) => r.id === where.id)!;
-        Object.assign(row, data);
-        return Promise.resolve(row);
-      },
-      updateMany: ({
-        where,
-        data,
-      }: {
-        where: { id: string; consumedAt?: null };
-        data: Partial<Row>;
-      }) => {
-        let count = 0;
-        for (const row of rows) {
-          const matchesConsumed =
-            where.consumedAt === undefined ||
-            row.consumedAt === where.consumedAt;
-          if (row.id === where.id && matchesConsumed) {
-            Object.assign(row, data);
-            count += 1;
-          }
-        }
-        return Promise.resolve({ count });
-      },
-    },
+    availabilityLink: { create, deleteMany, findUnique, update, updateMany },
   } as unknown as PrismaService;
+  const config = { get: (key: string) => env[key] } as unknown as ConfigService;
 
-  const config = {
-    get: () => ttlHours,
-  } as unknown as ConfigService;
+  return {
+    service: new AvailabilityLinkService(prisma, config),
+    create,
+    deleteMany,
+    findUnique,
+    update,
+    updateMany,
+  };
+}
 
-  return { service: new AvailabilityLinkService(prisma, config), rows };
+function storedLink(overrides: Record<string, unknown> = {}) {
+  return {
+    id: 'link-1',
+    matchId: 'm1',
+    userId: 'u1',
+    step: 'VENUE',
+    consumedAt: null,
+    expiresAt: new Date(Date.now() + 60_000),
+    ...overrides,
+  };
 }
 
 describe('AvailabilityLinkService', () => {
-  it('stores only the hash, never the plaintext token', async () => {
-    const { service, rows } = makeStore();
-    const token = await service.issueForMatchUser('m1', 'u1');
-    expect(rows).toHaveLength(1);
-    expect(rows[0].tokenHash).not.toBe(token);
-    expect(rows[0].tokenHash).toHaveLength(64); // sha256 hex
-  });
+  describe('issueForMatchUser', () => {
+    it('replaces any previous link for the same match and user', async () => {
+      const { service, deleteMany } = setup();
 
-  it('validates a fresh token as ok, starting at the VENUE step', async () => {
-    const { service } = makeStore();
-    const token = await service.issueForMatchUser('m1', 'u1');
-    const result = await service.validate(token);
-    expect(result).toEqual({
-      status: 'ok',
-      link: {
-        id: 'link-0',
-        matchId: 'm1',
-        userId: 'u1',
-        step: 'VENUE',
-      },
+      await service.issueForMatchUser('m1', 'u1');
+
+      expect(deleteMany).toHaveBeenCalledWith({
+        where: { matchId: 'm1', userId: 'u1' },
+      });
+    });
+
+    it('stores only the token hash', async () => {
+      const { service, create } = setup();
+
+      const token = await service.issueForMatchUser('m1', 'u1');
+
+      expect(create.mock.calls[0][0].data.tokenHash).toBe(sha256(token));
+    });
+
+    it('starts at the venue step by default', async () => {
+      const { service, create } = setup();
+
+      await service.issueForMatchUser('m1', 'u1');
+
+      expect(create.mock.calls[0][0].data.step).toBe('VENUE');
+    });
+
+    it('can be issued straight at the availability step', async () => {
+      const { service, create } = setup();
+
+      await service.issueForMatchUser('m1', 'u1', 'AVAILABILITY');
+
+      expect(create.mock.calls[0][0].data.step).toBe('AVAILABILITY');
     });
   });
 
-  it('issues nudge links directly at the AVAILABILITY step', async () => {
-    const { service } = makeStore();
-    const token = await service.issueForMatchUser('m1', 'u1', 'AVAILABILITY');
-    expect(await service.validate(token)).toMatchObject({
-      status: 'ok',
-      link: { step: 'AVAILABILITY' },
+  describe('validate', () => {
+    it('reports an unknown token as invalid', async () => {
+      const { service } = setup();
+
+      expect(await service.validate('nope')).toEqual({ status: 'invalid' });
+    });
+
+    it('reports a used token as consumed', async () => {
+      const { service, findUnique } = setup();
+      findUnique.mockResolvedValue(storedLink({ consumedAt: new Date() }));
+
+      expect(await service.validate('t')).toEqual({ status: 'consumed' });
+    });
+
+    it('reports a stale token as expired', async () => {
+      const { service, findUnique } = setup();
+      findUnique.mockResolvedValue(
+        storedLink({ expiresAt: new Date(Date.now() - 1000) }),
+      );
+
+      expect(await service.validate('t')).toEqual({ status: 'expired' });
+    });
+
+    it('returns the link details for a good token', async () => {
+      const { service, findUnique } = setup();
+      findUnique.mockResolvedValue(storedLink());
+
+      expect(await service.validate('t')).toEqual({
+        status: 'ok',
+        link: { id: 'link-1', matchId: 'm1', userId: 'u1', step: 'VENUE' },
+      });
+    });
+
+    it('looks the token up by its hash', async () => {
+      const { service, findUnique } = setup();
+
+      await service.validate('t');
+
+      expect(findUnique).toHaveBeenCalledWith({
+        where: { tokenHash: sha256('t') },
+      });
     });
   });
 
-  it('reports an unknown token as invalid', async () => {
-    const { service } = makeStore();
-    expect(await service.validate('nope')).toEqual({ status: 'invalid' });
+  describe('step and consumption', () => {
+    it('advances the link to the next step', async () => {
+      const { service, update } = setup();
+
+      await service.setStep('link-1', 'AVAILABILITY');
+
+      expect(update).toHaveBeenCalledWith({
+        where: { id: 'link-1' },
+        data: { step: 'AVAILABILITY' },
+      });
+    });
+
+    it('consumes only a link that is still open', async () => {
+      const { service, updateMany } = setup();
+
+      await service.consume('link-1');
+
+      expect(updateMany).toHaveBeenCalledWith({
+        where: { id: 'link-1', consumedAt: null },
+        data: { consumedAt: expect.any(Date) as Date },
+      });
+    });
   });
 
-  it('reports an expired token as expired', async () => {
-    const { service } = makeStore('-1'); // TTL in the past
-    const token = await service.issueForMatchUser('m1', 'u1');
-    expect(await service.validate(token)).toEqual({ status: 'expired' });
-  });
+  describe('ttlHours', () => {
+    it('defaults to 72 hours', () => {
+      expect(setup().service.ttlHours()).toBe(72);
+    });
 
-  it('reports a consumed token as consumed (single use)', async () => {
-    const { service } = makeStore();
-    const token = await service.issueForMatchUser('m1', 'u1');
-    const ok = await service.validate(token);
-    if (ok.status !== 'ok') throw new Error('expected ok');
-    await service.consume(ok.link.id);
-    expect(await service.validate(token)).toEqual({ status: 'consumed' });
-  });
-
-  it('re-issuing replaces the previous link for the same match/user', async () => {
-    const { service, rows } = makeStore();
-    const first = await service.issueForMatchUser('m1', 'u1');
-    await service.issueForMatchUser('m1', 'u1');
-    expect(rows).toHaveLength(1);
-    expect(await service.validate(first)).toEqual({ status: 'invalid' });
-  });
-
-  it('advances the step from VENUE to AVAILABILITY', async () => {
-    const { service } = makeStore();
-    const token = await service.issueForMatchUser('m1', 'u1');
-    const ok = await service.validate(token);
-    if (ok.status !== 'ok') throw new Error('expected ok');
-    await service.setStep(ok.link.id, 'AVAILABILITY');
-    const after = await service.validate(token);
-    expect(after).toMatchObject({
-      status: 'ok',
-      link: { step: 'AVAILABILITY' },
+    it('honors the configured value', () => {
+      expect(
+        setup({ AVAILABILITY_LINK_TTL_HOURS: '24' }).service.ttlHours(),
+      ).toBe(24);
     });
   });
 });

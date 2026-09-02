@@ -33,7 +33,6 @@ describe('GetMatchDetailsTool', () => {
           university: 'CES',
           major: 'Medicina',
           biography: 'Amante del café',
-          // Fields below must NOT leak into the tool output.
         },
       },
       date: { status: 'confirmed' },

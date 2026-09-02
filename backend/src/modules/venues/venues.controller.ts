@@ -14,7 +14,6 @@ import { VenuesService } from './venues.service';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { UpdateVenueDto } from './dto/update-venue.dto';
 
-// Venue management — restricted to ADMIN_EMAILS via AdminGuard (runs after JWT).
 @Controller('admin/venues')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class VenuesController {

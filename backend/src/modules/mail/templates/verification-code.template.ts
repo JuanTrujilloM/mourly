@@ -1,5 +1,3 @@
-// Subject + HTML for the verification-code email. Kept out of MailService so the
-// service only sends; copy and markup are authored here.
 export function verificationCodeEmail(code: string): {
   subject: string;
   html: string;

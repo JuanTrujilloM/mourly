@@ -1,7 +1,5 @@
 import { emailLayout, escapeHtml } from './email-layout';
 
-// HU-07: the match didn't move forward (rejection or 48h timeout). Copy mirrors
-// the WhatsApp message.
 export function matchRejectedEmail(recipientName: string): {
   subject: string;
   html: string;

@@ -6,14 +6,9 @@ export interface ChatTurn {
   content: string;
 }
 
-// Default short-lived session; after this the next message is treated as new
-// and the bot re-greets. Mirrors CHATBOT_MEMORY_TTL_SECONDS in the env.
 const DEFAULT_TTL_SECONDS = 1800;
-// Keep only the most recent turns to bound tokens and latency (AC #1).
 const MAX_TURNS = 12;
 
-// In-memory short-lived conversation store keyed by userId. Single-instance only;
-// swap this provider for a Redis-backed store when the backend runs multi-instance.
 @Injectable()
 export class ConversationCacheService {
   private readonly store = new Map<
@@ -29,8 +24,6 @@ export class ConversationCacheService {
       ) * 1000;
   }
 
-  // Returns the live history, or null on a cache miss / expiry. Null means
-  // "new session", which drives the greeting.
   get(userId: string): ChatTurn[] | null {
     const entry = this.store.get(userId);
     if (!entry) return null;

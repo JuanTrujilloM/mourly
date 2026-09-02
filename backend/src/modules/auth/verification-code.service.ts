@@ -22,8 +22,6 @@ export class VerificationCodeService {
     private readonly config: ConfigService,
   ) {}
 
-  // One active code per user: drop the previous one, persist only the bcrypt hash.
-  // Plaintext is returned so the caller can mail it; it never hits the DB.
   async issueForUser(userId: string): Promise<string> {
     const code = randomInt(0, 1_000_000).toString().padStart(6, '0');
     const codeHash = await bcrypt.hash(code, SALT_ROUNDS);
@@ -38,7 +36,6 @@ export class VerificationCodeService {
     return code;
   }
 
-  // Returns a result enum instead of throwing — AuthService maps it to HTTP.
   async validate(userId: string, code: string): Promise<VerificationResult> {
     const record = await this.prisma.emailVerificationCode.findFirst({
       where: { userId, consumedAt: null },
@@ -51,7 +48,6 @@ export class VerificationCodeService {
 
     const matches = await bcrypt.compare(code, record.codeHash);
     if (!matches) {
-      // Count the miss; MAX_ATTEMPTS locks the code against brute force.
       await this.prisma.emailVerificationCode.update({
         where: { id: record.id },
         data: { attempts: { increment: 1 } },
@@ -59,7 +55,6 @@ export class VerificationCodeService {
       return 'mismatch';
     }
 
-    // Single-use: consuming drops it from the active-code queries above.
     await this.prisma.emailVerificationCode.update({
       where: { id: record.id },
       data: { consumedAt: new Date() },
@@ -67,7 +62,6 @@ export class VerificationCodeService {
     return 'ok';
   }
 
-  // A consumed code is the de-facto "email verified" flag (no boolean column).
   async hasVerifiedEmail(userId: string): Promise<boolean> {
     const consumed = await this.prisma.emailVerificationCode.findFirst({
       where: { userId, consumedAt: { not: null } },
@@ -76,7 +70,6 @@ export class VerificationCodeService {
     return consumed !== null;
   }
 
-  // Seconds left on the resend cooldown; 0 means a new code can go out now.
   async getSecondsUntilResendAllowed(userId: string): Promise<number> {
     const latest = await this.prisma.emailVerificationCode.findFirst({
       where: { userId, consumedAt: null },
@@ -88,7 +81,6 @@ export class VerificationCodeService {
     return Math.max(0, Math.ceil(RESEND_COOLDOWN_SECONDS - elapsed));
   }
 
-  // For simplicity, the TTL is computed here and baked into the DB record; no background cleanup.
   private computeExpiry(): Date {
     const ttlMinutes = Number(
       this.config.get<string>('EMAIL_CODE_TTL_MINUTES') ?? 10,

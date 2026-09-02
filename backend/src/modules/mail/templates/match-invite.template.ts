@@ -1,7 +1,5 @@
 import { ctaButton, emailLayout, escapeHtml } from './email-layout';
 
-// HU-05 email twin of the WhatsApp availability invite: partner card with the
-// primary photo, link-expiry banner, and the magic link behind a CTA button.
 export interface MatchInviteEmailData {
   recipientName: string;
   partner: {
@@ -37,8 +35,6 @@ export function matchInviteEmail(data: MatchInviteEmailData): {
   };
 }
 
-// Caption bar below the photo, not overlaid: absolute positioning and
-// text-over-background-image are unreliable in Outlook/Gmail.
 function photoCard(
   partner: MatchInviteEmailData['partner'],
   escapedName: string,

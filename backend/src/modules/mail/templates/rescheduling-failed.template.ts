@@ -1,7 +1,5 @@
 import { emailLayout, escapeHtml } from './email-layout';
 
-// HU-08 recycle: scheduling failed, the match returns to the next weekly cycle.
-// Copy mirrors the WhatsApp message.
 export function reschedulingFailedEmail(recipientName: string): {
   subject: string;
   html: string;

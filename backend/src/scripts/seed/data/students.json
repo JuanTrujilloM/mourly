@@ -1,0 +1,887 @@
+[
+  {
+    "key": "valentina",
+    "name": "Valentina Ríos",
+    "email": "valentina.rios@eafit.edu.co",
+    "cellphone": "+573001000001",
+    "gender": "Femenino",
+    "dateOfBirth": "2003-04-12",
+    "height": 166,
+    "biography": "Estudiante de Derecho, amante del café y el cine europeo.",
+    "university": "EAFIT",
+    "major": "Derecho",
+    "semester": "6",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/1.jpg",
+      "https://randomuser.me/api/portraits/women/21.jpg"
+    ],
+    "hobbies": [
+      "Café de especialidad",
+      "Cine",
+      "Lectura",
+      "Viajar"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 21,
+      "maxAge": 28,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Más alta",
+      "energyVibe": [
+        "Tranquilo/a",
+        "Romántico/a"
+      ]
+    }
+  },
+  {
+    "key": "santiago",
+    "name": "Santiago Gómez",
+    "email": "santiago.gomez@eafit.edu.co",
+    "cellphone": "+573001000002",
+    "gender": "Masculino",
+    "dateOfBirth": "2001-09-05",
+    "height": 182,
+    "biography": "Ingeniero en formación, corro los domingos y amo el café.",
+    "university": "EAFIT",
+    "major": "Ingeniería de Sistemas",
+    "semester": "8",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/11.jpg",
+      "https://randomuser.me/api/portraits/men/31.jpg"
+    ],
+    "hobbies": [
+      "Running",
+      "Café de especialidad",
+      "Programación",
+      "Cine"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 20,
+      "maxAge": 26,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Tranquilo/a",
+        "Ambicioso/a"
+      ]
+    }
+  },
+  {
+    "key": "laura",
+    "name": "Laura Restrepo",
+    "email": "laura.restrepo@eafit.edu.co",
+    "cellphone": "+573001000003",
+    "gender": "Femenino",
+    "dateOfBirth": "2002-11-23",
+    "height": 170,
+    "biography": "Economía de día, repostería de noche. Busco planes tranquilos.",
+    "university": "EAFIT",
+    "major": "Economía",
+    "semester": "7",
+    "status": "PAUSED",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/5.jpg"
+    ],
+    "hobbies": [
+      "Repostería",
+      "Cocinar",
+      "Series",
+      "Yoga"
+    ],
+    "preferences": {
+      "relationshipType": "Casual abierto a seria",
+      "orientation": "Heterosexual",
+      "minAge": 21,
+      "maxAge": 29,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Similar",
+      "energyVibe": [
+        "Tranquilo/a",
+        "Creativo/a"
+      ]
+    }
+  },
+  {
+    "key": "andres",
+    "name": "Andrés Vélez",
+    "email": "andres.velez@eafit.edu.co",
+    "cellphone": "+573001000004",
+    "gender": "Masculino",
+    "dateOfBirth": "2003-02-14",
+    "height": 178,
+    "biography": "Negocios internacionales. Viajero, fotógrafo aficionado.",
+    "university": "EAFIT",
+    "major": "Negocios Internacionales",
+    "semester": "5",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/15.jpg",
+      "https://randomuser.me/api/portraits/men/44.jpg"
+    ],
+    "hobbies": [
+      "Viajar",
+      "Fotografía",
+      "Idiomas",
+      "Café de especialidad"
+    ],
+    "preferences": {
+      "relationshipType": "Abierto a todo",
+      "orientation": "Heterosexual",
+      "minAge": 19,
+      "maxAge": 26,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Aventurero/a",
+        "Extrovertido/a"
+      ]
+    }
+  },
+  {
+    "key": "felipe",
+    "name": "Felipe Cardona",
+    "email": "felipe.cardona@eafit.edu.co",
+    "cellphone": "+573001000005",
+    "gender": "Masculino",
+    "dateOfBirth": "2002-06-30",
+    "height": 176,
+    "biography": "Música, teatro y buenas conversaciones. Diseño mi propia marca.",
+    "university": "EAFIT",
+    "major": "Música",
+    "semester": "9",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/22.jpg",
+      "https://randomuser.me/api/portraits/men/52.jpg"
+    ],
+    "hobbies": [
+      "Música en vivo",
+      "Teatro",
+      "Tocar guitarra",
+      "Emprendimiento"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Gay",
+      "minAge": 21,
+      "maxAge": 30,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Creativo/a",
+        "Romántico/a"
+      ]
+    }
+  },
+  {
+    "key": "juliana",
+    "name": "Juliana Mesa",
+    "email": "juliana.mesa@eafit.edu.co",
+    "cellphone": "+573001000006",
+    "gender": "Femenino",
+    "dateOfBirth": "2004-01-19",
+    "height": 163,
+    "biography": "Bio y naturaleza. Me encontrarás en un sendero o con un libro.",
+    "university": "EAFIT",
+    "major": "Biología",
+    "semester": "4",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/8.jpg",
+      "https://randomuser.me/api/portraits/women/33.jpg"
+    ],
+    "hobbies": [
+      "Senderismo",
+      "Lectura",
+      "Astronomía",
+      "Mascotas"
+    ],
+    "preferences": {
+      "relationshipType": "Seria abierta a casual",
+      "orientation": "Bisexual",
+      "minAge": 19,
+      "maxAge": 27,
+      "genderInterest": "Todos",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Tranquilo/a",
+        "Aventurero/a"
+      ]
+    }
+  },
+  {
+    "key": "ariel",
+    "name": "Ariel Quintero",
+    "email": "ariel.quintero@eafit.edu.co",
+    "cellphone": "+573001000007",
+    "gender": "No binario",
+    "dateOfBirth": "2003-08-08",
+    "height": 172,
+    "biography": "Arte digital y videojuegos. Creativo/a y curioso/a por todo.",
+    "university": "EAFIT",
+    "major": "Comunicación Social",
+    "semester": "6",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/60.jpg"
+    ],
+    "hobbies": [
+      "Videojuegos",
+      "Pintura",
+      "Cine",
+      "Música en vivo"
+    ],
+    "preferences": {
+      "relationshipType": "Abierto a todo",
+      "orientation": "Otro",
+      "minAge": 19,
+      "maxAge": 28,
+      "genderInterest": "Todos",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Creativo/a",
+        "Introvertido/a"
+      ]
+    }
+  },
+  {
+    "key": "isabella",
+    "name": "Isabella Naranjo",
+    "email": "isabella.naranjo@ces.edu.co",
+    "cellphone": "+573001000008",
+    "gender": "Femenino",
+    "dateOfBirth": "2002-03-27",
+    "height": 168,
+    "biography": "Medicina y maratones. Disciplina de día, series de noche.",
+    "university": "CES",
+    "major": "Medicina",
+    "semester": "8",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/12.jpg",
+      "https://randomuser.me/api/portraits/women/40.jpg"
+    ],
+    "hobbies": [
+      "Running",
+      "Series",
+      "Natación",
+      "Café de especialidad"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 22,
+      "maxAge": 30,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Más alta",
+      "energyVibe": [
+        "Ambicioso/a",
+        "Tranquilo/a"
+      ]
+    }
+  },
+  {
+    "key": "samuel",
+    "name": "Samuel Ospina",
+    "email": "samuel.ospina@ces.edu.co",
+    "cellphone": "+573001000009",
+    "gender": "Masculino",
+    "dateOfBirth": "2001-12-02",
+    "height": 180,
+    "biography": "Odontología. Ciclista de fin de semana y fan del buen café.",
+    "university": "CES",
+    "major": "Odontología",
+    "semester": "9",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/3.jpg",
+      "https://randomuser.me/api/portraits/men/36.jpg"
+    ],
+    "hobbies": [
+      "Ciclismo",
+      "Café de especialidad",
+      "Cocinar",
+      "Viajar"
+    ],
+    "preferences": {
+      "relationshipType": "Casual abierto a seria",
+      "orientation": "Heterosexual",
+      "minAge": 20,
+      "maxAge": 27,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Aventurero/a",
+        "Tranquilo/a"
+      ]
+    }
+  },
+  {
+    "key": "miguel",
+    "name": "Miguel Ángel Torres",
+    "email": "miguel.torres@ces.edu.co",
+    "cellphone": "+573001000010",
+    "gender": "Masculino",
+    "dateOfBirth": "2002-07-15",
+    "height": 179,
+    "biography": "Psicología. Teatro, cine club y largas caminatas al atardecer.",
+    "university": "CES",
+    "major": "Psicología",
+    "semester": "7",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/24.jpg",
+      "https://randomuser.me/api/portraits/men/54.jpg"
+    ],
+    "hobbies": [
+      "Teatro",
+      "Cine",
+      "Senderismo",
+      "Lectura"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Gay",
+      "minAge": 21,
+      "maxAge": 29,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Romántico/a",
+        "Creativo/a"
+      ]
+    }
+  },
+  {
+    "key": "mariana",
+    "name": "Mariana Álvarez",
+    "email": "mariana.alvarez@upb.edu.co",
+    "cellphone": "+573001000011",
+    "gender": "Femenino",
+    "dateOfBirth": "2003-05-18",
+    "height": 167,
+    "biography": "Arquitectura y acuarela. Amo los cafés con buena luz.",
+    "university": "UPB",
+    "major": "Arquitectura",
+    "semester": "6",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/16.jpg",
+      "https://randomuser.me/api/portraits/women/45.jpg"
+    ],
+    "hobbies": [
+      "Pintura",
+      "Café de especialidad",
+      "Fotografía",
+      "Viajar"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 21,
+      "maxAge": 28,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Más alta",
+      "energyVibe": [
+        "Creativo/a",
+        "Tranquilo/a"
+      ]
+    }
+  },
+  {
+    "key": "mateo",
+    "name": "Mateo Jaramillo",
+    "email": "mateo.jaramillo@upb.edu.co",
+    "cellphone": "+573001000012",
+    "gender": "Masculino",
+    "dateOfBirth": "2002-10-09",
+    "height": 183,
+    "biography": "Ingeniería industrial. Fútbol, asados y planes espontáneos.",
+    "university": "UPB",
+    "major": "Ingeniería Industrial",
+    "semester": "7",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/7.jpg",
+      "https://randomuser.me/api/portraits/men/41.jpg"
+    ],
+    "hobbies": [
+      "Fútbol",
+      "Cocinar",
+      "Videojuegos",
+      "Música en vivo"
+    ],
+    "preferences": {
+      "relationshipType": "Casual",
+      "orientation": "Heterosexual",
+      "minAge": 19,
+      "maxAge": 26,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Extrovertido/a",
+        "Espontáneo/a"
+      ]
+    }
+  },
+  {
+    "key": "sara",
+    "name": "Sara Betancur",
+    "email": "sara.betancur@upb.edu.co",
+    "cellphone": "+573001000013",
+    "gender": "Femenino",
+    "dateOfBirth": "2003-09-21",
+    "height": 165,
+    "biography": "Diseño industrial. Vinilos, plantas y buena conversación.",
+    "university": "UPB",
+    "major": "Diseño Industrial",
+    "semester": "5",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/20.jpg",
+      "https://randomuser.me/api/portraits/women/50.jpg"
+    ],
+    "hobbies": [
+      "Pintura",
+      "Música en vivo",
+      "Mascotas",
+      "Cocinar"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Lesbiana",
+      "minAge": 20,
+      "maxAge": 28,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Creativo/a",
+        "Tranquilo/a"
+      ]
+    }
+  },
+  {
+    "key": "sofia",
+    "name": "Sofía Palacio",
+    "email": "sofia.palacio@eia.edu.co",
+    "cellphone": "+573001000014",
+    "gender": "Femenino",
+    "dateOfBirth": "2002-08-11",
+    "height": 169,
+    "biography": "Ingeniería biomédica. Yoga, senderismo y ciencia ficción.",
+    "university": "EIA",
+    "major": "Ingeniería Biomédica",
+    "semester": "8",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/23.jpg",
+      "https://randomuser.me/api/portraits/women/55.jpg"
+    ],
+    "hobbies": [
+      "Yoga",
+      "Senderismo",
+      "Lectura",
+      "Astronomía"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 21,
+      "maxAge": 29,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Similar",
+      "energyVibe": [
+        "Tranquilo/a",
+        "Ambicioso/a"
+      ]
+    }
+  },
+  {
+    "key": "nicolas",
+    "name": "Nicolás Arango",
+    "email": "nicolas.arango@eia.edu.co",
+    "cellphone": "+573001000015",
+    "gender": "Masculino",
+    "dateOfBirth": "2001-04-03",
+    "height": 181,
+    "biography": "Ingeniería civil. Escalada, camping y astronomía los findes.",
+    "university": "EIA",
+    "major": "Ingeniería Civil",
+    "semester": "9",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/18.jpg",
+      "https://randomuser.me/api/portraits/men/48.jpg"
+    ],
+    "hobbies": [
+      "Escalada",
+      "Camping",
+      "Astronomía",
+      "Senderismo"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 20,
+      "maxAge": 28,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Aventurero/a",
+        "Tranquilo/a"
+      ]
+    }
+  },
+  {
+    "key": "manuela",
+    "name": "Manuela Zapata",
+    "email": "manuela.zapata@eia.edu.co",
+    "cellphone": "+573001000016",
+    "gender": "Femenino",
+    "dateOfBirth": "2003-12-30",
+    "height": 164,
+    "biography": "Ingeniería administrativa. Salsa, café y planes al aire libre.",
+    "university": "EIA",
+    "major": "Ingeniería Administrativa",
+    "semester": "6",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/26.jpg",
+      "https://randomuser.me/api/portraits/women/60.jpg"
+    ],
+    "hobbies": [
+      "Salsa",
+      "Café de especialidad",
+      "Senderismo",
+      "Baile"
+    ],
+    "preferences": {
+      "relationshipType": "Seria abierta a casual",
+      "orientation": "Lesbiana",
+      "minAge": 20,
+      "maxAge": 28,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Extrovertido/a",
+        "Aventurero/a"
+      ]
+    }
+  },
+  {
+    "key": "daniela",
+    "name": "Daniela Moreno",
+    "email": "daniela.moreno@javeriana.edu.co",
+    "cellphone": "+573001000017",
+    "gender": "Femenino",
+    "dateOfBirth": "2002-02-06",
+    "height": 171,
+    "biography": "Comunicación. Podcasts, museos y café en Chapinero.",
+    "university": "Javeriana",
+    "major": "Comunicación",
+    "semester": "7",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/29.jpg",
+      "https://randomuser.me/api/portraits/women/65.jpg"
+    ],
+    "hobbies": [
+      "Café de especialidad",
+      "Escritura",
+      "Cine",
+      "Lectura"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 21,
+      "maxAge": 29,
+      "genderInterest": "Hombres",
+      "sameUniversity": true,
+      "heightRange": "Más alta",
+      "energyVibe": [
+        "Creativo/a",
+        "Ambicioso/a"
+      ]
+    }
+  },
+  {
+    "key": "sebastian",
+    "name": "Sebastián Rojas",
+    "email": "sebastian.rojas@javeriana.edu.co",
+    "cellphone": "+573001000018",
+    "gender": "Masculino",
+    "dateOfBirth": "2001-06-24",
+    "height": 184,
+    "biography": "Derecho. Debate, ciclismo por la ciclovía y buen vino.",
+    "university": "Javeriana",
+    "major": "Derecho",
+    "semester": "9",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/26.jpg",
+      "https://randomuser.me/api/portraits/men/56.jpg"
+    ],
+    "hobbies": [
+      "Ciclismo",
+      "Cata de vinos",
+      "Lectura",
+      "Idiomas"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 20,
+      "maxAge": 28,
+      "genderInterest": "Mujeres",
+      "sameUniversity": true,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Ambicioso/a",
+        "Tranquilo/a"
+      ]
+    }
+  },
+  {
+    "key": "camila",
+    "name": "Camila Herrera",
+    "email": "camila.herrera@uniandes.edu.co",
+    "cellphone": "+573001000019",
+    "gender": "Femenino",
+    "dateOfBirth": "2003-03-14",
+    "height": 168,
+    "biography": "Economía. Corro en el parque, cocino y colecciono vinilos.",
+    "university": "Uniandes",
+    "major": "Economía",
+    "semester": "6",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/31.jpg",
+      "https://randomuser.me/api/portraits/women/68.jpg"
+    ],
+    "hobbies": [
+      "Running",
+      "Cocinar",
+      "Música en vivo",
+      "Café de especialidad"
+    ],
+    "preferences": {
+      "relationshipType": "Casual abierto a seria",
+      "orientation": "Heterosexual",
+      "minAge": 21,
+      "maxAge": 29,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Similar",
+      "energyVibe": [
+        "Extrovertido/a",
+        "Ambicioso/a"
+      ]
+    }
+  },
+  {
+    "key": "tomas",
+    "name": "Tomás Beltrán",
+    "email": "tomas.beltran@uniandes.edu.co",
+    "cellphone": "+573001000020",
+    "gender": "Masculino",
+    "dateOfBirth": "2002-01-28",
+    "height": 177,
+    "biography": "Ingeniería de sistemas. Gaming, ajedrez y planes de última hora.",
+    "university": "Uniandes",
+    "major": "Ingeniería de Sistemas",
+    "semester": "8",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/33.jpg",
+      "https://randomuser.me/api/portraits/men/63.jpg"
+    ],
+    "hobbies": [
+      "Videojuegos",
+      "Ajedrez",
+      "Programación",
+      "Cine"
+    ],
+    "preferences": {
+      "relationshipType": "Casual",
+      "orientation": "Heterosexual",
+      "minAge": 19,
+      "maxAge": 27,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Introvertido/a",
+        "Espontáneo/a"
+      ]
+    }
+  },
+  {
+    "key": "david",
+    "name": "David Castaño",
+    "email": "david.castano@uniandes.edu.co",
+    "cellphone": "+573001000021",
+    "gender": "Masculino",
+    "dateOfBirth": "2003-07-07",
+    "height": 175,
+    "biography": "Física. Astronomía, montañas y jazz en vivo los jueves.",
+    "university": "Uniandes",
+    "major": "Física",
+    "semester": "5",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/38.jpg",
+      "https://randomuser.me/api/portraits/men/68.jpg"
+    ],
+    "hobbies": [
+      "Astronomía",
+      "Senderismo",
+      "Música en vivo",
+      "Lectura"
+    ],
+    "preferences": {
+      "relationshipType": "Abierto a todo",
+      "orientation": "Bisexual",
+      "minAge": 19,
+      "maxAge": 28,
+      "genderInterest": "Todos",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Tranquilo/a",
+        "Creativo/a"
+      ]
+    }
+  },
+  {
+    "key": "alex",
+    "name": "Alex Duarte",
+    "email": "alex.duarte@uniandes.edu.co",
+    "cellphone": "+573001000022",
+    "gender": "Prefiero no decir",
+    "dateOfBirth": "2002-05-16",
+    "height": 173,
+    "biography": "Administración. Voluntariado, café y buenos libros.",
+    "university": "Uniandes",
+    "major": "Administración",
+    "semester": "7",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/70.jpg"
+    ],
+    "hobbies": [
+      "Voluntariado",
+      "Café de especialidad",
+      "Lectura",
+      "Idiomas"
+    ],
+    "preferences": {
+      "relationshipType": "Amistad",
+      "orientation": "Prefiero no decir",
+      "minAge": 20,
+      "maxAge": 30,
+      "genderInterest": "Todos",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Introvertido/a",
+        "Tranquilo/a"
+      ]
+    }
+  },
+  {
+    "key": "antonia",
+    "name": "Antonia Lozano",
+    "email": "antonia.lozano@urosario.edu.co",
+    "cellphone": "+573001000023",
+    "gender": "Femenino",
+    "dateOfBirth": "2003-10-02",
+    "height": 166,
+    "biography": "Relaciones internacionales. Idiomas, teatro y viajes.",
+    "university": "Rosario",
+    "major": "Relaciones Internacionales",
+    "semester": "6",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/women/39.jpg",
+      "https://randomuser.me/api/portraits/women/72.jpg"
+    ],
+    "hobbies": [
+      "Idiomas",
+      "Teatro",
+      "Viajar",
+      "Escritura"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 21,
+      "maxAge": 29,
+      "genderInterest": "Hombres",
+      "sameUniversity": false,
+      "heightRange": "Más alta",
+      "energyVibe": [
+        "Creativo/a",
+        "Extrovertido/a"
+      ]
+    }
+  },
+  {
+    "key": "simon",
+    "name": "Simón Prieto",
+    "email": "simon.prieto@externado.edu.co",
+    "cellphone": "+573001000024",
+    "gender": "Masculino",
+    "dateOfBirth": "2002-12-19",
+    "height": 179,
+    "biography": "Finanzas. Tenis, emprendimiento y café los sábados.",
+    "university": "Externado",
+    "major": "Finanzas",
+    "semester": "8",
+    "status": "SEARCHING",
+    "photos": [
+      "https://randomuser.me/api/portraits/men/43.jpg",
+      "https://randomuser.me/api/portraits/men/73.jpg"
+    ],
+    "hobbies": [
+      "Tenis",
+      "Emprendimiento",
+      "Café de especialidad",
+      "Viajar"
+    ],
+    "preferences": {
+      "relationshipType": "Seria",
+      "orientation": "Heterosexual",
+      "minAge": 20,
+      "maxAge": 28,
+      "genderInterest": "Mujeres",
+      "sameUniversity": false,
+      "heightRange": "Indiferente",
+      "energyVibe": [
+        "Ambicioso/a",
+        "Aventurero/a"
+      ]
+    }
+  }
+]

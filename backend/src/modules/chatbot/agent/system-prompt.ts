@@ -1,8 +1,5 @@
 import { ChatUserContext } from '../user-context/user-resolver.service';
 
-// Builds the per-request system prompt. The user's profile is injected so dating
-// tips are personalized without an extra round-trip (AC #3). The greeting block
-// only appears on the first message of a session (AC #2).
 export function buildSystemPrompt(
   context: ChatUserContext,
   isNewSession: boolean,

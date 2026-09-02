@@ -8,8 +8,6 @@ import {
   Min,
 } from 'class-validator';
 
-// JSON payload for the admin venue form. Mirrors the Venue model fields the
-// admin can edit (commission/spend are stored as plain numbers).
 export class CreateVenueDto {
   @IsString()
   @IsNotEmpty({ message: 'Name is required.' })

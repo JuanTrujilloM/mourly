@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../config/prisma.service';
 
-// Compact, chatbot-facing view of the current user. Drives both the greeting
-// (name) and the personalization of dating tips (interests, preferences).
 export interface ChatUserContext {
   userId: string;
   name: string;
@@ -25,8 +23,6 @@ export type ResolveResult =
 export class UserResolverService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Resolves the WhatsApp sender by cellphone. Unknown number or unverified
-  // account short-circuits the brain before any LLM call (AC #8).
   async resolve(cellphone: string): Promise<ResolveResult> {
     const user = await this.prisma.user.findUnique({
       where: { cellphone },
@@ -64,7 +60,6 @@ function toContext(userId: string, user: LoadedUser): ChatUserContext {
   const preferences = user.preferences;
   return {
     userId,
-    // A verified user without a finished profile is rare but possible; greet generically.
     name: profile?.name ?? '',
     age: profile ? ageFromDate(profile.dateOfBirth) : null,
     university: profile?.university ?? null,

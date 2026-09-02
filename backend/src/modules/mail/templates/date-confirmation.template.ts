@@ -1,11 +1,9 @@
 import { emailLayout, escapeHtml } from './email-layout';
 
-// HU-08 email twin of the WhatsApp date proposal: the confirmed plan as a
-// detail card (who / where / address / when).
 export interface DateConfirmationEmailData {
   recipientName: string;
   partnerName: string;
-  whenText: string; // slot label built by match-confirmation, e.g. "jue 17 jul · 14:00"
+  whenText: string;
   venueName: string;
   venueAddress: string;
 }

@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 
-// Static help/FAQ content the bot relays for "Get help with the app". No DB,
-// no per-user data. Edit the copy here; the model paraphrases as needed.
 const APP_HELP = `
 ¿Cómo funciona TheConnection?
   Cada semana nuestra IA te presenta un único match curado y te acompaña hasta una
