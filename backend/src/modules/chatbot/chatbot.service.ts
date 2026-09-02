@@ -12,7 +12,7 @@ import { UserResolverService } from './user-context/user-resolver.service';
 import { IncomingMessageDto } from './dto/incoming-message.dto';
 
 const REDIRECT_MESSAGE =
-  'Estoy aquí para ayudarte con tus citas en TheConnection 😊. Puedo darte consejos ' +
+  'Estoy aquí para ayudarte con tus citas en Mourly 😊. Puedo darte consejos ' +
   'para tu cita, contarte sobre tu match actual o tu próxima cita, o ayudarte con la app. ' +
   '¿Con qué te ayudo?';
 
@@ -88,7 +88,7 @@ export class ChatbotService {
     const frontendUrl =
       this.config.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
     return (
-      '¡Hola! Para usar el asistente de TheConnection primero necesitas completar tu ' +
+      '¡Hola! Para usar el asistente de Mourly primero necesitas completar tu ' +
       `registro y verificar tu cuenta. Regístrate aquí: ${frontendUrl}/register`
     );
   }

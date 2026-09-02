@@ -1,9 +1,9 @@
 ---
 name: backend
-description: Standards and structure for TheConnection's NestJS backend — SOLID modules, files under 100 lines, English naming, zero comments, no dead code, and full unit/integration/e2e coverage. Use when writing, refactoring, or reviewing anything under backend/.
+description: Standards and structure for Mourly's NestJS backend — SOLID modules, files under 100 lines, English naming, zero comments, no dead code, and full unit/integration/e2e coverage. Use when writing, refactoring, or reviewing anything under backend/.
 ---
 
-# Backend standards — TheConnection
+# Backend standards — Mourly
 
 Applies to everything under `backend/src`. `backend/src/generated/` is Prisma output: never edit it, never count it against these rules.
 

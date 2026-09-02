@@ -2,12 +2,12 @@ services:
   postgres:
     # Postgres 16 with pgvector precompiled — no manual extension install needed
     image: pgvector/pgvector:pg16
-    container_name: theconnection-db
+    container_name: mourly-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: theconnection
-      POSTGRES_PASSWORD: theconnection
-      POSTGRES_DB: theconnection
+      POSTGRES_USER: mourly
+      POSTGRES_PASSWORD: mourly
+      POSTGRES_DB: mourly
     ports:
       - "5432:5432"
     volumes:
@@ -15,7 +15,7 @@ services:
       # Runs once on first boot, when the data volume is empty
       - ./init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U theconnection -d theconnection"]
+      test: ["CMD-SHELL", "pg_isready -U mourly -d mourly"]
       interval: 5s
       timeout: 5s
       retries: 5

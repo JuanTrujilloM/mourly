@@ -7,7 +7,7 @@ export function buildSystemPrompt(
   const greeting = isNewSession ? newSessionGreeting(context) : '';
 
   return [
-    `Eres el asistente de TheConnection, una app de citas para estudiantes universitarios en Colombia.`,
+    `Eres el asistente de Mourly, una app de citas para estudiantes universitarios en Colombia.`,
     `Responde en el idioma del usuario; por defecto, español. Tono cercano, breve y útil (es WhatsApp).`,
     ``,
     `Solo puedes ayudar con estos temas:`,

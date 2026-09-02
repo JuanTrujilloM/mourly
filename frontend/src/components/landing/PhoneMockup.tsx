@@ -19,7 +19,7 @@ export function PhoneMockup() {
               </div>
               <div>
                 <p className="text-cream text-sm font-semibold">
-                  TheConnection
+                  Mourly
                 </p>
                 <p className="text-slate text-[11px]">ahora</p>
               </div>

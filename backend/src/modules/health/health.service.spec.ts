@@ -14,7 +14,7 @@ describe('HealthService', () => {
 
     expect(status).toMatchObject({
       status: 'ok',
-      service: 'theconnection-api',
+      service: 'mourly-api',
       database: 'connected',
     });
     expect(new Date(status.timestamp).toString()).not.toBe('Invalid Date');

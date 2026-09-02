@@ -11,7 +11,7 @@ const partner = {
   age: 21,
   university: 'EAFIT',
   major: 'Diseño Interactivo',
-  photoUrl: 'https://picsum.photos/seed/theconnection/520/420',
+  photoUrl: 'https://picsum.photos/seed/mourly/520/420',
 };
 
 const availabilityUrl = 'http://localhost:3000/flow/sample-token/places';

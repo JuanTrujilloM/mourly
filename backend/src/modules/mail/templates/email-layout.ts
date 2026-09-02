@@ -1,4 +1,4 @@
-const BRAND = 'TheConnection';
+const BRAND = 'Mourly';
 
 export function escapeHtml(value: string): string {
   return value

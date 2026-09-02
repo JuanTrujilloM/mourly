@@ -73,7 +73,7 @@ describe('MailService', () => {
       SMTP_SECURE: 'true',
       SMTP_USER: 'user',
       SMTP_PASS: 'pass',
-      MAIL_FROM: 'TheConnection <no-reply@test>',
+      MAIL_FROM: 'Mourly <no-reply@test>',
     };
 
     it('builds the transport from the configuration', () => {
@@ -113,7 +113,7 @@ describe('MailService', () => {
       });
 
       expect(sendMail).toHaveBeenCalledWith({
-        from: 'TheConnection <no-reply@test>',
+        from: 'Mourly <no-reply@test>',
         to: 'ana@eafit.edu.co',
         subject: 'Hola',
         html: '<p>Hola</p>',

@@ -45,7 +45,7 @@ export const TOOL_DEFINITIONS: ChatToolDefinition[] = [
     function: {
       name: 'get_app_help',
       description:
-        'Get help/FAQ about how TheConnection works. Call for app usage questions.',
+        'Get help/FAQ about how Mourly works. Call for app usage questions.',
       parameters: NO_ARGS,
     },
   },

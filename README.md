@@ -1,4 +1,4 @@
-# TheConnection
+# Mourly
 
 Exclusive dating app for students at private universities in Colombia. Delivers one AI-curated match per week and drives it all the way to a confirmed in-person date.
 
@@ -20,8 +20,8 @@ brew services start postgresql@16
 ## 1. Clone the repository
 
 ```bash
-git clone https://github.com/JuanTrujilloM/theconnection.git
-cd theconnection
+git clone https://github.com/JuanTrujilloM/mourly.git
+cd mourly
 ```
 
 ---
@@ -38,7 +38,7 @@ cd ../frontend && npm install
 ## 3. Create the database
 
 ```bash
-createdb theconnection
+createdb mourly
 ```
 
 ---
@@ -50,7 +50,7 @@ createdb theconnection
 ```bash
 NODE_ENV=development
 PORT=3001
-DATABASE_URL="postgresql://<your-mac-username>@localhost:5432/theconnection"
+DATABASE_URL="postgresql://<your-mac-username>@localhost:5432/mourly"
 
 # Optional for local dev (leave empty if not testing these features)
 JWT_SECRET=any-random-string-for-local-dev
@@ -147,7 +147,7 @@ cd frontend && npm run lint
 ## Project structure
 
 ```
-theconnection/
+mourly/
 ├── frontend/
 │   └── src/
 │       ├── app/                 # Pages (Next.js App Router)

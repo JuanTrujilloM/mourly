@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TheConnection — Citas curadas para universitarios",
+  title: "Mourly — Citas curadas para universitarios",
   description:
     "Una cita real por semana, curada por IA, solo para estudiantes de universidades privadas en Colombia.",
 };

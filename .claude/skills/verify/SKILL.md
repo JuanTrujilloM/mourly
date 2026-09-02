@@ -1,9 +1,9 @@
 ---
 name: verify
-description: How to run and drive TheConnection locally to verify changes end-to-end (servers, test login, browser driving).
+description: How to run and drive Mourly locally to verify changes end-to-end (servers, test login, browser driving).
 ---
 
-# Verifying TheConnection changes
+# Verifying Mourly changes
 
 ## Servers
 The developer usually already has both dev servers running — check before starting your own:
@@ -13,7 +13,7 @@ The developer usually already has both dev servers running — check before star
 - If not running: `npm run dev` at the repo root starts both (3000 + 3001).
 
 ## Database
-Local Postgres: `postgresql://theconnection:theconnection@localhost:5432/theconnection`.
+Local Postgres: `postgresql://mourly:mourly@localhost:5432/mourly`.
 `npm run db:seed` (backend) creates verified students with profiles/preferences/matches. Seeded users have NO password — auth is passwordless (email code).
 
 ## Getting a session as a seeded user
@@ -21,7 +21,7 @@ Codes are bcrypt-hashed in `EmailVerificationCode`. Issue one, overwrite its has
 ```bash
 curl -s -X POST http://localhost:3001/auth/login -H 'Content-Type: application/json' -d '{"email":"camila.herrera@uniandes.edu.co"}'
 HASH=$(node -e "console.log(require('/path/to/backend/node_modules/bcryptjs').hashSync('123456',10))")
-psql "postgresql://theconnection:theconnection@localhost:5432/theconnection" -c "UPDATE \"EmailVerificationCode\" SET \"codeHash\"='$HASH' WHERE \"userId\"=(SELECT id FROM \"User\" WHERE email='camila.herrera@uniandes.edu.co') AND \"consumedAt\" IS NULL;"
+psql "postgresql://mourly:mourly@localhost:5432/mourly" -c "UPDATE \"EmailVerificationCode\" SET \"codeHash\"='$HASH' WHERE \"userId\"=(SELECT id FROM \"User\" WHERE email='camila.herrera@uniandes.edu.co') AND \"consumedAt\" IS NULL;"
 curl -s -c cookies.txt -X POST http://localhost:3001/auth/verify -H 'Content-Type: application/json' -d '{"email":"camila.herrera@uniandes.edu.co","code":"123456"}'
 ```
 Session cookies are `access_token` / `refresh_token` on `localhost`; `curl -b cookies.txt` hits guarded API routes.

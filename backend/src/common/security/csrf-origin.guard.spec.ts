@@ -29,16 +29,16 @@ describe('CsrfOriginGuard', () => {
   });
 
   it('accepts a mutating request from the configured frontend', () => {
-    const guard = buildGuard({ FRONTEND_URL: 'https://app.theconnection.co' });
+    const guard = buildGuard({ FRONTEND_URL: 'https://app.mourly.co' });
     const context = executionContextWith(
-      request('POST', { origin: 'https://app.theconnection.co/' }),
+      request('POST', { origin: 'https://app.mourly.co/' }),
     );
 
     expect(guard.canActivate(context)).toBe(true);
   });
 
   it('rejects a mutating request from another origin', () => {
-    const guard = buildGuard({ FRONTEND_URL: 'https://app.theconnection.co' });
+    const guard = buildGuard({ FRONTEND_URL: 'https://app.mourly.co' });
     const context = executionContextWith(
       request('POST', { origin: 'https://evil.example' }),
     );

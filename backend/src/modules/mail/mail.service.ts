@@ -13,7 +13,7 @@ export class MailService implements OnModuleInit {
   constructor(private readonly config: ConfigService) {
     this.from = this.config.get<string>(
       'MAIL_FROM',
-      'TheConnection <no-reply@theconnection.co>',
+      'Mourly <no-reply@mourly.co>',
     );
     this.devMode = !this.config.get<string>('SMTP_HOST');
   }

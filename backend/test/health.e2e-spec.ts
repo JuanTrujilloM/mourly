@@ -20,7 +20,7 @@ describe('Health (e2e)', () => {
 
     expect(response.body).toMatchObject({
       status: 'ok',
-      service: 'theconnection-api',
+      service: 'mourly-api',
       database: 'connected',
     });
   });

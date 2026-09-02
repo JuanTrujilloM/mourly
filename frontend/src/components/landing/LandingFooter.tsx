@@ -40,7 +40,7 @@ export function LandingFooter() {
       </div>
 
       <p className="text-slate/60 mx-auto mt-8 max-w-6xl text-center text-xs sm:text-left">
-        © {new Date().getFullYear()} TheConnection. Todos los derechos reservados.
+        © {new Date().getFullYear()} Mourly. Todos los derechos reservados.
       </p>
     </footer>
   );
