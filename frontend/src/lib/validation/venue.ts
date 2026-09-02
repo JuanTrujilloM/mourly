@@ -1,11 +1,8 @@
 import { z } from 'zod';
-import { VENUE_TYPES } from '@/lib/constants/venues';
 
-// Admin venue form. Number fields are registered with valueAsNumber (see
-// VenueForm), so the schema validates plain numbers — matching the profile form.
 export const venueSchema = z.object({
   name: z.string().min(1, 'El nombre es obligatorio.'),
-  type: z.enum(VENUE_TYPES, { message: 'Selecciona un tipo.' }),
+  type: z.string().min(1, 'Selecciona un tipo.'),
   address: z.string().min(1, 'La dirección es obligatoria.'),
   openingHours: z.string().min(1, 'El horario es obligatorio.'),
   description: z.string().min(1, 'La descripción es obligatoria.'),
