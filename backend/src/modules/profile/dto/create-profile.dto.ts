@@ -16,9 +16,6 @@ import {
 } from '../constants/profile-options';
 import { IsAdult } from '../validators/is-adult.validator';
 
-// HU-02 payload. Fields arrive as multipart/form-data alongside the photo files,
-// so numeric values are coerced with @Type. University is derived server-side
-// from the verified email, not accepted here.
 export class CreateProfileDto {
   @IsString()
   @IsNotEmpty({ message: 'Name is required.' })
@@ -51,8 +48,6 @@ export class CreateProfileDto {
   @IsIn(SEMESTERS, { message: 'Invalid semester.' })
   semester!: string;
 
-  // Ordered JSON array describing the final photo set: each entry is 'new'
-  // (next uploaded file) or 'keep:<url>' (retain an existing photo).
   @IsOptional()
   @IsString()
   photoManifest?: string;

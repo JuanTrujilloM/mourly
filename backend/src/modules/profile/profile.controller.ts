@@ -12,6 +12,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../auth/strategies/jwt.strategy';
+import { imageUploadOptions } from '../storage/image-upload.options';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateAvailabilityDto } from './dto/update-availability.dto';
@@ -28,7 +29,7 @@ export class ProfileController {
   }
 
   @Post()
-  @UseInterceptors(FilesInterceptor('photos', MAX_PHOTOS))
+  @UseInterceptors(FilesInterceptor('photos', MAX_PHOTOS, imageUploadOptions))
   create(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateProfileDto,
@@ -37,7 +38,6 @@ export class ProfileController {
     return this.profileService.save(user.userId, user.email, dto, photos);
   }
 
-  // Dashboard searching/paused toggle.
   @Patch('availability')
   setAvailability(
     @CurrentUser() user: AuthenticatedUser,
