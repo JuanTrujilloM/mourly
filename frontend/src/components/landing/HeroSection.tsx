@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { PhoneMockup } from './PhoneMockup';
 
-// Small stacked avatars built from gradients (no image assets).
 const AVATARS = [
   'from-coral to-flame',
   'from-flame to-amber',
@@ -10,14 +9,10 @@ const AVATARS = [
   'from-cyan to-navy-soft',
 ];
 
-// Above-the-fold hero: editorial headline, subheadline, CTAs, a trust row and
-// the phone mockup, layered over an animated brand gradient.
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden px-4 pt-28 pb-16 sm:px-6 sm:pt-36 sm:pb-20">
-      {/* Animated gradient wash that drifts behind the content. */}
       <div className="from-navy-deep via-navy to-navy-soft animate-gradient absolute inset-0 -z-20 bg-gradient-to-br bg-[length:200%_200%]" />
-      {/* Warm sunset orbs, with one cyan orb kept for brand identity. */}
       <div className="bg-coral/25 animate-float-slow absolute -top-20 -left-20 -z-10 h-72 w-72 rounded-full blur-3xl" />
       <div className="bg-flame/20 absolute top-40 -right-20 -z-10 h-80 w-80 rounded-full blur-3xl" />
       <div className="bg-cyan/15 absolute bottom-0 left-1/3 -z-10 h-56 w-56 rounded-full blur-3xl" />
@@ -59,7 +54,6 @@ export function HeroSection() {
             </a>
           </div>
 
-          {/* Trust row to anchor the hero and add warmth. */}
           <div className="mt-8 flex items-center justify-center gap-3 lg:justify-start">
             <div className="flex -space-x-2">
               {AVATARS.map((gradient) => (

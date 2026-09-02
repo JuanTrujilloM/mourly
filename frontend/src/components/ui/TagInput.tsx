@@ -2,8 +2,6 @@
 
 import { useState, type KeyboardEvent } from 'react';
 
-// Typeable multi-select. User adds tags by typing + Enter/comma or by clicking a
-// suggestion; tags are removable. State is owned by the caller (controlled).
 export function TagInput({
   value,
   onChange,
@@ -21,7 +19,6 @@ export function TagInput({
 
   const addTag = (raw: string) => {
     const tag = raw.trim();
-    // Case-insensitive de-dupe so "Música" and "música" don't both land.
     const exists = value.some((t) => t.toLowerCase() === tag.toLowerCase());
     if (tag && !exists) onChange([...value, tag]);
     setDraft('');

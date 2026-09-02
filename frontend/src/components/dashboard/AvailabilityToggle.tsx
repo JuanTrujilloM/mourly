@@ -7,9 +7,6 @@ import {
   type AvailabilityStatus,
 } from '@/lib/constants/profile';
 
-// Single-button dashboard control: SEARCHING means the weekly AI match runs for
-// the user; PAUSED skips them (found someone / taking a break). The button shows
-// the current status and tapping it flips to the other one.
 export function AvailabilityToggle({ status }: { status: AvailabilityStatus }) {
   const { mutate, isPending } = useUpdateAvailability();
   const searching = status === AVAILABILITY_STATUS.SEARCHING;

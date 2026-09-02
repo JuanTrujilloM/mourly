@@ -1,6 +1,5 @@
 import { Chip } from './Chip';
 
-// Multi-select chip group. Toggles options in/out of the selected array.
 export function ChipGroup({
   options,
   value,

@@ -9,7 +9,6 @@ import { getApiErrorMessage } from '@/lib/utils/errors';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
-// HU-01 login: passwordless. Requests a code, then reuses the /verify flow.
 export function LoginForm() {
   const router = useRouter();
   const { mutateAsync, isPending } = useLogin();

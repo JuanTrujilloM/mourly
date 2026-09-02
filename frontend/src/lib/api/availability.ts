@@ -5,9 +5,6 @@ import type {
   TokenVenuesView,
 } from '@/types/availability';
 
-// Public token flow opened from the first WhatsApp notification (HU-06 places
-// first, then HU-09 availability). The token in the path is the credential, so
-// these calls need no auth session.
 
 export async function fetchAvailabilityView(
   token: string,
@@ -18,7 +15,6 @@ export async function fetchAvailabilityView(
   return data;
 }
 
-// Last step of the flow: consumes the link and triggers the HU-08 check.
 export async function submitAvailability(
   token: string,
   slots: SlotSelection[],
@@ -39,7 +35,6 @@ export async function fetchTokenVenues(
   return data;
 }
 
-// Step 1 of the flow: saving places advances the link to time selection.
 export async function selectTokenVenues(
   token: string,
   venueIds: string[],

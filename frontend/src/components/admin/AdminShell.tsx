@@ -7,9 +7,6 @@ import { Logo } from '@/components/shared/Logo';
 import { LogoutButton } from '@/components/shared/LogoutButton';
 import type { AuthUser } from '@/types/auth';
 
-// Desktop admin chrome: a fixed sidebar for navigation and a top bar showing the
-// current section and the signed-in admin. Renders full-width (not the mobile
-// PhoneShell the student app uses) because admin is a PC-format tool.
 
 interface NavItem {
   href: string;
@@ -27,7 +24,6 @@ const NAV: NavItem[] = [
 ];
 
 function isActive(pathname: string, href: string): boolean {
-  // Exact match for the root so it isn't highlighted on every subpage.
   return href === '/admin' ? pathname === href : pathname.startsWith(href);
 }
 

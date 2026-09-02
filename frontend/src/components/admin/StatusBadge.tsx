@@ -8,7 +8,6 @@ const tones: Record<Tone, string> = {
   blush: 'bg-blush/15 text-blush',
 };
 
-// Spanish labels + tone per match status (pending/confirmed/completed/canceled).
 const MATCH: Record<string, { label: string; tone: Tone }> = {
   pending: { label: 'Pendiente', tone: 'gold' },
   confirmed: { label: 'Confirmado', tone: 'cyan' },

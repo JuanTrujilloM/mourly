@@ -1,6 +1,5 @@
 import { Reveal } from '@/components/shared/Reveal';
 
-// Text-badge stand-ins for partner university logos (no image assets yet).
 const UNIVERSITIES = [
   'EAFIT',
   'UPB',
@@ -12,10 +11,7 @@ const UNIVERSITIES = [
   'Externado',
 ];
 
-// Continuously-scrolling marquee of university badges, signalling the verified,
-// closed community. Pauses on hover; edges fade into the background.
 export function UniversitiesSection() {
-  // Two copies so the -50% translate loops seamlessly.
   const row = [...UNIVERSITIES, ...UNIVERSITIES];
 
   return (
@@ -27,7 +23,6 @@ export function UniversitiesSection() {
       </Reveal>
 
       <div className="group relative mt-8 overflow-hidden">
-        {/* Edge fades. */}
         <div className="from-navy-deep absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r to-transparent sm:w-28" />
         <div className="from-navy-deep absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l to-transparent sm:w-28" />
 

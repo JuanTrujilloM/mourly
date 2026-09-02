@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-// Card shell for one logical section of the onboarding forms.
 export function Card({
   title,
   description,

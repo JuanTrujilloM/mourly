@@ -3,10 +3,6 @@
 import Link from 'next/link';
 import { PageHeader } from '@/components/admin/PageHeader';
 
-// Business overview — TEMPLATE. The metric cards below are placeholders wired to
-// no data yet; implement the /admin/overview endpoint + real figures later
-// (users, matches by status, attendance rate, commission revenue, top venues).
-// Kept as a scaffold so the layout and navigation are already in place.
 
 interface MetricSlot {
   label: string;

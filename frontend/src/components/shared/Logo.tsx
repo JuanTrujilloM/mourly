@@ -1,7 +1,5 @@
 import Link from 'next/link';
 
-// Brand wordmark. Warm "Atardecer" heart (coral→flame), "The" in cream and
-// "Connection" in cyan — the blue identity anchor stays.
 export function Logo({ className = '' }: { className?: string }) {
   return (
     <Link

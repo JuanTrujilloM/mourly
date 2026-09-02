@@ -1,7 +1,5 @@
 import type { VenueSuggestion } from '@/types/venue';
 
-// HU-06 suggestion card. Shows name, type, address, opening hours and a short
-// description (acceptance criterion #2); the whole card toggles selection.
 export function VenueCard({
   venue,
   selected,

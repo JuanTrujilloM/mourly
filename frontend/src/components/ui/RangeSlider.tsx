@@ -1,8 +1,5 @@
 'use client';
 
-// Dual-handle range slider built from two overlaid native range inputs. The
-// inputs ignore pointer events except on their thumbs (see .brand-range in
-// globals.css), so each handle stays grabbable. Controlled by the caller.
 export function RangeSlider({
   min,
   max,
@@ -14,7 +11,6 @@ export function RangeSlider({
   value: { min: number; max: number };
   onChange: (next: { min: number; max: number }) => void;
 }) {
-  // Keep at least 1 unit between handles so they can't cross.
   const setMin = (next: number) =>
     onChange({ ...value, min: Math.min(next, value.max - 1) });
   const setMax = (next: number) =>
@@ -32,9 +28,7 @@ export function RangeSlider({
       </div>
 
       <div className="relative h-6">
-        {/* Track */}
         <div className="absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-white/10" />
-        {/* Selected segment */}
         <div
           className="bg-cyan absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full"
           style={{

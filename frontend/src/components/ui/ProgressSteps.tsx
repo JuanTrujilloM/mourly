@@ -1,4 +1,3 @@
-// Onboarding progress indicator: "Paso N de total" plus a segmented bar.
 export function ProgressSteps({
   current,
   total,

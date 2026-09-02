@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react';
 import { Logo } from '@/components/shared/Logo';
 import { Button } from '@/components/ui/Button';
 
-// Sticky top navbar. Gains a frosted navy background once the user scrolls past
-// the hero fold so the wordmark stays legible over any section.
 export function LandingNavbar() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -34,7 +32,6 @@ export function LandingNavbar() {
           >
             Iniciar sesión
           </Link>
-          {/* CTA routes to the existing registration flow. */}
           <Link href="/register">
             <Button variant="sunset" className="px-5 py-2">
               Únete ahora

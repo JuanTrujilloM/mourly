@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 
-// Centered status card for the public flow: loading, invalid/expired link (AC #5),
-// and the final "done" screen. Keeps the two pages visually consistent.
 export function FlowState({
   emoji,
   title,

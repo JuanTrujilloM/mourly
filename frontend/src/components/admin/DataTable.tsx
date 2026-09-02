@@ -2,14 +2,10 @@ import type { ReactNode } from 'react';
 
 export interface Column<T> {
   header: string;
-  // Cell renderer for one row.
   cell: (row: T) => ReactNode;
-  // Optional extra classes for alignment/width (e.g. 'text-right').
   className?: string;
 }
 
-// Desktop data table with loading, empty and error states. Rows are keyed by
-// `rowKey` so React can reconcile after mutations.
 export function DataTable<T>({
   columns,
   rows,

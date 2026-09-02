@@ -30,12 +30,9 @@ const REASONS = [
   },
 ];
 
-// "Why TheConnection" — three accent-colored cards highlighting the product's
-// differentiators. Each lifts and glows in its own color on hover.
 export function WhySection() {
   return (
     <section className="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-20">
-      {/* Soft blush glow to break the navy monotony. */}
       <div className="bg-blush/10 absolute top-1/2 left-1/2 -z-10 h-72 w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" />
 
       <div className="mx-auto max-w-6xl">
@@ -58,7 +55,6 @@ export function WhySection() {
               <div
                 className={`group border-white/10 from-navy-soft to-navy relative h-full overflow-hidden rounded-2xl border bg-gradient-to-b p-7 text-center transition-all duration-300 hover:-translate-y-1.5 hover:border-white/20 ${reason.glow}`}
               >
-                {/* Accent bar that grows on hover. */}
                 <div
                   className={`absolute inset-x-0 top-0 h-1 scale-x-0 bg-gradient-to-r transition-transform duration-300 group-hover:scale-x-100 ${reason.bar}`}
                 />

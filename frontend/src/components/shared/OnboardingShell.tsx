@@ -2,8 +2,6 @@ import type { ReactNode } from 'react';
 import { Logo } from '@/components/shared/Logo';
 import { ProgressSteps } from '@/components/ui/ProgressSteps';
 
-// Step chrome rendered inside the phone shell: brand header, progress bar and
-// title. The shell owns the backdrop and width, so this stays layout-light.
 export function OnboardingShell({
   step,
   total,

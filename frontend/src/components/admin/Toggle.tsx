@@ -1,5 +1,3 @@
-// Accessible on/off switch. Controlled: parent owns `checked` and reacts to
-// `onChange`. Disabled while a mutation is in flight.
 export function Toggle({
   checked,
   onChange,

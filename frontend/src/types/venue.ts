@@ -1,4 +1,3 @@
-// Admin shape — the full Venue row, including internal business fields.
 export interface Venue {
   id: string;
   name: string;
@@ -14,7 +13,6 @@ export interface Venue {
   updatedAt: string;
 }
 
-// Student-facing HU-06 suggestion — no commissionRate, plus this user's choice.
 export interface VenueSuggestion {
   id: string;
   name: string;
@@ -27,7 +25,6 @@ export interface VenueSuggestion {
   selected: boolean;
 }
 
-// Create/update payload for the admin form.
 export interface VenuePayload {
   name: string;
   type: string;

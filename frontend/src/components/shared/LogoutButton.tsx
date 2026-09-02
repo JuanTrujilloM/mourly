@@ -3,7 +3,6 @@
 import { useLogout } from '@/hooks/useLogout';
 import { Button } from '@/components/ui/Button';
 
-// Signs the current user out from the dashboard header.
 export function LogoutButton() {
   const { mutate, isPending } = useLogout();
 

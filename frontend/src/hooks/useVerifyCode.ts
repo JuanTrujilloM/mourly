@@ -6,7 +6,6 @@ export function useVerifyCode() {
   return useMutation({
     mutationFn: verifyCode,
     onSuccess: (user) => {
-      // Seed the current-user cache so the next screen has it immediately.
       queryClient.setQueryData(['currentUser'], user);
     },
   });

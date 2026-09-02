@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-// Label + control + inline error wrapper. Errors render in blush per the brand.
 export function Field({
   label,
   htmlFor,

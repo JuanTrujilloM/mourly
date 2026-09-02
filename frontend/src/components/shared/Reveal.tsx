@@ -3,8 +3,6 @@
 import type { ReactNode } from 'react';
 import { useInView } from '@/hooks/useInView';
 
-// Wraps content and fades/slides it up the first time it scrolls into view.
-// `delay` staggers siblings (in ms) for a cascade effect.
 export function Reveal({
   children,
   delay = 0,

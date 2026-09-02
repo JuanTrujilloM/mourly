@@ -6,9 +6,6 @@ import type { ReactNode } from 'react';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import type { AuthUser } from '@/types/auth';
 
-// Gates the whole /admin section: unauthenticated users bounce to /register
-// (via useRequireAuth), authenticated non-admins bounce to /dashboard, and only
-// allowlisted admins reach the panel.
 export function AdminGate({
   children,
 }: {
@@ -29,7 +26,6 @@ export function AdminGate({
     );
   }
 
-  // Redirecting (unauthenticated, or authenticated-but-not-admin): render nothing.
   if (isError || !user || !user.isAdmin) return null;
 
   return <>{children(user)}</>;

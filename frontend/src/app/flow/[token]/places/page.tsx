@@ -1,20 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { PhoneShell } from '@/components/shared/PhoneShell';
 import { Logo } from '@/components/shared/Logo';
 import { Button } from '@/components/ui/Button';
 import { VenueCard } from '@/components/places/VenueCard';
-import { FlowState } from '@/components/availability/FlowState';
 import {
-  useSelectTokenVenues,
-  useTokenVenues,
-} from '@/hooks/useAvailabilityFlow';
-import { getApiErrorMessage } from '@/lib/utils/errors';
+  FlowLinkError,
+  FlowLoading,
+  FlowStepCompleted,
+} from '@/components/availability/FlowGuards';
+import { useTokenVenues } from '@/hooks/useAvailabilityFlow';
+import type { TokenVenuesView } from '@/types/availability';
+import { usePlaceSelection } from './usePlaceSelection';
 
-// HU-06 — public place selection, the ENTRY page of the WhatsApp token flow.
-// Time selection (HU-09) follows (Opción A: the whole flow runs without login).
 export default function TokenPlacesPage() {
   const { token } = useParams<{ token: string }>();
   return (
@@ -27,79 +27,28 @@ export default function TokenPlacesPage() {
 function PlacesContent({ token }: { token: string }) {
   const router = useRouter();
   const { data, isLoading, isError } = useTokenVenues(token);
-  const select = useSelectTokenVenues(token);
 
-  const [chosen, setChosen] = useState<string[] | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
-
-  // Places already chosen; forward to the time-selection step (HU-09).
   useEffect(() => {
     if (data?.step === 'AVAILABILITY') router.replace(`/availability/${token}`);
   }, [data?.step, token, router]);
 
-  if (isLoading) {
-    return (
-      <p className="text-slate animate-pulse text-sm">
-        Buscando lugares para tu cita...
-      </p>
-    );
-  }
+  if (isLoading) return <FlowLoading label="Buscando lugares para tu cita..." />;
+  if (isError) return <FlowLinkError />;
+  if (data?.step === 'COMPLETED') return <FlowStepCompleted />;
+  if (!data || data.step === 'AVAILABILITY') return null;
 
-  if (isError) {
-    return (
-      <FlowState
-        emoji="🔗"
-        title="Este enlace ya no es válido"
-        description="El enlace expiró o ya fue usado. Espera tu próxima notificación de WhatsApp."
-      />
-    );
-  }
+  return <PlacesPicker token={token} data={data} />;
+}
 
-  // The link was consumed: the whole flow is done for this user.
-  if (data?.step === 'COMPLETED') {
-    return (
-      <FlowState
-        emoji="✅"
-        title="¡Listo!"
-        description="Ya completaste este paso. Te avisaremos por WhatsApp cuando tu match también termine, para confirmar la cita."
-      />
-    );
-  }
-
-  if (!data || data.step === 'AVAILABILITY') return null; // redirecting
-
-  const serverSelected = data.venues
-    .filter((venue) => venue.selected)
-    .map((venue) => venue.id);
-  const selectedIds = chosen ?? serverSelected;
-
-  const toggle = (id: string) => {
-    const isSelected = selectedIds.includes(id);
-    // Exactly 2 allowed: block a 3rd so both users are forced to share one.
-    if (!isSelected && selectedIds.length >= data.minSelection) {
-      setFormError(`Solo puedes elegir ${data.minSelection} lugares.`);
-      return;
-    }
-    const next = isSelected
-      ? selectedIds.filter((venueId) => venueId !== id)
-      : [...selectedIds, id];
-    setChosen(next);
-    setFormError(null);
-  };
-
-  const onConfirm = async () => {
-    if (selectedIds.length !== data.minSelection) {
-      setFormError(`Selecciona ${data.minSelection} lugares.`);
-      return;
-    }
-    try {
-      await select.mutateAsync(selectedIds);
-      // Places saved -> time selection (HU-09), the last step.
-      router.replace(`/availability/${token}`);
-    } catch (err) {
-      setFormError(getApiErrorMessage(err));
-    }
-  };
+function PlacesPicker({
+  token,
+  data,
+}: {
+  token: string;
+  data: Extract<TokenVenuesView, { step: 'VENUE' }>;
+}) {
+  const { selectedIds, formError, toggle, onConfirm, isPending } =
+    usePlaceSelection(token, data);
 
   return (
     <>
@@ -130,12 +79,8 @@ function PlacesContent({ token }: { token: string }) {
       {formError && <p className="text-blush mt-4 text-sm">{formError}</p>}
 
       <div className="mt-6">
-        <Button
-          className="w-full"
-          disabled={select.isPending}
-          onClick={onConfirm}
-        >
-          {select.isPending
+        <Button className="w-full" disabled={isPending} onClick={onConfirm}>
+          {isPending
             ? 'Guardando...'
             : `Confirmar (${selectedIds.length}/${data.minSelection})`}
         </Button>

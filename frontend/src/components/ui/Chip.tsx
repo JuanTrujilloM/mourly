@@ -1,4 +1,3 @@
-// Toggleable selection chip. Cyan when selected, outlined when not.
 export function Chip({
   label,
   selected,

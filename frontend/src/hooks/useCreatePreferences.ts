@@ -6,7 +6,6 @@ export function useCreatePreferences() {
   return useMutation({
     mutationFn: createPreferences,
     onSuccess: () => {
-      // Onboarding just completed; refetch the session so onboardingCompleted flips.
       queryClient.invalidateQueries({ queryKey: ['currentUser'] });
     },
   });

@@ -2,13 +2,12 @@
 
 import type { UseFormReturn } from 'react-hook-form';
 import type { ProfileValues } from '@/lib/validation/profile';
-import { SEMESTER_OPTIONS } from '@/lib/constants/profile';
+import { useCatalog } from '@/hooks/useCatalog';
 import { Card } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 
-// HU-02 — university (read-only, auto-detected from email), major and semester.
 export function AcademicInfoCard({
   form,
   university,
@@ -16,6 +15,7 @@ export function AcademicInfoCard({
   form: UseFormReturn<ProfileValues>;
   university: string;
 }) {
+  const { semesters } = useCatalog();
   const { register, formState } = form;
   const { errors } = formState;
 
@@ -23,7 +23,6 @@ export function AcademicInfoCard({
     <Card title="Información académica" description="Tu vida universitaria.">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Universidad">
-          {/* Detected from the verified email domain; not editable. */}
           <Input value={university} readOnly disabled />
         </Field>
 
@@ -50,7 +49,7 @@ export function AcademicInfoCard({
             <option value="" disabled>
               Selecciona...
             </option>
-            {SEMESTER_OPTIONS.map((option) => (
+            {semesters.map((option) => (
               <option key={option} value={option}>
                 {/^\d+$/.test(option) ? `Semestre ${option}` : option}
               </option>

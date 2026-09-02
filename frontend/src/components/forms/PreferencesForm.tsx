@@ -9,9 +9,6 @@ import { RelationshipCard } from './preferences/RelationshipCard';
 import { LookingForCard } from './preferences/LookingForCard';
 import { VibeCard } from './preferences/VibeCard';
 
-// HU-03 — interests & preferences form. `edit` switches between onboarding
-// (create) and editing saved preferences. All state logic lives in
-// usePreferencesForm.
 export function PreferencesForm({
   user,
   edit = false,
@@ -43,7 +40,6 @@ export function PreferencesForm({
 
       {rootError && <p className="text-blush text-sm">{rootError}</p>}
 
-      {/* Fixed at the bottom on mobile, inline on desktop. */}
       <div className="border-white/10 bg-navy-deep/90 fixed inset-x-0 bottom-0 border-t p-4 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
         <div className="mx-auto flex max-w-2xl justify-end sm:max-w-none">
           <Button type="submit" className="w-full sm:w-auto" disabled={isPending}>

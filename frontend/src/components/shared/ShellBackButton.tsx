@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-// Back chevron for the phone shell. With `href` it links to a fixed route;
-// without it, it walks the browser history (step-to-step navigation).
 export function ShellBackButton({ href }: { href?: string }) {
   const router = useRouter();
 

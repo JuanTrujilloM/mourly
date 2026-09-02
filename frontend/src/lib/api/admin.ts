@@ -7,8 +7,6 @@ import type {
   AdminReport,
 } from '@/types/admin';
 
-// Admin panel data + light-management calls. All gated server-side by the
-// ADMIN_EMAILS allowlist (JwtAuthGuard + AdminGuard).
 
 export async function fetchAdminUsers(): Promise<AdminUser[]> {
   const { data } = await apiClient.get<AdminUser[]>('/admin/users');

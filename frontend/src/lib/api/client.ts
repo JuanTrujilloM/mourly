@@ -2,8 +2,6 @@ import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
-// Shared axios instance. withCredentials is required so the HttpOnly auth cookie
-// issued by the backend is sent and stored across requests.
 export const apiClient = axios.create({
   baseURL: API_URL,
   withCredentials: true,
@@ -13,9 +11,6 @@ const REFRESH_PATH = '/auth/refresh';
 
 type RetriableConfig = InternalAxiosRequestConfig & { _retried?: boolean };
 
-// The access token is short-lived. When a request 401s, transparently exchange
-// the refresh cookie for a new access token (once) and replay the request. A
-// single in-flight refresh is shared so concurrent 401s don't stampede it.
 let refreshing: Promise<void> | null = null;
 
 function refreshSession(): Promise<void> {
@@ -45,6 +40,6 @@ apiClient.interceptors.response.use(
     } catch {
       return Promise.reject(error);
     }
-    return apiClient(original);
+    return apiClient.request(original);
   },
 );

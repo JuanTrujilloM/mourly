@@ -7,7 +7,6 @@ const LEGAL_LINKS = [
   { label: 'Habeas Data', href: '#' },
 ];
 
-// Site footer: wordmark, legal links and Instagram.
 export function LandingFooter() {
   return (
     <footer className="border-white/10 border-t px-4 py-12 sm:px-6">

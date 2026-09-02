@@ -14,9 +14,6 @@ import {
 } from '@/lib/constants/profile';
 import type { AuthUser } from '@/types/auth';
 
-// Dashboard stub — landing spot after onboarding. The real dashboard (match of
-// the week, feedback) comes in a later sprint. Place + time selection live only
-// in the public tokenized flow (/flow/:token/places), never here.
 export default function DashboardPage() {
   return <AuthGate>{(user) => <DashboardContent user={user} />}</AuthGate>;
 }
@@ -62,8 +59,6 @@ function DashboardContent({ user }: { user: AuthUser }) {
         </Card>
       </div>
 
-      {/* Profile and interests editing live on their own, separate from the
-          weekly-match flow. */}
       <div className="mt-6 flex flex-col items-center gap-3">
         <div className="flex gap-3">
           <Link href="/perfil">

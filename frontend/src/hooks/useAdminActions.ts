@@ -1,8 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { setUserStatus, verifyUser, cancelMatch } from '@/lib/api/admin';
 
-// Management mutations. Each invalidates its list so the table reflects the
-// change without a manual refetch.
 
 export function useSetUserStatus() {
   const queryClient = useQueryClient();

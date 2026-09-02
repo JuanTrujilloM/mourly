@@ -2,8 +2,6 @@ import type { ReactNode } from 'react';
 import { PhoneShell } from '@/components/shared/PhoneShell';
 import { Logo } from '@/components/shared/Logo';
 
-// Shared chrome for the auth screens (login, register, verify): phone shell with
-// a back-to-home chevron and a centered wordmark above each page's content.
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <PhoneShell backHref="/" center>

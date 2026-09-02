@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 
-// Title + description with an optional action slot (e.g. a "+ Nuevo" button),
-// shared by every admin page for a consistent header.
 export function PageHeader({
   title,
   description,

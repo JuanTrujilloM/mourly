@@ -7,8 +7,6 @@ import {
   fetchAdminReports,
 } from '@/lib/api/admin';
 
-// Read hooks for the admin panel lists. `enabled` lets a page skip the call for
-// non-admins before the redirect kicks in.
 
 export function useAdminUsers(enabled = true) {
   return useQuery({

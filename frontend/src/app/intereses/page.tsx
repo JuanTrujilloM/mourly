@@ -3,8 +3,6 @@
 import { AuthGate } from '@/components/shared/AuthGate';
 import { PreferencesForm } from '@/components/forms/PreferencesForm';
 
-// Edit-interests screen. Reuses the HU-03 form in edit mode (pre-filled from
-// GET /preferences/me); protected by AuthGate.
 export default function EditInterestsPage() {
   return (
     <AuthGate>

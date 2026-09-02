@@ -5,7 +5,6 @@ import type { PreferencesValues } from '@/lib/validation/preferences';
 import { Card } from '@/components/ui/Card';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 
-// HU-03 — preferred age range for the match (dual-handle slider).
 export function AgeRangeCard({
   form,
   bounds,

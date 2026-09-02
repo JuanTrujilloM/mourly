@@ -39,8 +39,6 @@ const STEPS = [
   },
 ];
 
-// "How it works" — four centered steps that reveal in a staggered cascade and
-// lift on hover. Each step carries its own accent color.
 export function HowItWorksSection() {
   return (
     <section id="como-funciona" className="px-4 py-16 sm:px-6 sm:py-20">
