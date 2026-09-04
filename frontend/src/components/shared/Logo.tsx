@@ -12,12 +12,7 @@ export function Logo({ className = '' }: { className?: string }) {
       >
         ♥
       </span>
-      <span>
-        <span className="text-cream">The</span>
-        <span className="from-cyan to-flame bg-gradient-to-r bg-clip-text text-transparent">
-          Connection
-        </span>
-      </span>
+      <span className="text-cream">Mourly</span>
     </Link>
   );
 }
