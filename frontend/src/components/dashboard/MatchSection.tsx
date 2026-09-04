@@ -2,9 +2,15 @@
 
 import { useState } from 'react';
 import { useCurrentMatch } from '@/hooks/useCurrentMatch';
+import {
+  AVAILABILITY_STATUS,
+  type AvailabilityStatus,
+} from '@/lib/constants/profile';
 import type { CurrentMatch } from '@/types/match';
 import { MatchCard } from './MatchCard';
 import { MatchReveal } from './MatchReveal';
+import { NextDateCountdown } from './NextDateCountdown';
+import { PausedCard } from './PausedCard';
 
 // The reveal plays once per match; the flag lives in the browser because
 // the API has no "seen" state yet.
@@ -27,17 +33,23 @@ function markRevealed(matchId: string): void {
   }
 }
 
-export function MatchSection() {
+// With a match: the card (and its one-time reveal). Without one: the
+// countdown to Thursday 7:00 pm, or the pause card when the search is off.
+export function MatchSection({ status }: { status: AvailabilityStatus }) {
   const { data: match, isLoading } = useCurrentMatch();
 
   if (isLoading) {
     return <p className="text-ink-3 mt-8 text-sm">Buscando tu cita...</p>;
   }
 
-  if (!match || !match.partner) return <NoMatchYet />;
+  if (match?.partner) {
+    // Keyed by match so a new match re-runs the initializer and its reveal.
+    return <MatchWithReveal key={match.id} match={match} />;
+  }
 
-  // Keyed by match so a new match re-runs the initializer and its reveal.
-  return <MatchWithReveal key={match.id} match={match} />;
+  if (status === AVAILABILITY_STATUS.PAUSED) return <PausedCard />;
+
+  return <NextDateCountdown />;
 }
 
 function MatchWithReveal({ match }: { match: CurrentMatch }) {
@@ -53,19 +65,5 @@ function MatchWithReveal({ match }: { match: CurrentMatch }) {
       <MatchCard match={match} />
       {revealing && <MatchReveal match={match} onDone={finishReveal} />}
     </>
-  );
-}
-
-function NoMatchYet() {
-  return (
-    <section className="bg-surface border-line rounded-card mt-8 border p-6">
-      <p className="label text-ink-3">Tu cita · esta semana</p>
-      <p className="subheading text-ink mt-3 text-[22px]">
-        Todavía no tenés cita esta semana.
-      </p>
-      <p className="text-ink-2 mt-2 text-sm">
-        El jueves a las 7:00 pm te presentamos a alguien por WhatsApp.
-      </p>
-    </section>
   );
 }

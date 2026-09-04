@@ -1,7 +1,7 @@
 'use client';
 
 import type { Column } from '@/components/admin/DataTable';
-import { Toggle } from '@/components/admin/Toggle';
+import { Toggle } from '@/components/ui/Toggle';
 import { formatCOP } from '@/lib/utils/format';
 import type { Venue } from '@/types/venue';
 

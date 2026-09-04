@@ -17,9 +17,12 @@ import { usePlaceSelection } from './usePlaceSelection';
 
 export default function TokenPlacesPage() {
   const { token } = useParams<{ token: string }>();
+  // The shell's scroller has no bottom padding (see PhoneShell); the page adds its own.
   return (
     <PhoneShell>
-      <PlacesContent token={token} />
+      <div className="pb-10">
+        <PlacesContent token={token} />
+      </div>
     </PhoneShell>
   );
 }

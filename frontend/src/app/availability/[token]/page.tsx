@@ -17,9 +17,12 @@ import { useSlotSubmission } from './useSlotSubmission';
 
 export default function AvailabilityPage() {
   const { token } = useParams<{ token: string }>();
+  // The shell's scroller has no bottom padding (see PhoneShell); the page adds its own.
   return (
     <PhoneShell>
-      <AvailabilityContent token={token} />
+      <div className="pb-10">
+        <AvailabilityContent token={token} />
+      </div>
     </PhoneShell>
   );
 }

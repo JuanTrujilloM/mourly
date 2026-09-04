@@ -27,7 +27,7 @@ export function PreferencesForm({
   const label = edit ? 'Guardar cambios' : 'Listo, quiero mi cita';
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 pb-28 sm:pb-6" noValidate>
+    <form onSubmit={onSubmit} className="space-y-6" noValidate>
       <AgeRangeCard form={form} bounds={bounds} />
       <HobbiesCard form={form} />
       <RelationshipCard form={form} />
@@ -36,8 +36,8 @@ export function PreferencesForm({
 
       {rootError && <p className="text-error text-sm">{rootError}</p>}
 
-      <div className="bg-page border-line fixed inset-x-0 bottom-0 border-t p-4 sm:static sm:border-0 sm:bg-transparent sm:p-0">
-        <div className="mx-auto flex max-w-2xl justify-end sm:max-w-none">
+      <div className="bg-page border-line sticky bottom-0 -mx-5 border-t px-5 py-4 sm:-mx-7 sm:px-7">
+        <div className="flex justify-end">
           <Button type="submit" className="w-full sm:w-auto" disabled={isPending}>
             {isPending ? 'Guardando...' : label}
           </Button>
