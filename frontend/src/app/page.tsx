@@ -3,6 +3,7 @@ import { HeroSection } from '@/components/landing/HeroSection';
 import { UniversitiesSection } from '@/components/landing/UniversitiesSection';
 import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
 import { WhySection } from '@/components/landing/WhySection';
+import { PricingSection } from '@/components/landing/PricingSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 
 export default function HomePage() {
@@ -14,6 +15,7 @@ export default function HomePage() {
         <UniversitiesSection />
         <HowItWorksSection />
         <WhySection />
+        <PricingSection />
       </main>
       <LandingFooter />
     </div>
