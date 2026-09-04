@@ -55,7 +55,7 @@ export function VerificationForm() {
     setResendNotice(null);
     try {
       await resend(email);
-      setResendNotice('Te enviamos un nuevo código.');
+      setResendNotice('Te enviamos un código nuevo.');
       startCooldown();
     } catch (error) {
       setResendNotice(getApiErrorMessage(error));
@@ -64,9 +64,9 @@ export function VerificationForm() {
 
   return (
     <div className="space-y-4">
-      <p className="text-slate text-sm">
-        Ingresa el código de 6 dígitos que enviamos a{' '}
-        <span className="text-cream font-medium">{email}</span>.
+      <p className="text-ink-2 text-sm">
+        Ingresá el código de 6 dígitos que enviamos a{' '}
+        <span className="text-ink font-medium">{email}</span>.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
@@ -76,7 +76,7 @@ export function VerificationForm() {
         />
 
         {errors.root && (
-          <p className="text-blush text-sm">{errors.root.message}</p>
+          <p className="text-error text-sm">{errors.root.message}</p>
         )}
 
         <Button type="submit" className="w-full" disabled={isPending}>

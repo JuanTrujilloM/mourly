@@ -27,34 +27,31 @@ export function PreferencesTable({
 
   return (
     <Section title="Preferencias">
-      <div className="overflow-hidden rounded-xl border border-white/10">
+      <div className="border-line rounded-input overflow-hidden border">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-white/10 text-left">
-              <th className="text-slate px-4 py-2 text-xs font-semibold">
+            <tr className="border-line border-b text-left">
+              <th className="text-ink-3 px-4 py-2 text-xs font-semibold">
                 {a.name}
               </th>
-              <th className="text-slate px-4 py-2 text-center text-xs font-semibold">
+              <th className="text-ink-3 px-4 py-2 text-center text-xs font-semibold">
                 Campo
               </th>
-              <th className="text-slate px-4 py-2 text-right text-xs font-semibold">
+              <th className="text-ink-3 px-4 py-2 text-right text-xs font-semibold">
                 {b.name}
               </th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => (
-              <tr
-                key={row.key}
-                className="border-b border-white/5 last:border-0"
-              >
-                <td className="text-cream px-4 py-2">
+              <tr key={row.key} className="border-line border-b last:border-0">
+                <td className="text-ink px-4 py-2">
                   {render(a.preferences!, row.key)}
                 </td>
-                <td className="text-slate px-4 py-2 text-center text-xs">
+                <td className="text-ink-3 px-4 py-2 text-center text-xs">
                   {row.label}
                 </td>
-                <td className="text-cream px-4 py-2 text-right">
+                <td className="text-ink px-4 py-2 text-right">
                   {render(b.preferences!, row.key)}
                 </td>
               </tr>

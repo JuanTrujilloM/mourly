@@ -26,7 +26,7 @@ export function AvailabilityCalendar({
   return (
     <div className="select-none">
       <div
-        className="bg-navy-soft/40 grid touch-none overflow-hidden rounded-2xl border border-white/10"
+        className="bg-surface border-line rounded-card grid touch-none overflow-hidden border"
         style={{
           gridTemplateColumns: `2.75rem repeat(${days.length}, minmax(0, 1fr))`,
         }}
@@ -41,7 +41,7 @@ export function AvailabilityCalendar({
 
         {timeSlots.map((slot, row) => (
           <div key={slot} className="contents">
-            <div className="text-slate flex items-center justify-end pr-2 text-[11px] leading-tight">
+            <div className="text-ink-3 flex items-center justify-end pr-2 text-[11px] leading-tight tabular-nums">
               {formatSlot(slot)}
             </div>
             {days.map((day, col) => {
@@ -69,10 +69,10 @@ export function AvailabilityCalendar({
                       onToggle(day.date, slot);
                     }
                   }}
-                  className={`h-11 cursor-pointer border-l border-white/10 transition-colors ${
+                  className={`border-line h-11 cursor-pointer border-l transition-colors duration-(--dur-fast) ${
                     row === 0 ? '' : 'border-t'
-                  } ${isSelected ? 'bg-cyan/70' : 'bg-transparent hover:bg-white/5'} ${
-                    inDrag ? 'ring-cyan/60 ring-1 ring-inset' : ''
+                  } ${isSelected ? 'bg-verde-100' : 'hover:bg-surface-2 bg-transparent'} ${
+                    inDrag ? 'ring-ink ring-1 ring-inset' : ''
                   }`}
                 />
               );
@@ -81,8 +81,8 @@ export function AvailabilityCalendar({
         ))}
       </div>
 
-      <p className="text-slate mt-3 text-center text-xs">
-        Arrastra para marcar varias horas. Toca un día para seleccionarlo entero.
+      <p className="text-ink-3 mt-3 text-center text-xs">
+        Arrastrá para marcar varias horas. Tocá un día para seleccionarlo entero.
       </p>
     </div>
   );

@@ -18,7 +18,7 @@ export function PersonalInfoCard({
   const { errors } = formState;
 
   return (
-    <Card title="Información personal" description="Lo básico sobre ti.">
+    <Card title="Información personal" description="Lo básico sobre vos.">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Nombre" htmlFor="name" error={errors.name?.message}>
           <Input
@@ -50,7 +50,7 @@ export function PersonalInfoCard({
             {...register('gender')}
           >
             <option value="" disabled>
-              Selecciona...
+              Elegí...
             </option>
             {genders.map((option) => (
               <option key={option} value={option}>

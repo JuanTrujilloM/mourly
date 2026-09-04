@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/components/ui/Button';
 import { useUpdateAvailability } from '@/hooks/useUpdateAvailability';
 import {
   AVAILABILITY_STATUS,
@@ -17,23 +18,18 @@ export function AvailabilityToggle({ status }: { status: AvailabilityStatus }) {
 
   return (
     <div className="flex flex-col items-center text-center">
-      <button
-        type="button"
+      <Button
+        variant={searching ? 'primary' : 'secondary'}
+        size="sm"
         disabled={isPending}
         onClick={() => mutate(next)}
-        className={`rounded-full px-6 py-2.5 text-sm font-semibold transition disabled:opacity-60 ${
-          searching
-            ? 'bg-cyan text-navy-deep hover:brightness-110'
-            : 'bg-blush text-navy-deep hover:brightness-110'
-        }`}
       >
-        {searching ? '🔍 ' : '⏸ '}
         {AVAILABILITY_LABELS[status]}
-      </button>
-      <p className="text-slate mt-3 text-sm">
+      </Button>
+      <p className="text-ink-2 mt-3 text-sm">
         {searching
-          ? 'Cada domingo a las 7pm la IA buscará tu match de la semana.'
-          : 'En pausa: no recibirás match hasta que reanudes la búsqueda.'}
+          ? 'Cada jueves a las 7:00 pm buscamos tu cita de la semana.'
+          : 'En pausa: no vas a recibir cita hasta que vuelvas a buscar.'}
       </p>
     </div>
   );

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { registerSchema, type RegisterValues } from '@/lib/validation/auth';
 import { useRegister } from '@/hooks/useRegister';
 import { getApiErrorMessage } from '@/lib/utils/errors';
+import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
@@ -30,46 +31,34 @@ export function RegisterForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="space-y-1">
-        <label
-          htmlFor="email"
-          className="text-cream text-sm font-medium"
-        >
-          Correo universitario
-        </label>
+      <Field
+        label="Correo institucional"
+        htmlFor="email"
+        error={errors.email?.message}
+      >
         <Input
           id="email"
           type="email"
           autoComplete="email"
           placeholder="nombre@eafit.edu.co"
+          hasError={!!errors.email}
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-blush text-xs">{errors.email.message}</p>
-        )}
-      </div>
+      </Field>
 
-      <div className="space-y-1">
-        <label
-          htmlFor="cellphone"
-          className="text-cream text-sm font-medium"
-        >
-          Celular
-        </label>
+      <Field label="Celular" htmlFor="cellphone" error={errors.cellphone?.message}>
         <Input
           id="cellphone"
           type="tel"
           autoComplete="tel"
           placeholder="+57 300 123 4567"
+          hasError={!!errors.cellphone}
           {...register('cellphone')}
         />
-        {errors.cellphone && (
-          <p className="text-blush text-xs">{errors.cellphone.message}</p>
-        )}
-      </div>
+      </Field>
 
       {errors.root && (
-        <p className="text-blush text-sm">{errors.root.message}</p>
+        <p className="text-error text-sm">{errors.root.message}</p>
       )}
 
       <Button type="submit" className="w-full" disabled={isPending}>

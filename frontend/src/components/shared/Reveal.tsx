@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { useInView } from '@/hooks/useInView';
 
+// Only a fade: the brand allows no movement outside the weekly reveal.
 export function Reveal({
   children,
   delay = 0,
@@ -18,9 +19,7 @@ export function Reveal({
     <div
       ref={ref}
       style={{ transitionDelay: `${delay}ms` }}
-      className={`transition-all duration-700 ease-out ${
-        inView ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
-      } ${className}`}
+      className={`transition-opacity ${inView ? 'opacity-100' : 'opacity-0'} ${className}`}
     >
       {children}
     </div>

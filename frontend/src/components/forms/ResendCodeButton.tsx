@@ -12,16 +12,16 @@ export function ResendCodeButton({
   onResend: () => void;
 }) {
   return (
-    <div className="text-slate text-center text-sm">
+    <div className="text-ink-2 text-center text-sm">
       <button
         type="button"
         onClick={onResend}
         disabled={isResending || cooldown > 0}
-        className="text-cyan underline disabled:text-slate disabled:no-underline disabled:opacity-50"
+        className="text-accent-text disabled:text-ink-3 underline tabular-nums disabled:no-underline"
       >
-        {cooldown > 0 ? `Reenviar código en ${cooldown}s` : 'Reenviar código'}
+        {cooldown > 0 ? `Reenviar código en ${cooldown} s` : 'Reenviar código'}
       </button>
-      {notice && <p className="text-slate mt-1 text-xs">{notice}</p>}
+      {notice && <p className="text-ink-3 mt-1 text-xs">{notice}</p>}
     </div>
   );
 }

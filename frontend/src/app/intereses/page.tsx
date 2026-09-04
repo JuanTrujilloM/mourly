@@ -9,9 +9,9 @@ export default function EditInterestsPage() {
       {(user) => (
         <>
           <div className="mb-6">
-            <h1 className="text-cream text-2xl font-bold">Editar intereses</h1>
-            <p className="text-slate mt-1 text-sm">
-              Ajusta lo que buscas cuando quieras.
+            <h1 className="heading text-ink text-[28px]">Editar intereses</h1>
+            <p className="text-ink-2 mt-2 text-sm">
+              Ajustá lo que buscás cuando quieras.
             </p>
           </div>
 

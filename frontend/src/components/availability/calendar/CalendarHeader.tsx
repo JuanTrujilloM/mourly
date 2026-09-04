@@ -13,7 +13,7 @@ export function CalendarHeader({
 }) {
   return (
     <>
-      <div className="border-b border-white/10" />
+      <div className="border-line border-b" />
       {days.map((day, col) => {
         const [weekday, dayNumber] = day.label.split(' ');
         const allSelected = isColumnFull(col);
@@ -23,18 +23,14 @@ export function CalendarHeader({
             key={day.date}
             type="button"
             onClick={() => onToggleColumn(col)}
-            className={`flex flex-col items-center gap-0.5 border-b border-l border-white/10 py-1.5 text-center transition ${
-              allSelected ? 'bg-cyan/10' : 'hover:bg-white/5'
+            className={`border-line flex flex-col items-center gap-0.5 border-b border-l py-1.5 text-center transition duration-(--dur-fast) ${
+              allSelected ? 'bg-verde-100' : 'hover:bg-surface-2'
             }`}
           >
-            <span className="text-slate text-[10px] font-medium capitalize">
+            <span className="text-ink-3 text-[10px] font-medium capitalize">
               {weekday}
             </span>
-            <span
-              className={`text-sm font-semibold ${
-                allSelected ? 'text-cyan' : 'text-cream'
-              }`}
-            >
+            <span className="text-ink text-sm font-semibold tabular-nums">
               {dayNumber}
             </span>
           </button>

@@ -1,96 +1,193 @@
 @import "tailwindcss";
 
-/* Brand palette and design tokens. Tailwind v4 reads @theme to generate the
-   color/animation utilities (bg-navy, text-cyan, animate-float, ...). Keep every
-   brand color here so no component hardcodes a hex value. */
+/* Mourly design tokens v0.1 (approved 2026-09-04).
+   Source of truth: 30-professional/mourly/brand/palette.md and typography.md
+   (mirrored in brand/tokens.css). Rule: no hex outside this file. */
 @theme {
-  --color-navy: #0a2540;
-  --color-navy-deep: #061a2e;
-  --color-navy-soft: #0e2e4d;
-  --color-navy-card: #102a47;
-  --color-cyan: #00e5ff;
-  --color-blush: #ff6b8b;
-  --color-gold: #d4af37;
-  --color-cream: #f8f9fa;
-  --color-slate: #6c757d;
+  /* Drop Tailwind's default palette and keyframes so only brand colors and
+     brand motion exist as utilities (no emerald-300, no animate-pulse). */
+  --color-*: initial;
+  --animate-*: initial;
 
-  /* Warm "Atardecer" accents. Navy stays the base and cyan the identity; these
-     drive the primary CTA (coral→flame gradient), badges and highlights. */
-  --color-coral: #ff5a5f;
-  --color-flame: #ff8a3d;
-  --color-amber: #ffb703;
+  /* Papel */
+  --color-hueso: #F6F3EA;
+  --color-hueso-card: #FFFDF8;
+  --color-hueso-200: #E9E4D6;
+  --color-niebla: #B5C6BB;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Tinta y noche */
+  --color-verde-950: #0A231A;
+  --color-verde-900: #0F2E22;
+  --color-verde-800: #163829;
+  --color-verde-700: #24513D;
+  --color-verde-500: #2F7A55;
+  --color-verde-400: #5DA77E;
+  --color-verde-200: #C9D6CC;
+  --color-verde-100: #DFE9DF;
 
-  /* Animation tokens. Components reference these via animate-* utilities. */
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-float-slow: float 9s ease-in-out infinite;
-  --animate-gradient: gradient-pan 18s ease infinite;
-  --animate-pulse-glow: pulse-glow 2.4s ease-in-out infinite;
-  --animate-shimmer: shimmer 2.5s linear infinite;
-  --animate-marquee: marquee 28s linear infinite;
+  /* Momento */
+  --color-mandarina-700: #B3431A;
+  --color-mandarina-600: #C94F22;
+  --color-mandarina-500: #F26B3A;
+  --color-mandarina-400: #F98B5E;
+  --color-mandarina-100: #FDE3D8;
+
+  /* Neutros y semánticos */
+  --color-gris-600: #5C6862;
+  --color-gris-500: #6E7A72;
+  --color-gris-400: #98A39C;
+  --color-error: #B3261E;
+
+  /* Tipografía (variables las define next/font en layout.tsx) */
+  --font-sans: var(--font-bricolage);
+  --font-serif: var(--font-newsreader);
+
+  /* Forma */
+  --radius-chip-inner: 4px;
+  --radius-input: 12px;
+  --radius-card: 20px;
+  --radius-sheet: 28px;
+
+  /* Movimiento */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+
+  /* `transition` defaults to a brand fade: 200 ms, one curve. */
+  --default-transition-duration: var(--dur-base);
+  --default-transition-timing-function: var(--ease);
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+/* Roles semánticos: día por defecto, noche solo donde se declare
+   (revelación del match, /admin, carteles). No es prefers-color-scheme.
+   `.dia` re-declares day inside a night surface (the reveal's sheet). */
+:root,
+.dia {
+  --bg: var(--color-hueso);
+  --surface: var(--color-hueso-card);
+  --surface-2: var(--color-hueso-200);
+  --ink: var(--color-verde-900);
+  --ink-2: var(--color-verde-700);
+  --ink-3: var(--color-gris-600);
+  --line: var(--color-verde-200);
+  --accent: var(--color-mandarina-500);
+  --accent-text: var(--color-mandarina-700);
+  --accent-tint: var(--color-mandarina-100);
+  --live: var(--color-verde-500);
+  --btn-bg: var(--color-verde-900);
+  --btn-bg-hover: var(--color-verde-700);
+  --btn-fg: var(--color-hueso);
+  --shadow-sheet: 0 12px 32px -16px rgba(15, 46, 34, 0.35);
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-14px);
-  }
+.noche {
+  --bg: var(--color-verde-950);
+  --surface: var(--color-verde-800);
+  --surface-2: #1D4433;
+  --ink: var(--color-hueso);
+  --ink-2: var(--color-niebla);
+  --ink-3: #8FA397;
+  --line: #2B5340;
+  --accent: var(--color-mandarina-400);
+  --accent-text: var(--color-mandarina-400);
+  --accent-tint: #3A2A22;
+  --live: var(--color-verde-400);
+  --btn-bg: var(--color-hueso);
+  --btn-bg-hover: var(--color-hueso-200);
+  --btn-fg: var(--color-verde-900);
+  --shadow-sheet: 0 12px 32px -16px rgba(0, 0, 0, 0.6);
 }
 
-@keyframes gradient-pan {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+/* Role utilities (bg-page, text-ink, border-line, ...). `inline` makes each
+   utility read the role variable at the element, so a `.noche` ancestor swaps
+   the whole palette without a second set of classes. */
+@theme inline {
+  --color-page: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-tint: var(--accent-tint);
+  --color-live: var(--live);
+  --color-btn-bg: var(--btn-bg);
+  --color-btn-bg-hover: var(--btn-bg-hover);
+  --color-btn-fg: var(--btn-fg);
+  --shadow-elevated: var(--shadow-sheet);
+  --ease-brand: var(--ease);
 }
 
-@keyframes pulse-glow {
-  0%,
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.5);
-  }
-  50% {
-    opacity: 0.85;
-    box-shadow: 0 0 0 10px rgba(0, 229, 255, 0);
-  }
+/* Display: Bricolage condensada. Tailwind v4 no trae utilidad para wdth. */
+@utility display {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-variation-settings: "wdth" 75;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  text-wrap: balance;
 }
 
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+/* H1: Bricolage 700, wdth 85. Screen titles. */
+@utility heading {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-variation-settings: "wdth" 85;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  text-wrap: balance;
 }
 
-/* The product is dark-only for now; pin the document to the navy brand surface. */
+/* H2 / H3: Bricolage 650. Section and card titles; size set per use. */
+@utility subheading {
+  font-family: var(--font-sans);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* Las palabras de la gente: Newsreader itálica. Nunca en UI. */
+@utility human {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 450;
+  font-optical-sizing: auto;
+  line-height: 1.22;
+}
+
+/* Etiqueta: 12 px, mayúsculas, tracking +0.1em. The only uppercase in the UI. */
+@utility label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* The document is paper (día). Night is opted into per surface via .noche. */
 html,
 body {
-  background-color: var(--color-navy-deep);
-  color: var(--color-cream);
+  background-color: var(--bg);
+  color: var(--ink);
 }
 
 body {
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Keyboard focus on actions uses the accent, as in the brand guide. Inputs
+   show focus through their border instead (see components/ui). */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /* Custom range track styling reused by the dual-handle age slider (HU-03). */
@@ -108,10 +205,10 @@ input[type="range"].brand-range::-webkit-slider-thumb {
   height: 22px;
   width: 22px;
   border-radius: 9999px;
-  background: var(--color-cyan);
-  border: 3px solid var(--color-navy-deep);
+  background: var(--ink);
+  border: 3px solid var(--surface);
   cursor: pointer;
-  box-shadow: 0 0 0 1px var(--color-cyan);
+  box-shadow: 0 0 0 1px var(--ink);
 }
 
 input[type="range"].brand-range::-moz-range-thumb {
@@ -119,7 +216,7 @@ input[type="range"].brand-range::-moz-range-thumb {
   height: 22px;
   width: 22px;
   border-radius: 9999px;
-  background: var(--color-cyan);
-  border: 3px solid var(--color-navy-deep);
+  background: var(--ink);
+  border: 3px solid var(--surface);
   cursor: pointer;
 }

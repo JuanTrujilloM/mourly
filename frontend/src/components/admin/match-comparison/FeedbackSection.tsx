@@ -1,7 +1,7 @@
 import { Badge } from '@/components/admin/StatusBadge';
 import { formatCOP } from '@/lib/utils/format';
 import type { AdminMatchFeedback } from '@/types/admin';
-import { Section } from './primitives';
+import { Section, Stars } from './primitives';
 
 export function FeedbackSection({
   feedback,
@@ -16,26 +16,23 @@ export function FeedbackSection({
     <Section title="Feedback (HU-10)">
       <div className="space-y-3">
         {feedback.map((entry) => (
-          <div key={entry.userName} className="rounded-xl bg-white/[0.03] p-3">
+          <div key={entry.userName} className="bg-surface-2 rounded-input p-3">
             <div className="flex items-center justify-between">
-              <span className="text-cream text-sm font-medium">
+              <span className="text-ink text-sm font-medium">
                 {entry.userName}
               </span>
               {entry.occurred ? (
-                <Badge label="Asistió" tone="green" />
+                <Badge label="Asistió" tone="live" />
               ) : (
-                <Badge label="No asistió" tone="blush" />
+                <Badge label="No asistió" tone="error" />
               )}
             </div>
             {entry.rating != null && (
-              <p className="text-gold mt-1 text-sm">
-                {'★'.repeat(entry.rating)}
-                <span className="text-white/15">
-                  {'★'.repeat(5 - entry.rating)}
-                </span>
+              <p className="mt-1 text-sm">
+                <Stars rating={entry.rating} />
               </p>
             )}
-            <p className="text-slate mt-1 text-xs">
+            <p className="text-ink-2 mt-1 text-xs">
               {entry.comments ?? entry.noShowReason ?? '—'}
               {entry.amountSpent != null && ` · ${formatCOP(entry.amountSpent)}`}
             </p>

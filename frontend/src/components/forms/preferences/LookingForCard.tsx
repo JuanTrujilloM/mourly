@@ -17,7 +17,7 @@ export function LookingForCard({
   const { errors } = form.formState;
 
   return (
-    <Card title="Tu match ideal" description="Cuéntanos a quién buscas.">
+    <Card title="Tu cita ideal" description="Contanos a quién buscás.">
       <div className="space-y-6">
         <Field label="¿Qué género te interesa?" error={errors.genderInterest?.message}>
           <Controller

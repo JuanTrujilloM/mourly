@@ -37,10 +37,11 @@ export default function AdminMatchesPage() {
           <button
             key={option.value}
             onClick={() => setFilter(option.value)}
-            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+            aria-pressed={filter === option.value}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition duration-(--dur-fast) ${
               filter === option.value
-                ? 'bg-cyan text-navy-deep'
-                : 'bg-white/5 text-slate hover:text-cream'
+                ? 'bg-ink text-page'
+                : 'bg-surface-2 text-ink-2 hover:text-ink'
             }`}
           >
             {option.label}

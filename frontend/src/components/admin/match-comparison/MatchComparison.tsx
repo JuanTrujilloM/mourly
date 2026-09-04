@@ -27,11 +27,11 @@ export function MatchComparison({ match }: { match: AdminMatchDetail }) {
             {match.venueOptions.map((option) => (
               <div
                 key={option.venueName}
-                className="flex items-center justify-between gap-3 rounded-xl bg-white/[0.03] px-3 py-2"
+                className="bg-surface-2 rounded-input flex items-center justify-between gap-3 px-3 py-2"
               >
                 <div>
-                  <span className="text-cream text-sm">{option.venueName}</span>
-                  <span className="text-slate ml-2 text-xs">{option.type}</span>
+                  <span className="text-ink text-sm">{option.venueName}</span>
+                  <span className="text-ink-2 ml-2 text-xs">{option.type}</span>
                 </div>
                 <div className="flex gap-2">
                   <SelectPill label="A" on={option.userASelected} />
@@ -58,9 +58,9 @@ export function MatchComparison({ match }: { match: AdminMatchDetail }) {
 
       {match.date && (
         <Section title="Cita confirmada (HU-08)">
-          <p className="text-cream text-sm">{match.date.venueName}</p>
-          <p className="text-slate mt-0.5 text-xs">{match.date.address}</p>
-          <p className="text-slate mt-1 text-xs">
+          <p className="text-ink text-sm">{match.date.venueName}</p>
+          <p className="text-ink-2 mt-0.5 text-xs">{match.date.address}</p>
+          <p className="text-ink-2 mt-1 text-xs">
             {formatDate(match.date.scheduledAt)} · {match.date.status}
           </p>
         </Section>

@@ -23,7 +23,7 @@ export function useSlotSubmission(token: string) {
 
   const onSubmit = async () => {
     if (selected.size === 0) {
-      setFormError('Selecciona al menos un horario disponible.');
+      setFormError('Marcá al menos un horario disponible.');
       return;
     }
 

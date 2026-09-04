@@ -8,12 +8,12 @@ export function LogoutButton() {
 
   return (
     <Button
-      variant="secondary"
-      className="px-4 py-2"
+      variant="ghost"
+      size="sm"
       onClick={() => mutate()}
       disabled={isPending}
     >
-      {isPending ? 'Saliendo...' : 'Cerrar sesión'}
+      {isPending ? 'Saliendo...' : 'Salir'}
     </Button>
   );
 }

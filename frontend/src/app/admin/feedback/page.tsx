@@ -3,6 +3,7 @@
 import { PageHeader } from '@/components/admin/PageHeader';
 import { DataTable, type Column } from '@/components/admin/DataTable';
 import { Badge } from '@/components/admin/StatusBadge';
+import { Stars } from '@/components/admin/match-comparison/primitives';
 import { useAdminFeedback } from '@/hooks/useAdminData';
 import { formatCOP, formatDateTime } from '@/lib/utils/format';
 import type { AdminFeedback } from '@/types/admin';
@@ -13,14 +14,14 @@ export default function AdminFeedbackPage() {
   const columns: Column<AdminFeedback>[] = [
     {
       header: 'Estudiante',
-      cell: (fb) => <span className="text-cream font-medium">{fb.userName}</span>,
+      cell: (fb) => <span className="text-ink font-medium">{fb.userName}</span>,
     },
     {
       header: 'Cita',
       cell: (fb) => (
         <div>
-          <span className="text-cream">{fb.venueName}</span>
-          <p className="text-slate mt-0.5 text-xs">
+          <span className="text-ink">{fb.venueName}</span>
+          <p className="text-ink-2 mt-0.5 text-xs">
             {formatDateTime(fb.scheduledAt)}
           </p>
         </div>
@@ -30,28 +31,25 @@ export default function AdminFeedbackPage() {
       header: '¿Ocurrió?',
       cell: (fb) =>
         fb.occurred ? (
-          <Badge label="Sí" tone="green" />
+          <Badge label="Sí" tone="live" />
         ) : (
-          <Badge label="No asistió" tone="blush" />
+          <Badge label="No asistió" tone="error" />
         ),
     },
     {
       header: 'Rating',
       cell: (fb) =>
         fb.rating != null ? (
-          <span className="text-gold" aria-label={`${fb.rating} de 5`}>
-            {'★'.repeat(fb.rating)}
-            <span className="text-white/15">{'★'.repeat(5 - fb.rating)}</span>
-          </span>
+          <Stars rating={fb.rating} />
         ) : (
-          <span className="text-slate">—</span>
+          <span className="text-ink-3">—</span>
         ),
     },
     {
       header: 'Gasto',
       className: 'text-right',
       cell: (fb) => (
-        <span className="text-cream">
+        <span className="text-ink tabular-nums">
           {fb.amountSpent != null ? formatCOP(fb.amountSpent) : '—'}
         </span>
       ),
@@ -59,7 +57,7 @@ export default function AdminFeedbackPage() {
     {
       header: 'Comentario',
       cell: (fb) => (
-        <span className="text-slate block max-w-xs truncate text-xs">
+        <span className="text-ink-2 block max-w-xs truncate text-xs">
           {fb.comments ?? fb.noShowReason ?? '—'}
         </span>
       ),
@@ -70,7 +68,7 @@ export default function AdminFeedbackPage() {
     <>
       <PageHeader
         title="Feedback"
-        description="Respuestas post-cita: asistencia, calificación y gasto real (HU-10)."
+        description="Respuestas después de la cita: asistencia, calificación y gasto real (HU-10)."
       />
       <DataTable
         columns={columns}
@@ -78,7 +76,7 @@ export default function AdminFeedbackPage() {
         rowKey={(fb) => fb.id}
         isLoading={isLoading}
         isError={isError}
-        emptyMessage="Aún no hay feedback de citas."
+        emptyMessage="Todavía no hay feedback de citas."
       />
     </>
   );

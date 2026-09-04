@@ -17,17 +17,17 @@ export function AboutYouCard({ form }: { form: UseFormReturn<ProfileValues> }) {
   const bioLength = watch('biography')?.length ?? 0;
 
   return (
-    <Card title="Sobre ti" description="Deja que tu match te conozca.">
+    <Card title="Sobre vos" description="Dejá que tu cita te conozca.">
       <Field label="Biografía" htmlFor="biography" error={errors.biography?.message}>
         <Textarea
           id="biography"
           rows={3}
           maxLength={maxBioLength}
-          placeholder="Apasionado por el café de especialidad y los planes al aire libre."
+          placeholder="Me gusta el café de especialidad y los planes al aire libre."
           hasError={!!errors.biography}
           {...register('biography')}
         />
-        <p className="text-slate text-right text-xs">
+        <p className="text-ink-3 text-right text-xs tabular-nums">
           {bioLength}/{maxBioLength}
         </p>
       </Field>

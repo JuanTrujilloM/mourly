@@ -2,10 +2,10 @@ import Link from 'next/link';
 
 export function MissingEmailNotice() {
   return (
-    <p className="text-slate text-sm">
+    <p className="text-ink-2 text-sm">
       No encontramos tu correo.{' '}
-      <Link href="/register" className="text-cyan underline">
-        Vuelve a registrarte
+      <Link href="/register" className="text-accent-text underline">
+        Volvé a registrarte
       </Link>
       .
     </p>

@@ -21,16 +21,16 @@ export function RangeSlider({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <span className="text-slate text-sm">Rango de edad</span>
-        <span className="text-cyan text-sm font-semibold">
+        <span className="text-ink-2 text-sm">Rango de edad</span>
+        <span className="text-ink text-sm font-semibold tabular-nums">
           {value.min} – {value.max} años
         </span>
       </div>
 
       <div className="relative h-6">
-        <div className="absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full bg-white/10" />
+        <div className="bg-line absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full" />
         <div
-          className="bg-cyan absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full"
+          className="bg-ink absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full"
           style={{
             left: `${toPercent(value.min)}%`,
             right: `${100 - toPercent(value.max)}%`,

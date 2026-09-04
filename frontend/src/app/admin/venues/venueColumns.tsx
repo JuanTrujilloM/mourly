@@ -14,17 +14,17 @@ export function venueColumns(
     {
       header: 'Lugar',
       cell: (venue) => (
-        <span className="text-cream font-medium">{venue.name}</span>
+        <span className="text-ink font-medium">{venue.name}</span>
       ),
     },
     {
       header: 'Tipo',
-      cell: (venue) => <span className="text-cream">{venue.type}</span>,
+      cell: (venue) => <span className="text-ink">{venue.type}</span>,
     },
     {
       header: 'Dirección',
       cell: (venue) => (
-        <span className="text-slate block max-w-[200px] truncate text-xs">
+        <span className="text-ink-2 block max-w-[200px] truncate text-xs">
           {venue.address}
         </span>
       ),
@@ -33,7 +33,7 @@ export function venueColumns(
       header: 'Gasto prom.',
       className: 'text-right',
       cell: (venue) => (
-        <span className="text-cream">
+        <span className="text-ink tabular-nums">
           {formatCOP(venue.averageSpentPerPerson)}
         </span>
       ),
@@ -42,7 +42,7 @@ export function venueColumns(
       header: 'Comisión',
       className: 'text-right',
       cell: (venue) => (
-        <span className="text-cream">
+        <span className="text-ink tabular-nums">
           {Math.round(venue.commissionRate * 100)}%
         </span>
       ),
@@ -50,7 +50,7 @@ export function venueColumns(
     {
       header: 'Etiquetas',
       cell: (venue) => (
-        <span className="text-slate/80 block max-w-[12rem] truncate text-xs">
+        <span className="text-ink-2 block max-w-[12rem] truncate text-xs">
           {venue.tags.length ? venue.tags.join(' · ') : '—'}
         </span>
       ),
@@ -67,7 +67,7 @@ export function venueColumns(
           />
           <button
             onClick={() => onEdit(venue)}
-            className="text-cyan hover:text-cyan/80 text-xs font-medium whitespace-nowrap transition"
+            className="text-ink text-xs font-medium whitespace-nowrap underline underline-offset-2 transition"
           >
             Editar
           </button>

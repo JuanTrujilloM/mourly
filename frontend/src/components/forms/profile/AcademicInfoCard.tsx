@@ -20,7 +20,7 @@ export function AcademicInfoCard({
   const { errors } = formState;
 
   return (
-    <Card title="Información académica" description="Tu vida universitaria.">
+    <Card title="Información académica" description="Tu vida en la universidad.">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Universidad">
           <Input value={university} readOnly disabled />
@@ -47,7 +47,7 @@ export function AcademicInfoCard({
             {...register('semester')}
           >
             <option value="" disabled>
-              Selecciona...
+              Elegí...
             </option>
             {semesters.map((option) => (
               <option key={option} value={option}>

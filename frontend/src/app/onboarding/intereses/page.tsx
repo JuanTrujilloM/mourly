@@ -12,8 +12,8 @@ export default function InterestsOnboardingPage() {
           step={2}
           total={2}
           stepLabel="Intereses y preferencias"
-          title="¿Qué buscas?"
-          subtitle="La IA usará esto para encontrar a tu match ideal."
+          title="¿Qué buscás?"
+          subtitle="Con esto elegimos a quién presentarte."
         >
           <PreferencesForm user={user} />
         </OnboardingShell>

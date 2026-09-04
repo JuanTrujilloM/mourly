@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export function getApiErrorMessage(
   error: unknown,
-  fallback = 'Algo salió mal. Intenta de nuevo.',
+  fallback = 'Algo salió mal. Intentá de nuevo.',
 ): string {
   if (axios.isAxiosError(error)) {
     const message = error.response?.data?.message;

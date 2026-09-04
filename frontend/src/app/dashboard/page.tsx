@@ -1,12 +1,12 @@
 'use client';
 
-import Link from 'next/link';
 import { AuthGate } from '@/components/shared/AuthGate';
 import { Logo } from '@/components/shared/Logo';
 import { LogoutButton } from '@/components/shared/LogoutButton';
-import { Button } from '@/components/ui/Button';
+import { ButtonLink } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { AvailabilityToggle } from '@/components/dashboard/AvailabilityToggle';
+import { MatchSection } from '@/components/dashboard/MatchSection';
 import { useMyProfile } from '@/hooks/useMyProfile';
 import {
   AVAILABILITY_STATUS,
@@ -32,27 +32,15 @@ function DashboardContent({ user }: { user: AuthUser }) {
         <LogoutButton />
       </div>
 
-      <div className="border-white/10 bg-white/[0.04] mt-8 rounded-3xl border p-7 text-center">
-        <p className="text-4xl">🎉</p>
-        <h1 className="text-cream mt-4 text-2xl font-bold">
-          ¡Tu perfil está listo!
-        </h1>
-        <p className="text-slate mt-2 text-sm">
-          Bienvenido,{' '}
-          <span className="text-cream font-medium">{user.email}</span>.
-        </p>
-        <span className="border-flame/30 bg-flame/10 text-flame mt-6 inline-block rounded-full border px-4 py-1.5 text-xs font-medium">
-          Próximamente: tu match semanal
-        </span>
-      </div>
+      <MatchSection />
 
       <div className="mt-6">
         <Card
           title="Tu disponibilidad"
-          description="Pausa cuando encuentres a alguien o quieras un descanso."
+          description="Pausá cuando encuentres a alguien o quieras un descanso."
         >
           {isLoading ? (
-            <p className="text-slate animate-pulse text-sm">Cargando...</p>
+            <p className="text-ink-3 text-sm">Cargando...</p>
           ) : (
             <AvailabilityToggle status={status} />
           )}
@@ -61,23 +49,17 @@ function DashboardContent({ user }: { user: AuthUser }) {
 
       <div className="mt-6 flex flex-col items-center gap-3">
         <div className="flex gap-3">
-          <Link href="/perfil">
-            <Button variant="secondary" className="px-5 py-2">
-              👤 Perfil
-            </Button>
-          </Link>
-          <Link href="/intereses">
-            <Button variant="secondary" className="px-5 py-2">
-              ✨ Intereses
-            </Button>
-          </Link>
+          <ButtonLink href="/perfil" variant="secondary" size="sm">
+            Perfil
+          </ButtonLink>
+          <ButtonLink href="/intereses" variant="secondary" size="sm">
+            Intereses
+          </ButtonLink>
         </div>
         {user.isAdmin && (
-          <Link href="/admin/venues">
-            <Button variant="ghost" className="px-5 py-2">
-              Administrar lugares
-            </Button>
-          </Link>
+          <ButtonLink href="/admin" variant="ghost" size="sm">
+            Panel de administración
+          </ButtonLink>
         )}
       </div>
     </>

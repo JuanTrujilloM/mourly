@@ -1,13 +1,13 @@
 import { forwardRef, type SelectHTMLAttributes } from 'react';
 
 const base =
-  'w-full rounded-xl border bg-navy-soft px-4 py-2.5 text-sm text-cream outline-none transition focus:border-cyan focus:ring-2 focus:ring-cyan/30';
+  'bg-surface text-ink h-12 w-full rounded-input border px-3.5 text-[15px] transition outline-none focus:border-ink focus:ring-1 focus:ring-ink';
 
 export const Select = forwardRef<
   HTMLSelectElement,
   SelectHTMLAttributes<HTMLSelectElement> & { hasError?: boolean }
 >(function Select({ className = '', hasError = false, children, ...props }, ref) {
-  const borderColor = hasError ? 'border-blush' : 'border-white/10';
+  const borderColor = hasError ? 'border-error' : 'border-line';
   return (
     <select
       ref={ref}

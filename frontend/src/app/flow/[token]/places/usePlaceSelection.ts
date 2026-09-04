@@ -25,7 +25,7 @@ export function usePlaceSelection(token: string, data: PlacesStep) {
   const toggle = (id: string) => {
     const isSelected = selectedIds.includes(id);
     if (!isSelected && selectedIds.length >= data.minSelection) {
-      setFormError(`Solo puedes elegir ${data.minSelection} lugares.`);
+      setFormError(`Solo podés elegir ${data.minSelection} lugares.`);
       return;
     }
     setChosen(
@@ -38,7 +38,7 @@ export function usePlaceSelection(token: string, data: PlacesStep) {
 
   const onConfirm = async () => {
     if (selectedIds.length !== data.minSelection) {
-      setFormError(`Selecciona ${data.minSelection} lugares.`);
+      setFormError(`Elegí ${data.minSelection} lugares.`);
       return;
     }
     try {
