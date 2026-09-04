@@ -14,8 +14,8 @@ export default function AdminReportsPage() {
       header: 'Reporta',
       cell: (report) => (
         <div>
-          <span className="text-cream font-medium">{report.reporter.name}</span>
-          <p className="text-slate mt-0.5 text-xs">
+          <span className="text-ink font-medium">{report.reporter.name}</span>
+          <p className="text-ink-2 mt-0.5 text-xs">
             {report.reporter.university}
           </p>
         </div>
@@ -25,8 +25,8 @@ export default function AdminReportsPage() {
       header: 'Reportado',
       cell: (report) => (
         <div>
-          <span className="text-cream font-medium">{report.reported.name}</span>
-          <p className="text-slate mt-0.5 text-xs">
+          <span className="text-ink font-medium">{report.reported.name}</span>
+          <p className="text-ink-2 mt-0.5 text-xs">
             {report.reported.university}
           </p>
         </div>
@@ -36,7 +36,7 @@ export default function AdminReportsPage() {
       header: 'Fecha',
       className: 'text-right',
       cell: (report) => (
-        <span className="text-slate text-xs">
+        <span className="text-ink-2 text-xs">
           {formatDate(report.createdAt)}
         </span>
       ),

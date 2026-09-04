@@ -1,15 +1,14 @@
 import { FlowState } from './FlowState';
 
 export function FlowLoading({ label }: { label: string }) {
-  return <p className="text-slate animate-pulse text-sm">{label}</p>;
+  return <p className="text-ink-3 text-sm">{label}</p>;
 }
 
 export function FlowLinkError() {
   return (
     <FlowState
-      emoji="🔗"
-      title="Este enlace ya no es válido"
-      description="El enlace expiró o ya fue usado. Espera tu próxima notificación de WhatsApp."
+      title="Este enlace ya no sirve"
+      description="Expiró o ya se usó. Esperá la próxima notificación de WhatsApp."
     />
   );
 }
@@ -17,9 +16,8 @@ export function FlowLinkError() {
 export function FlowStepCompleted() {
   return (
     <FlowState
-      emoji="✅"
-      title="¡Listo!"
-      description="Ya completaste este paso. Te avisaremos por WhatsApp cuando tu match también termine, para confirmar la cita."
+      title="Listo."
+      description="Ya completaste este paso. Te avisamos por WhatsApp cuando tu match también termine, para confirmar la cita."
     />
   );
 }

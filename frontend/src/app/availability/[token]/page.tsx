@@ -17,9 +17,12 @@ import { useSlotSubmission } from './useSlotSubmission';
 
 export default function AvailabilityPage() {
   const { token } = useParams<{ token: string }>();
+  // The shell's scroller has no bottom padding (see PhoneShell); the page adds its own.
   return (
     <PhoneShell>
-      <AvailabilityContent token={token} />
+      <div className="pb-10">
+        <AvailabilityContent token={token} />
+      </div>
     </PhoneShell>
   );
 }
@@ -54,15 +57,15 @@ function SlotPicker({
 
   return (
     <>
-      <div className="mb-6 flex flex-col items-center gap-4 text-center">
+      <div className="mb-6 flex flex-col items-center gap-5 text-center">
         <Logo />
         <div>
-          <h1 className="text-cream text-2xl font-bold">¿Cuándo puedes?</h1>
-          <p className="text-slate mt-1 text-sm">
+          <h1 className="heading text-ink text-4xl">¿Cuándo podés?</h1>
+          <p className="text-ink-2 mt-2 text-sm">
             {data.partnerName
-              ? `Marca tus horarios disponibles para tu cita con ${data.partnerName}.`
-              : 'Marca tus horarios disponibles para tu cita.'}{' '}
-            Cada horario dura 1 hora (12pm–7pm).
+              ? `Marcá tus horarios libres para tu cita con ${data.partnerName}.`
+              : 'Marcá tus horarios libres para tu cita.'}{' '}
+            Cada horario dura una hora, de 12:00 pm a 7:00 pm.
           </p>
         </div>
       </div>
@@ -74,7 +77,7 @@ function SlotPicker({
         onToggle={toggle}
       />
 
-      {formError && <p className="text-blush mt-4 text-sm">{formError}</p>}
+      {formError && <p className="text-error mt-4 text-sm">{formError}</p>}
 
       <div className="mt-6">
         <Button className="w-full" disabled={isPending} onClick={onSubmit}>

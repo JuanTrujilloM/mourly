@@ -5,20 +5,20 @@ import { GuestGate } from '@/components/shared/GuestGate';
 export default function RegisterPage() {
   return (
     <GuestGate>
-      <div className="space-y-1">
-        <h1 className="text-cream text-xl font-bold">Crea tu cuenta</h1>
-        <p className="text-slate text-sm">
-          Regístrate con tu correo universitario para verificar que eres
+      <div className="space-y-2">
+        <h1 className="heading text-ink text-[28px]">Creá tu cuenta</h1>
+        <p className="text-ink-2 text-sm">
+          Registrate con tu correo institucional para verificar que sos
           estudiante.
         </p>
       </div>
 
       <RegisterForm />
 
-      <p className="text-slate text-center text-xs">
-        ¿Ya tienes cuenta?{' '}
-        <Link href="/login" className="text-cyan underline">
-          Inicia sesión
+      <p className="text-ink-2 text-center text-xs">
+        ¿Ya tenés cuenta?{' '}
+        <Link href="/login" className="text-accent-text underline">
+          Entrá
         </Link>
       </p>
     </GuestGate>

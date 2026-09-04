@@ -17,13 +17,15 @@ export function Field({
     <div className="space-y-1.5">
       <label
         htmlFor={htmlFor}
-        className="text-cream flex items-center gap-2 text-sm font-medium"
+        className="text-ink-2 flex items-center gap-2 text-[12.5px] font-semibold"
       >
         {label}
-        {optional && <span className="text-slate text-xs">(opcional)</span>}
+        {optional && (
+          <span className="text-ink-3 text-xs font-normal">(opcional)</span>
+        )}
       </label>
       {children}
-      {error && <p className="text-blush text-xs">{error}</p>}
+      {error && <p className="text-error text-xs">{error}</p>}
     </div>
   );
 }

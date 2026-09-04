@@ -11,9 +11,9 @@ export default function ProfileOnboardingPage() {
         <OnboardingShell
           step={1}
           total={2}
-          stepLabel="Perfil personal"
-          title="Cuéntanos sobre ti"
-          subtitle="Esto es lo que tu match verá primero."
+          stepLabel="Perfil"
+          title="Contanos de vos"
+          subtitle="Esto es lo primero que va a ver tu cita."
         >
           <ProfileForm user={user} />
         </OnboardingShell>

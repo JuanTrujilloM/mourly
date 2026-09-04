@@ -10,35 +10,34 @@ export function UserCard({
   shared: Set<string>;
 }) {
   return (
-    <div className="border-white/10 bg-navy-card/60 rounded-2xl border p-5">
+    <div className="border-line bg-surface rounded-card border p-5">
       <div className="flex items-center gap-4">
         {user.primaryPhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={user.primaryPhoto}
             alt={user.name}
             className="h-16 w-16 rounded-full object-cover"
           />
         ) : (
-          <div className="bg-navy-soft flex h-16 w-16 items-center justify-center rounded-full text-xl">
+          <div className="bg-surface-2 text-ink flex h-16 w-16 items-center justify-center rounded-full text-xl">
             {user.name.charAt(0)}
           </div>
         )}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="text-cream truncate text-lg font-semibold">
-              {user.name}
-            </h3>
+            <h3 className="subheading text-ink truncate text-lg">{user.name}</h3>
             {user.age != null && (
-              <span className="text-slate text-sm">{user.age}</span>
+              <span className="text-ink-2 text-sm">{user.age}</span>
             )}
           </div>
-          <p className="text-slate mt-0.5 truncate text-xs">{user.email}</p>
+          <p className="text-ink-2 mt-0.5 truncate text-xs">{user.email}</p>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
             {user.status && <UserStatusBadge status={user.status} />}
             {user.isVerified ? (
-              <Badge label="Verificado" tone="green" />
+              <Badge label="Verificado" tone="live" />
             ) : (
-              <Badge label="Sin verificar" tone="gold" />
+              <Badge label="Sin verificar" tone="muted" />
             )}
           </div>
         </div>
@@ -56,13 +55,11 @@ export function UserCard({
       </dl>
 
       {user.biography && (
-        <p className="text-slate mt-3 text-sm italic">“{user.biography}”</p>
+        <p className="human text-ink-2 mt-3 text-[18px]">“{user.biography}”</p>
       )}
 
       <div className="mt-4">
-        <p className="text-slate mb-2 text-xs font-semibold tracking-wide uppercase">
-          Intereses
-        </p>
+        <p className="label text-ink-3 mb-2">Intereses</p>
         <div className="flex flex-wrap gap-1.5">
           {user.hobbies.map((hobby) => {
             const isShared = shared.has(hobby.toLowerCase());
@@ -70,9 +67,7 @@ export function UserCard({
               <span
                 key={hobby}
                 className={`rounded-full px-2.5 py-0.5 text-xs ${
-                  isShared
-                    ? 'bg-cyan/15 text-cyan font-medium'
-                    : 'bg-white/5 text-slate'
+                  isShared ? 'bg-ink text-page font-medium' : 'bg-surface-2 text-ink-2'
                 }`}
               >
                 {hobby}

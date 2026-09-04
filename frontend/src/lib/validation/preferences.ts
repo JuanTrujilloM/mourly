@@ -9,13 +9,13 @@ export const preferencesSchema = z.object({
   hobbies: z.array(z.string()),
   relationshipType: z
     .string()
-    .min(1, 'Selecciona qué tipo de relación buscas.'),
-  orientation: z.string().min(1, 'Selecciona tu orientación.'),
-  genderInterest: z.string().min(1, 'Selecciona qué género te interesa.'),
+    .min(1, 'Elegí qué tipo de relación buscás.'),
+  orientation: z.string().min(1, 'Elegí tu orientación.'),
+  genderInterest: z.string().min(1, 'Elegí qué género te interesa.'),
   sameUniversity: z.boolean({
-    message: 'Indica tu preferencia de universidad.',
+    message: 'Indicá tu preferencia de universidad.',
   }),
-  heightRange: z.string().min(1, 'Selecciona tu preferencia de estatura.'),
+  heightRange: z.string().min(1, 'Elegí tu preferencia de estatura.'),
   energyVibe: z.array(z.string()),
 });
 

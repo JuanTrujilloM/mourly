@@ -27,8 +27,8 @@ export function Compatibility({ match }: { match: AdminMatchDetail }) {
   return (
     <Section title="Compatibilidad">
       <div className="mb-4 flex items-center gap-3">
-        <span className="text-slate text-sm">Score del algoritmo:</span>
-        <span className="text-cyan text-2xl font-bold">
+        <span className="text-ink-2 text-sm">Score del algoritmo:</span>
+        <span className="text-ink text-2xl font-bold tabular-nums">
           {match.compatibilityScore.toFixed(1)}
         </span>
       </div>
@@ -46,14 +46,12 @@ export function Compatibility({ match }: { match: AdminMatchDetail }) {
 
       {match.sharedHobbies.length > 0 && (
         <div className="mt-4">
-          <p className="text-slate mb-2 text-xs font-semibold tracking-wide uppercase">
-            Intereses compartidos
-          </p>
+          <p className="label text-ink-3 mb-2">Intereses compartidos</p>
           <div className="flex flex-wrap gap-1.5">
             {match.sharedHobbies.map((hobby) => (
               <span
                 key={hobby}
-                className="bg-cyan/15 text-cyan rounded-full px-2.5 py-0.5 text-xs font-medium"
+                className="bg-ink text-page rounded-full px-2.5 py-0.5 text-xs font-medium"
               >
                 {hobby}
               </span>

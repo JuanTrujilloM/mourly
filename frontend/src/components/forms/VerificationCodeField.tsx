@@ -18,10 +18,12 @@ export function VerificationCodeField({
         autoComplete="one-time-code"
         maxLength={6}
         placeholder="••••••"
-        className="text-center text-lg tracking-[0.4em]"
+        aria-label="Código de verificación"
+        className="text-center text-lg tracking-[0.4em] tabular-nums"
+        hasError={Boolean(error)}
         {...registration}
       />
-      {error && <p className="text-blush text-xs">{error.message}</p>}
+      {error && <p className="text-error text-xs">{error.message}</p>}
     </div>
   );
 }

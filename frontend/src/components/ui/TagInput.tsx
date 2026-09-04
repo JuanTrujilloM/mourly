@@ -6,7 +6,7 @@ export function TagInput({
   value,
   onChange,
   suggestions = [],
-  placeholder = 'Escribe y presiona Enter',
+  placeholder = 'Escribí y presioná Enter',
   hasError = false,
 }: {
   value: string[];
@@ -44,21 +44,21 @@ export function TagInput({
   return (
     <div className="space-y-3">
       <div
-        className={`bg-navy-soft flex flex-wrap items-center gap-2 rounded-xl border px-3 py-2 ${
-          hasError ? 'border-blush' : 'border-white/10'
+        className={`bg-surface rounded-input flex min-h-12 flex-wrap items-center gap-2 border px-3 py-2 ${
+          hasError ? 'border-error' : 'border-line'
         }`}
       >
         {value.map((tag) => (
           <span
             key={tag}
-            className="bg-cyan/15 text-cyan flex items-center gap-1.5 rounded-full px-3 py-1 text-sm"
+            className="bg-ink text-page flex h-7 items-center gap-1.5 rounded-full px-3 text-[13.5px] font-[550]"
           >
             {tag}
             <button
               type="button"
               onClick={() => removeTag(tag)}
               aria-label={`Quitar ${tag}`}
-              className="hover:text-cream"
+              className="hover:opacity-70"
             >
               ×
             </button>
@@ -69,7 +69,7 @@ export function TagInput({
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={onKeyDown}
           placeholder={value.length ? '' : placeholder}
-          className="text-cream placeholder:text-slate min-w-[8rem] flex-1 bg-transparent py-1 text-sm outline-none"
+          className="text-ink placeholder:text-gris-500 min-w-[8rem] flex-1 bg-transparent py-1 text-[15px] outline-none"
         />
       </div>
 
@@ -80,7 +80,7 @@ export function TagInput({
               key={suggestion}
               type="button"
               onClick={() => addTag(suggestion)}
-              className="border-white/15 text-slate hover:border-cyan/40 hover:text-cream rounded-full border px-3 py-1 text-xs transition"
+              className="border-line text-ink-2 hover:border-ink hover:text-ink rounded-full border px-3 py-1 text-xs transition duration-(--dur-fast)"
             >
               + {suggestion}
             </button>

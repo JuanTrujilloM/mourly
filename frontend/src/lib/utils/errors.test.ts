@@ -29,19 +29,19 @@ describe('getApiErrorMessage', () => {
 
   it('falls back when the message list is empty', () => {
     expect(getApiErrorMessage(axiosErrorWith({ message: [] }))).toBe(
-      'Algo salió mal. Intenta de nuevo.',
+      'Algo salió mal. Intentá de nuevo.',
     );
   });
 
   it('falls back when the response carries no message', () => {
     expect(getApiErrorMessage(axiosErrorWith({}))).toBe(
-      'Algo salió mal. Intenta de nuevo.',
+      'Algo salió mal. Intentá de nuevo.',
     );
   });
 
   it('falls back for a non axios error', () => {
     expect(getApiErrorMessage(new Error('boom'))).toBe(
-      'Algo salió mal. Intenta de nuevo.',
+      'Algo salió mal. Intentá de nuevo.',
     );
   });
 

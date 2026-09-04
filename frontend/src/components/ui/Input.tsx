@@ -1,13 +1,14 @@
 import { forwardRef, type InputHTMLAttributes } from 'react';
 
+// Focus is shown on the border (ink), not with the accent outline actions use.
 const base =
-  'w-full rounded-xl border bg-navy-soft px-4 py-2.5 text-sm text-cream placeholder:text-slate outline-none transition focus:border-cyan focus:ring-2 focus:ring-cyan/30';
+  'bg-surface text-ink placeholder:text-gris-500 disabled:bg-surface-2 disabled:text-ink-2 h-12 w-full rounded-input border px-3.5 text-[15px] transition outline-none focus:border-ink focus:ring-1 focus:ring-ink';
 
 export const Input = forwardRef<
   HTMLInputElement,
   InputHTMLAttributes<HTMLInputElement> & { hasError?: boolean }
 >(function Input({ className = '', hasError = false, ...props }, ref) {
-  const borderColor = hasError ? 'border-blush' : 'border-white/10';
+  const borderColor = hasError ? 'border-error' : 'border-line';
   return (
     <input ref={ref} className={`${base} ${borderColor} ${className}`} {...props} />
   );

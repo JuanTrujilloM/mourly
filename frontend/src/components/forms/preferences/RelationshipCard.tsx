@@ -16,7 +16,7 @@ export function RelationshipCard({
   const { relationshipTypes, orientations } = useCatalog();
 
   return (
-    <Card title="Qué buscas" description="Define el tipo de conexión que quieres.">
+    <Card title="Qué buscás" description="Definí el tipo de relación que querés.">
       <div className="space-y-6">
         <Field
           label="Tipo de relación"

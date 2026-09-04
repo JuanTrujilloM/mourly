@@ -21,27 +21,23 @@ export function PreferencesForm({
   const rootError = form.formState.errors.root?.message;
 
   if (edit && isLoadingPreferences) {
-    return (
-      <p className="text-slate animate-pulse text-sm">
-        Cargando tus intereses...
-      </p>
-    );
+    return <p className="text-ink-3 text-sm">Cargando tus intereses...</p>;
   }
 
-  const label = edit ? 'Guardar cambios' : 'Listo, quiero mi match ✓';
+  const label = edit ? 'Guardar cambios' : 'Listo, quiero mi cita';
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 pb-28 sm:pb-6" noValidate>
+    <form onSubmit={onSubmit} className="space-y-6" noValidate>
       <AgeRangeCard form={form} bounds={bounds} />
       <HobbiesCard form={form} />
       <RelationshipCard form={form} />
       <LookingForCard form={form} />
       <VibeCard form={form} />
 
-      {rootError && <p className="text-blush text-sm">{rootError}</p>}
+      {rootError && <p className="text-error text-sm">{rootError}</p>}
 
-      <div className="border-white/10 bg-navy-deep/90 fixed inset-x-0 bottom-0 border-t p-4 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
-        <div className="mx-auto flex max-w-2xl justify-end sm:max-w-none">
+      <div className="bg-page border-line sticky bottom-0 -mx-5 border-t px-5 py-4 sm:-mx-7 sm:px-7">
+        <div className="flex justify-end">
           <Button type="submit" className="w-full sm:w-auto" disabled={isPending}>
             {isPending ? 'Guardando...' : label}
           </Button>

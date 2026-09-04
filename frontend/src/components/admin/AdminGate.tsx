@@ -20,8 +20,8 @@ export function AdminGate({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-slate animate-pulse text-sm">Cargando panel...</p>
+      <div className="noche bg-page flex min-h-screen items-center justify-center">
+        <p className="text-ink-3 text-sm">Cargando panel...</p>
       </div>
     );
   }

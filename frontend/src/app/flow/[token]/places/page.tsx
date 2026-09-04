@@ -17,9 +17,12 @@ import { usePlaceSelection } from './usePlaceSelection';
 
 export default function TokenPlacesPage() {
   const { token } = useParams<{ token: string }>();
+  // The shell's scroller has no bottom padding (see PhoneShell); the page adds its own.
   return (
     <PhoneShell>
-      <PlacesContent token={token} />
+      <div className="pb-10">
+        <PlacesContent token={token} />
+      </div>
     </PhoneShell>
   );
 }
@@ -52,15 +55,15 @@ function PlacesPicker({
 
   return (
     <>
-      <div className="mb-6 flex flex-col items-center gap-4 text-center">
+      <div className="mb-6 flex flex-col items-center gap-5 text-center">
         <Logo />
         <div>
-          <h1 className="text-cream text-2xl font-bold">Elige sus lugares</h1>
-          <p className="text-slate mt-1 text-sm">
+          <h1 className="heading text-ink text-4xl">Elegí los lugares</h1>
+          <p className="text-ink-2 mt-2 text-sm">
             {data.partnerName
-              ? `Opciones que combinan con lo que a ti y a ${data.partnerName} les gusta.`
-              : 'Opciones alineadas con sus intereses.'}{' '}
-            Elige {data.minSelection} de las {data.venues.length}.
+              ? `Opciones que van con lo que a vos y a ${data.partnerName} les gusta.`
+              : 'Opciones que van con sus intereses.'}{' '}
+            Elegí {data.minSelection} de {data.venues.length}.
           </p>
         </div>
       </div>
@@ -76,7 +79,7 @@ function PlacesPicker({
         ))}
       </div>
 
-      {formError && <p className="text-blush mt-4 text-sm">{formError}</p>}
+      {formError && <p className="text-error mt-4 text-sm">{formError}</p>}
 
       <div className="mt-6">
         <Button className="w-full" disabled={isPending} onClick={onConfirm}>

@@ -21,7 +21,7 @@ export default function AdminUsersPage() {
     <>
       <PageHeader
         title="Usuarios"
-        description="Estudiantes registrados, su perfil y estado de matching."
+        description="Estudiantes registrados, su perfil y su estado de búsqueda."
       />
       <DataTable
         columns={columns}
@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
         rowKey={(user) => user.id}
         isLoading={isLoading}
         isError={isError}
-        emptyMessage="Aún no hay usuarios registrados."
+        emptyMessage="Todavía no hay usuarios registrados."
       />
     </>
   );

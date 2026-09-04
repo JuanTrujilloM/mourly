@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { PageHeader } from '@/components/admin/PageHeader';
 
-
 interface MetricSlot {
   label: string;
   hint: string;
@@ -23,12 +22,12 @@ export default function AdminOverviewPage() {
     <>
       <PageHeader
         title="Resumen de negocio"
-        description="Vista general de la operación. Las métricas se conectarán en una próxima iteración."
+        description="Vista general de la operación. Las métricas se conectan en una próxima iteración."
       />
 
-      <div className="mb-4 rounded-xl border border-gold/25 bg-gold/5 px-4 py-3 text-sm text-gold">
+      <div className="border-line bg-surface-2 text-ink-2 rounded-input mb-4 border px-4 py-3 text-sm">
         Plantilla: estas tarjetas son marcadores de posición. La lógica de
-        métricas se implementará después.
+        métricas se implementa después.
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -42,17 +41,17 @@ export default function AdminOverviewPage() {
         <ChartPlaceholder title="Usuarios por universidad" />
       </div>
 
-      <p className="text-slate mt-8 text-sm">
-        Mientras tanto, explora los datos reales en{' '}
-        <Link href="/admin/matches" className="text-cyan hover:underline">
+      <p className="text-ink-2 mt-8 text-sm">
+        Mientras tanto, explorá los datos reales en{' '}
+        <Link href="/admin/matches" className="text-ink underline">
           Matches
         </Link>
         ,{' '}
-        <Link href="/admin/usuarios" className="text-cyan hover:underline">
+        <Link href="/admin/usuarios" className="text-ink underline">
           Usuarios
         </Link>{' '}
         y{' '}
-        <Link href="/admin/venues" className="text-cyan hover:underline">
+        <Link href="/admin/venues" className="text-ink underline">
           Lugares
         </Link>
         .
@@ -63,20 +62,20 @@ export default function AdminOverviewPage() {
 
 function MetricCard({ metric }: { metric: MetricSlot }) {
   return (
-    <div className="border-white/10 bg-navy-card/60 rounded-2xl border p-5">
-      <p className="text-slate text-sm font-medium">{metric.label}</p>
-      <p className="text-cream/40 mt-2 text-3xl font-bold">—</p>
-      <p className="text-slate/70 mt-1 text-xs">{metric.hint}</p>
+    <div className="border-line bg-surface rounded-card border p-5">
+      <p className="text-ink-2 text-sm font-medium">{metric.label}</p>
+      <p className="text-ink-3 mt-2 text-3xl font-bold">—</p>
+      <p className="text-ink-3 mt-1 text-xs">{metric.hint}</p>
     </div>
   );
 }
 
 function ChartPlaceholder({ title }: { title: string }) {
   return (
-    <div className="border-white/10 bg-navy-card/60 rounded-2xl border p-5">
-      <p className="text-cream text-sm font-semibold">{title}</p>
-      <div className="mt-4 flex h-40 items-center justify-center rounded-xl border border-dashed border-white/10">
-        <span className="text-slate/60 text-xs">Gráfico pendiente</span>
+    <div className="border-line bg-surface rounded-card border p-5">
+      <p className="text-ink text-sm font-semibold">{title}</p>
+      <div className="border-line rounded-input mt-4 flex h-40 items-center justify-center border border-dashed">
+        <span className="text-ink-3 text-xs">Gráfico pendiente</span>
       </div>
     </div>
   );

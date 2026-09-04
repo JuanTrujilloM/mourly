@@ -9,6 +9,7 @@ import { getApiErrorMessage } from "@/lib/utils/errors";
 import type { Venue } from "@/types/venue";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { ErrorNote } from "@/components/admin/match-comparison/primitives";
 import { VenueDetailsFields } from "./VenueDetailsFields";
 import { VenueCommercialFields } from "./VenueCommercialFields";
 import { venueFormDefaults } from "./venue-form-defaults";
@@ -50,9 +51,7 @@ export function VenueForm({
         <VenueDetailsFields form={form} />
         <VenueCommercialFields form={form} />
 
-        {errors.root && (
-          <p className="text-blush text-sm">{errors.root.message}</p>
-        )}
+        {errors.root && <ErrorNote>{errors.root.message}</ErrorNote>}
 
         <div className="flex gap-3 pt-2">
           <Button type="submit" disabled={pending}>

@@ -20,7 +20,7 @@ export function HobbiesCard({
   return (
     <Card
       title="Hobbies"
-      description={`Agrega al menos ${minHobbies}. Escribe los tuyos o elige de la lista.`}
+      description={`Agregá al menos ${minHobbies}. Escribí los tuyos o elegí de la lista.`}
     >
       <Controller
         control={form.control}
@@ -34,7 +34,7 @@ export function HobbiesCard({
           />
         )}
       />
-      {error && <p className="text-blush mt-2 text-xs">{error}</p>}
+      {error && <p className="text-error mt-2 text-xs">{error}</p>}
     </Card>
   );
 }

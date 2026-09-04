@@ -12,10 +12,10 @@ export function Chip({
       type="button"
       aria-pressed={selected}
       onClick={onToggle}
-      className={`rounded-full border px-4 py-2 text-sm transition ${
+      className={`inline-flex h-8 items-center rounded-full border px-3 text-[13.5px] font-[550] transition duration-(--dur-fast) ${
         selected
-          ? 'border-cyan bg-cyan/15 text-cyan'
-          : 'border-white/15 text-slate hover:border-white/30 hover:text-cream'
+          ? 'border-ink bg-ink text-page'
+          : 'border-line bg-surface text-ink hover:border-ink-2'
       }`}
     >
       {label}

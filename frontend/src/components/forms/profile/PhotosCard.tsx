@@ -19,7 +19,7 @@ export function PhotosCard({ form }: { form: UseFormReturn<ProfileValues> }) {
   return (
     <Card
       title="Tus fotos"
-      description={`Agrega de 1 a ${maxPhotos} fotos. La primera es tu foto principal.`}
+      description={`Agregá de 1 a ${maxPhotos} fotos, sin filtros. La primera es la principal.`}
     >
       <Controller
         control={form.control}
@@ -56,7 +56,8 @@ export function PhotosCard({ form }: { form: UseFormReturn<ProfileValues> }) {
                   <button
                     type="button"
                     onClick={() => inputRef.current?.click()}
-                    className="border-white/15 text-slate hover:border-cyan/40 hover:text-cyan flex aspect-square items-center justify-center rounded-xl border border-dashed text-2xl transition"
+                    aria-label="Agregar foto"
+                    className="border-line text-ink-2 hover:border-ink hover:text-ink rounded-input flex aspect-square items-center justify-center border border-dashed text-2xl transition"
                   >
                     +
                   </button>
@@ -72,7 +73,7 @@ export function PhotosCard({ form }: { form: UseFormReturn<ProfileValues> }) {
                 onChange={addFiles}
               />
 
-              {error && <p className="text-blush text-xs">{error}</p>}
+              {error && <p className="text-error text-xs">{error}</p>}
             </div>
           );
         }}

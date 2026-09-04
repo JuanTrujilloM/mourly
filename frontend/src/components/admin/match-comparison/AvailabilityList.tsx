@@ -9,13 +9,13 @@ export function AvailabilityList({
 }) {
   return (
     <div>
-      <p className="text-slate mb-2 text-xs font-medium">{name}</p>
+      <p className="text-ink-2 mb-2 text-xs font-medium">{name}</p>
       {slots.length === 0 ? (
-        <p className="text-slate/60 text-xs">Sin franjas seleccionadas</p>
+        <p className="text-ink-3 text-xs">Sin franjas seleccionadas</p>
       ) : (
         <ul className="space-y-1">
           {slots.map((slot, index) => (
-            <li key={index} className="text-cream text-xs">
+            <li key={index} className="text-ink text-xs tabular-nums">
               {formatCalendarDate(slot.date)} · {slot.timeSlot}
             </li>
           ))}

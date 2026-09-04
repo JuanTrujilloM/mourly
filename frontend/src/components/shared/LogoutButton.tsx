@@ -3,17 +3,18 @@
 import { useLogout } from '@/hooks/useLogout';
 import { Button } from '@/components/ui/Button';
 
-export function LogoutButton() {
+export function LogoutButton({ className = '' }: { className?: string }) {
   const { mutate, isPending } = useLogout();
 
   return (
     <Button
-      variant="secondary"
-      className="px-4 py-2"
+      variant="ghost"
+      size="sm"
+      className={className}
       onClick={() => mutate()}
       disabled={isPending}
     >
-      {isPending ? 'Saliendo...' : 'Cerrar sesión'}
+      {isPending ? 'Saliendo...' : 'Salir'}
     </Button>
   );
 }
