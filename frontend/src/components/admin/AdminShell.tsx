@@ -7,30 +7,25 @@ import { Logo } from '@/components/shared/Logo';
 import { LogoutButton } from '@/components/shared/LogoutButton';
 import type { AuthUser } from '@/types/auth';
 
-// Desktop admin chrome: a fixed sidebar for navigation and a top bar showing the
-// current section and the signed-in admin. Renders full-width (not the mobile
-// PhoneShell the student app uses) because admin is a PC-format tool.
-
 interface NavItem {
   href: string;
   label: string;
-  icon: string;
 }
 
 const NAV: NavItem[] = [
-  { href: '/admin', label: 'Resumen', icon: '▚' },
-  { href: '/admin/matches', label: 'Matches', icon: '♥' },
-  { href: '/admin/usuarios', label: 'Usuarios', icon: '☺' },
-  { href: '/admin/venues', label: 'Lugares', icon: '⌖' },
-  { href: '/admin/feedback', label: 'Feedback', icon: '✎' },
-  { href: '/admin/reportes', label: 'Reportes', icon: '⚑' },
+  { href: '/admin', label: 'Resumen' },
+  { href: '/admin/matches', label: 'Matches' },
+  { href: '/admin/usuarios', label: 'Usuarios' },
+  { href: '/admin/venues', label: 'Lugares' },
+  { href: '/admin/feedback', label: 'Feedback' },
+  { href: '/admin/reportes', label: 'Reportes' },
 ];
 
 function isActive(pathname: string, href: string): boolean {
-  // Exact match for the root so it isn't highlighted on every subpage.
   return href === '/admin' ? pathname === href : pathname.startsWith(href);
 }
 
+// The admin panel is one of the three night surfaces of the brand.
 export function AdminShell({
   user,
   children,
@@ -42,13 +37,11 @@ export function AdminShell({
   const current = NAV.find((item) => isActive(pathname, item.href));
 
   return (
-    <div className="flex min-h-screen w-full">
-      <aside className="border-white/10 bg-navy-soft/80 sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r px-4 py-6">
+    <div className="noche bg-page text-ink flex min-h-screen w-full">
+      <aside className="border-line bg-surface sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r px-4 py-6">
         <div className="px-2">
           <Logo />
-          <p className="text-slate mt-1 text-xs font-medium tracking-wide uppercase">
-            Panel de administración
-          </p>
+          <p className="label text-ink-3 mt-2">Panel de administración</p>
         </div>
 
         <nav className="mt-8 flex flex-1 flex-col gap-1">
@@ -58,15 +51,12 @@ export function AdminShell({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                className={`rounded-input px-3 py-2.5 text-sm font-medium transition ${
                   active
-                    ? 'bg-cyan/15 text-cyan'
-                    : 'text-slate hover:bg-white/5 hover:text-cream'
+                    ? 'bg-surface-2 text-ink'
+                    : 'text-ink-2 hover:bg-surface-2 hover:text-ink'
                 }`}
               >
-                <span aria-hidden className="w-4 text-center">
-                  {item.icon}
-                </span>
                 {item.label}
               </Link>
             );
@@ -75,19 +65,19 @@ export function AdminShell({
 
         <Link
           href="/dashboard"
-          className="text-slate hover:text-cream mt-2 px-3 py-2 text-xs transition"
+          className="text-ink-2 hover:text-ink mt-2 px-3 py-2 text-xs transition"
         >
-          ← Volver a la app
+          Volver a la app
         </Link>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="border-white/10 bg-navy-deep/80 sticky top-0 z-10 flex items-center justify-between gap-4 border-b px-8 py-4 backdrop-blur">
-          <h2 className="text-cream text-lg font-semibold">
+        <header className="border-line bg-page sticky top-0 z-10 flex items-center justify-between gap-4 border-b px-8 py-4">
+          <h2 className="subheading text-ink text-[22px]">
             {current?.label ?? 'Panel'}
           </h2>
           <div className="flex items-center gap-4">
-            <span className="text-slate hidden text-sm sm:inline">
+            <span className="text-ink-2 hidden text-sm sm:inline">
               {user.email}
             </span>
             <LogoutButton />

@@ -6,10 +6,10 @@ import { useRouter } from 'next/navigation';
 import { loginSchema, type LoginValues } from '@/lib/validation/auth';
 import { useLogin } from '@/hooks/useLogin';
 import { getApiErrorMessage } from '@/lib/utils/errors';
+import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
-// HU-01 login: passwordless. Requests a code, then reuses the /verify flow.
 export function LoginForm() {
   const router = useRouter();
   const { mutateAsync, isPending } = useLogin();
@@ -31,10 +31,11 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="space-y-1">
-        <label htmlFor="email" className="text-cream text-sm font-medium">
-          Correo universitario
-        </label>
+      <Field
+        label="Correo institucional"
+        htmlFor="email"
+        error={errors.email?.message}
+      >
         <Input
           id="email"
           type="email"
@@ -43,13 +44,10 @@ export function LoginForm() {
           hasError={!!errors.email}
           {...register('email')}
         />
-        {errors.email && (
-          <p className="text-blush text-xs">{errors.email.message}</p>
-        )}
-      </div>
+      </Field>
 
       {errors.root && (
-        <p className="text-blush text-sm">{errors.root.message}</p>
+        <p className="text-error text-sm">{errors.root.message}</p>
       )}
 
       <Button type="submit" className="w-full" disabled={isPending}>

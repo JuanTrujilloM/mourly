@@ -1,0 +1,212 @@
+[
+  {
+    "id": "venue-pergamino",
+    "name": "Pergamino Café",
+    "type": "Café",
+    "address": "Cra. 37 #8A-37, El Poblado, Medellín",
+    "openingHours": "Lun-Sáb 7:00-21:00, Dom 9:00-18:00",
+    "description": "Café de especialidad ideal para conversar sin afán.",
+    "commissionRate": 0.1,
+    "averageSpentPerPerson": 28000,
+    "tags": [
+      "café de especialidad",
+      "café",
+      "lectura"
+    ]
+  },
+  {
+    "id": "venue-velvet",
+    "name": "Café Velvet",
+    "type": "Café",
+    "address": "Cra. 33 #7-26, El Poblado, Medellín",
+    "openingHours": "Lun-Dom 8:00-22:00",
+    "description": "Café tranquilo y acogedor, perfecto para una primera cita.",
+    "commissionRate": 0.12,
+    "averageSpentPerPerson": 32000,
+    "tags": [
+      "café",
+      "lectura",
+      "tranquilo"
+    ]
+  },
+  {
+    "id": "venue-alalma",
+    "name": "Al Alma Café",
+    "type": "Café",
+    "address": "Cra. 34 #7-109, El Poblado, Medellín",
+    "openingHours": "Lun-Dom 8:00-20:00",
+    "description": "Terraza verde y brunch para una mañana relajada.",
+    "commissionRate": 0.11,
+    "averageSpentPerPerson": 34000,
+    "tags": [
+      "café",
+      "brunch",
+      "cocinar"
+    ]
+  },
+  {
+    "id": "venue-cine-tesoro",
+    "name": "Cine Colombia El Tesoro",
+    "type": "Cine",
+    "address": "CC El Tesoro, Cra. 25A #1A Sur-45, El Poblado, Medellín",
+    "openingHours": "Lun-Dom 12:00-22:00",
+    "description": "Salas de cine para ver el estreno del momento.",
+    "commissionRate": 0.08,
+    "averageSpentPerPerson": 30000,
+    "tags": [
+      "cine",
+      "series",
+      "películas"
+    ]
+  },
+  {
+    "id": "venue-crepes-vegas",
+    "name": "Crepes & Waffles Las Vegas",
+    "type": "Restaurante",
+    "address": "Av. Las Vegas #2 Sur-72, El Poblado, Medellín",
+    "openingHours": "Lun-Dom 12:00-22:00",
+    "description": "Crepes dulces y saladas en un ambiente relajado.",
+    "commissionRate": 0.1,
+    "averageSpentPerPerson": 40000,
+    "tags": [
+      "cocinar",
+      "repostería",
+      "cena"
+    ]
+  },
+  {
+    "id": "venue-presidenta",
+    "name": "Parque de la Presidenta",
+    "type": "Parque",
+    "address": "Cra. 43A con Cl. 11A, El Poblado, Medellín",
+    "openingHours": "Lun-Dom 6:00-18:00",
+    "description": "Parque al aire libre para caminar y compartir un picnic.",
+    "commissionRate": 0,
+    "averageSpentPerPerson": 15000,
+    "tags": [
+      "senderismo",
+      "aire libre",
+      "mascotas"
+    ]
+  },
+  {
+    "id": "venue-mercado-rio",
+    "name": "Mercado del Río",
+    "type": "Restaurante",
+    "address": "Cl. 24 #48-28, Ciudad del Río, Medellín",
+    "openingHours": "Lun-Dom 11:00-23:00",
+    "description": "Plaza gastronómica con decenas de cocinas para elegir.",
+    "commissionRate": 0.09,
+    "averageSpentPerPerson": 45000,
+    "tags": [
+      "cocinar",
+      "música en vivo",
+      "cena"
+    ]
+  },
+  {
+    "id": "venue-mamm",
+    "name": "Museo de Arte Moderno (MAMM)",
+    "type": "Museo",
+    "address": "Cra. 44 #19A-100, Ciudad del Río, Medellín",
+    "openingHours": "Mar-Dom 10:00-18:00",
+    "description": "Exposiciones de arte contemporáneo y café en el lobby.",
+    "commissionRate": 0.07,
+    "averageSpentPerPerson": 22000,
+    "tags": [
+      "pintura",
+      "arte",
+      "cine"
+    ]
+  },
+  {
+    "id": "venue-laureles-bowling",
+    "name": "Bolos Club El Rodeo",
+    "type": "Entretenimiento",
+    "address": "Cl. 44 #79-40, Laureles, Medellín",
+    "openingHours": "Lun-Dom 14:00-23:00",
+    "description": "Bolera y juegos para romper el hielo con una actividad.",
+    "commissionRate": 0.1,
+    "averageSpentPerPerson": 38000,
+    "tags": [
+      "videojuegos",
+      "juegos",
+      "diversión"
+    ]
+  },
+  {
+    "id": "venue-envigado-cervezas",
+    "name": "Cervecería Libre",
+    "type": "Bar",
+    "address": "Cl. 37 Sur #41-25, Envigado, Medellín",
+    "openingHours": "Mié-Sáb 16:00-1:00",
+    "description": "Cervezas artesanales locales y música en vivo los viernes.",
+    "commissionRate": 0.13,
+    "averageSpentPerPerson": 42000,
+    "tags": [
+      "cata de vinos",
+      "música en vivo",
+      "salsa"
+    ]
+  },
+  {
+    "id": "venue-sanalberto-bog",
+    "name": "Café San Alberto Zona T",
+    "type": "Café",
+    "address": "Cl. 82 #12-16, Chapinero, Bogotá",
+    "openingHours": "Lun-Dom 8:00-21:00",
+    "description": "Café colombiano premiado, para una cita con aroma a origen.",
+    "commissionRate": 0.11,
+    "averageSpentPerPerson": 30000,
+    "tags": [
+      "café de especialidad",
+      "café",
+      "lectura"
+    ]
+  },
+  {
+    "id": "venue-parque93-bog",
+    "name": "Parque de la 93",
+    "type": "Parque",
+    "address": "Cl. 93 con Cra. 13, Chicó, Bogotá",
+    "openingHours": "Lun-Dom 6:00-22:00",
+    "description": "Parque rodeado de restaurantes para caminar y conversar.",
+    "commissionRate": 0,
+    "averageSpentPerPerson": 18000,
+    "tags": [
+      "senderismo",
+      "aire libre",
+      "mascotas"
+    ]
+  },
+  {
+    "id": "venue-andino-crepes-bog",
+    "name": "Crepes & Waffles Andino",
+    "type": "Restaurante",
+    "address": "Cra. 11 #82-71, CC Andino, Bogotá",
+    "openingHours": "Lun-Dom 12:00-22:00",
+    "description": "Clásico para una cita: crepes, postres y buen ambiente.",
+    "commissionRate": 0.1,
+    "averageSpentPerPerson": 41000,
+    "tags": [
+      "cocinar",
+      "repostería",
+      "cena"
+    ]
+  },
+  {
+    "id": "venue-libelula-bog",
+    "name": "Libélula Books & Coffee",
+    "type": "Café",
+    "address": "Cra. 4 #57-58, Chapinero Alto, Bogotá",
+    "openingHours": "Lun-Sáb 9:00-20:00",
+    "description": "Librería-café ideal para amantes de la lectura.",
+    "commissionRate": 0.12,
+    "averageSpentPerPerson": 27000,
+    "tags": [
+      "lectura",
+      "café",
+      "escritura"
+    ]
+  }
+]

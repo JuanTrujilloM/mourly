@@ -105,7 +105,7 @@ SMTP_PORT=587
 SMTP_USER=
 SMTP_PASS=
 SMTP_SECURE=false
-MAIL_FROM="TheConnection <no-reply@theconnection.co>"
+MAIL_FROM="Mourly <no-reply@mourly.co>"
 
 FRONTEND_URL=http://localhost:3000     # base del magic link
 AVAILABILITY_LINK_TTL_HOURS=72         # TTL del token → "expira en N días" del correo

@@ -8,8 +8,6 @@ import type { Request } from 'express';
 import { isAdminEmail } from '../constants/admin';
 import type { AuthenticatedUser } from '../../modules/auth/strategies/jwt.strategy';
 
-// Runs after JwtAuthGuard, so request.user is populated. Gates admin-only routes
-// against the ADMIN_EMAILS allowlist.
 @Injectable()
 export class AdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {

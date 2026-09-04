@@ -1,6 +1,5 @@
 import { Chip } from './Chip';
 
-// Single-select pill group. Exactly one option is active at a time.
 export function PillSelect({
   options,
   value,

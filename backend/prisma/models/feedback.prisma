@@ -13,4 +13,6 @@ model Feedback {
   // Relations
   date Date @relation(fields: [dateId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([dateId, userId])
 }

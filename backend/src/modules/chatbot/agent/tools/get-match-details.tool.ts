@@ -5,8 +5,6 @@ import {
   matchStatusLabel,
 } from '../../user-context/match-status';
 
-// AC #4: the user's current match. Returns ONLY the partner's public-facing
-// fields — this minimization is the privacy boundary, not just prompt text.
 @Injectable()
 export class GetMatchDetailsTool {
   constructor(private readonly prisma: PrismaService) {}
@@ -32,7 +30,6 @@ export class GetMatchDetailsTool {
       : null;
     if (!match || !partner?.profile) return 'NO_ACTIVE_MATCH';
 
-    // A confirmed match only ever has a date, so its mere presence = scheduled.
     const hasConfirmedDate = match.date !== null;
     return JSON.stringify({
       name: partner.profile.name,

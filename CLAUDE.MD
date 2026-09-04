@@ -1,8 +1,8 @@
-# CLAUDE.md — TheConnection
+# CLAUDE.md — Mourly
 
 ## What is this project
 
-TheConnection is an exclusive dating app for students at private universities in Colombia. Unlike Tinder or similar apps, it operates as a weekly curated service that uses AI to generate a single match per week and drives it all the way to a real in-person date at a physical venue, in an automated and secure way.
+Mourly is an exclusive dating app for students at private universities in Colombia. Unlike Tinder or similar apps, it operates as a weekly curated service that uses AI to generate a single match per week and drives it all the way to a real in-person date at a physical venue, in an automated and secure way.
 
 **Vision:** Help university students in Colombia meet real, safe people without spending weeks scrolling.
 
@@ -30,7 +30,7 @@ TheConnection is an exclusive dating app for students at private universities in
 ## Project Structure
 
 ```
-theconnection/
+mourly/
 ├── frontend/                        # Next.js app
 │   ├── app/                         # App Router — pages only
 │   └── src/
@@ -304,7 +304,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 # Backend
 NODE_ENV=development
 PORT=3001
-DATABASE_URL=postgresql://user:password@localhost:5432/theconnection
+DATABASE_URL=postgresql://user:password@localhost:5432/mourly
 JWT_SECRET=...
 JWT_EXPIRES_IN=7d
 WHATSAPP_TOKEN=...
@@ -312,7 +312,7 @@ WHATSAPP_PHONE_NUMBER_ID=...
 WHATSAPP_VERIFY_TOKEN=...
 OPENAI_API_KEY=...
 AWS_REGION=us-east-1
-AWS_S3_BUCKET=theconnection-media
+AWS_S3_BUCKET=mourly-media
 AWS_SQS_QUEUE_URL=...
 ```
 

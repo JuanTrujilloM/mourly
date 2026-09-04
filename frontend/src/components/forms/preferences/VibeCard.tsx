@@ -7,7 +7,6 @@ import { Card } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { ChipGroup } from '@/components/ui/ChipGroup';
 
-// HU-03 — energy/vibe (required multi-select).
 export function VibeCard({ form }: { form: UseFormReturn<PreferencesValues> }) {
   const { errors } = form.formState;
 

@@ -5,7 +5,13 @@ import { PassportModule } from '@nestjs/passport';
 import { MailModule } from '../mail/mail.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { RegistrationService } from './registration.service';
+import { SessionService } from './session.service';
+import { SessionCookiesService } from './session-cookies.service';
+import { SafeUserService } from './safe-user.service';
+import { UserLookupService } from './user-lookup.service';
 import { VerificationCodeService } from './verification-code.service';
+import { VerificationDeliveryService } from './verification-delivery.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-university-email.validator';
@@ -16,8 +22,6 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
     MailModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
-      // Per-token expiry is set at sign time (see AuthService.signAccessToken),
-      // so the module only needs to supply the signing secret.
       useFactory: (config: ConfigService) => ({
         secret: config.getOrThrow<string>('JWT_SECRET'),
       }),
@@ -26,7 +30,13 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
   controllers: [AuthController],
   providers: [
     AuthService,
+    RegistrationService,
+    SessionService,
+    SessionCookiesService,
+    SafeUserService,
+    UserLookupService,
     VerificationCodeService,
+    VerificationDeliveryService,
     RefreshTokenService,
     JwtStrategy,
     IsSupportedUniversityEmailConstraint,

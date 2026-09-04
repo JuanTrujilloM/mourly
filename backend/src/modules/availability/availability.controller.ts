@@ -1,18 +1,22 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
+import { PUBLIC_LINK_THROTTLE } from '../../common/constants/throttle';
 import { SelectVenuesDto } from '../matches/dto/select-venues.dto';
 import { AvailabilityService } from './availability.service';
+import { AvailabilityViewService } from './availability-view.service';
 import { SubmitAvailabilityDto } from './dto/submit-availability.dto';
 
-// Public, token-authenticated flow opened from the first WhatsApp notification.
-// No JwtAuthGuard: the opaque token in the path is the credential, so a student
-// completes availability (HU-09) and place selection (HU-06) without logging in.
 @Controller('availability')
+@Throttle(PUBLIC_LINK_THROTTLE)
 export class AvailabilityController {
-  constructor(private readonly availabilityService: AvailabilityService) {}
+  constructor(
+    private readonly availabilityService: AvailabilityService,
+    private readonly viewService: AvailabilityViewService,
+  ) {}
 
   @Get(':token')
   getAvailability(@Param('token') token: string) {
-    return this.availabilityService.getAvailabilityView(token);
+    return this.viewService.getAvailabilityView(token);
   }
 
   @Post(':token')
@@ -25,7 +29,7 @@ export class AvailabilityController {
 
   @Get(':token/venues')
   getVenues(@Param('token') token: string) {
-    return this.availabilityService.getVenuesView(token);
+    return this.viewService.getVenuesView(token);
   }
 
   @Post(':token/venues')

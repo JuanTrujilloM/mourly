@@ -1,5 +1,6 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { Logo } from '@/components/shared/Logo';
+import sello from '@/assets/brand/sello-verde.svg';
 
 const LEGAL_LINKS = [
   { label: 'Términos', href: '#' },
@@ -7,16 +8,24 @@ const LEGAL_LINKS = [
   { label: 'Habeas Data', href: '#' },
 ];
 
-// Site footer: wordmark, legal links and Instagram.
+// The wordmark lives in the navbar; a second dot on the same screen would be a feed.
 export function LandingFooter() {
   return (
-    <footer className="border-white/10 border-t px-4 py-12 sm:px-6">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 sm:flex-row">
-        <div className="space-y-2 text-center sm:text-left">
-          <Logo />
-          <p className="text-slate text-xs">
-            Citas curadas para universitarios en Colombia.
-          </p>
+    <footer className="border-line border-t px-4 py-12 sm:px-6">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-8 sm:flex-row sm:items-end">
+        <div className="flex items-center gap-4">
+          <Image
+            src={sello}
+            alt="Sello: solo con carné, universidades privadas"
+            width={64}
+            height={64}
+          />
+          <div>
+            <p className="text-ink text-sm font-semibold">mourly.com</p>
+            <p className="text-ink-2 text-sm">
+              Una cita real por semana. Solo con carné.
+            </p>
+          </div>
         </div>
 
         <nav className="flex flex-wrap items-center justify-center gap-5 text-sm">
@@ -24,7 +33,7 @@ export function LandingFooter() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-slate hover:text-cream transition-colors"
+              className="text-ink-2 hover:text-ink transition"
             >
               {link.label}
             </Link>
@@ -33,15 +42,15 @@ export function LandingFooter() {
             href="https://instagram.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-slate hover:text-cyan transition-colors"
+            className="text-ink-2 hover:text-ink transition"
           >
-            Instagram ↗
+            Instagram
           </a>
         </nav>
       </div>
 
-      <p className="text-slate/60 mx-auto mt-8 max-w-6xl text-center text-xs sm:text-left">
-        © {new Date().getFullYear()} TheConnection. Todos los derechos reservados.
+      <p className="text-ink-3 mx-auto mt-8 max-w-6xl text-center text-xs sm:text-left">
+        © {new Date().getFullYear()} Mourly · Medellín
       </p>
     </footer>
   );

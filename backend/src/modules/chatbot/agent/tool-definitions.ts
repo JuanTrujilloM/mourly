@@ -1,14 +1,9 @@
-// Tool surface advertised to the model. The handlers are closure-bound to the
-// resolved userId in ChatbotService, so the model never passes an id — there are
-// no parameters to pass. This is what makes another user's data unreachable.
 export type ToolName =
   | 'get_match_details'
   | 'get_upcoming_date'
   | 'get_app_help'
   | 'reject_match';
 
-// Structurally compatible with LangChain's BindToolsInput (OpenAI tool format),
-// kept local so this file doesn't depend on LangChain's internal type paths.
 interface ChatToolDefinition {
   type: 'function';
   function: {
@@ -50,7 +45,7 @@ export const TOOL_DEFINITIONS: ChatToolDefinition[] = [
     function: {
       name: 'get_app_help',
       description:
-        'Get help/FAQ about how TheConnection works. Call for app usage questions.',
+        'Get help/FAQ about how Mourly works. Call for app usage questions.',
       parameters: NO_ARGS,
     },
   },

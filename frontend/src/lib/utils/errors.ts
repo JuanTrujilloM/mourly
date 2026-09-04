@@ -1,10 +1,8 @@
 import axios from 'axios';
 
-// Pulls a human-readable message out of an axios error. NestJS validation errors
-// arrive as a string[]; everything else as a string. Falls back to a generic line.
 export function getApiErrorMessage(
   error: unknown,
-  fallback = 'Algo salió mal. Intenta de nuevo.',
+  fallback = 'Algo salió mal. Intentá de nuevo.',
 ): string {
   if (axios.isAxiosError(error)) {
     const message = error.response?.data?.message;

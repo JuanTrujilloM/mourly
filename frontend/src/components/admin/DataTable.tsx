@@ -2,14 +2,10 @@ import type { ReactNode } from 'react';
 
 export interface Column<T> {
   header: string;
-  // Cell renderer for one row.
   cell: (row: T) => ReactNode;
-  // Optional extra classes for alignment/width (e.g. 'text-right').
   className?: string;
 }
 
-// Desktop data table with loading, empty and error states. Rows are keyed by
-// `rowKey` so React can reconcile after mutations.
 export function DataTable<T>({
   columns,
   rows,
@@ -26,14 +22,14 @@ export function DataTable<T>({
   emptyMessage?: string;
 }) {
   return (
-    <div className="border-white/10 bg-navy-card/60 overflow-x-auto rounded-2xl border">
+    <div className="border-line bg-surface rounded-card overflow-x-auto border">
       <table className="w-full border-collapse text-left text-sm">
         <thead>
-          <tr className="border-white/10 border-b">
+          <tr className="border-line border-b">
             {columns.map((column) => (
               <th
                 key={column.header}
-                className={`text-slate px-4 py-3 text-xs font-semibold tracking-wide uppercase ${column.className ?? ''}`}
+                className={`label text-ink-3 px-4 py-3 ${column.className ?? ''}`}
               >
                 {column.header}
               </th>
@@ -42,7 +38,7 @@ export function DataTable<T>({
         </thead>
         <tbody>
           {isLoading ? (
-            <StateRow span={columns.length} text="Cargando..." pulse />
+            <StateRow span={columns.length} text="Cargando..." />
           ) : isError ? (
             <StateRow
               span={columns.length}
@@ -54,12 +50,12 @@ export function DataTable<T>({
             rows.map((row) => (
               <tr
                 key={rowKey(row)}
-                className="border-white/5 hover:bg-white/[0.03] border-b transition last:border-0"
+                className="border-line hover:bg-surface-2 border-b transition last:border-0"
               >
                 {columns.map((column) => (
                   <td
                     key={column.header}
-                    className={`text-cream px-4 py-3 align-middle ${column.className ?? ''}`}
+                    className={`text-ink px-4 py-3 align-middle ${column.className ?? ''}`}
                   >
                     {column.cell(row)}
                   </td>
@@ -73,21 +69,10 @@ export function DataTable<T>({
   );
 }
 
-function StateRow({
-  span,
-  text,
-  pulse,
-}: {
-  span: number;
-  text: string;
-  pulse?: boolean;
-}) {
+function StateRow({ span, text }: { span: number; text: string }) {
   return (
     <tr>
-      <td
-        colSpan={span}
-        className={`text-slate px-4 py-10 text-center text-sm ${pulse ? 'animate-pulse' : ''}`}
-      >
+      <td colSpan={span} className="text-ink-3 px-4 py-10 text-center text-sm">
         {text}
       </td>
     </tr>

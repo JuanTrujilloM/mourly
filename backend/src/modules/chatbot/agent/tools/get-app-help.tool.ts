@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-// Static help/FAQ content the bot relays for "Get help with the app". No DB,
-// no per-user data. Edit the copy here; the model paraphrases as needed.
 const APP_HELP = `
-¿Cómo funciona TheConnection?
+¿Cómo funciona Mourly?
   Cada semana nuestra IA te presenta un único match curado y te acompaña hasta una
   cita real en un lugar físico. Nada de scrollear sin parar.
 
@@ -22,7 +20,7 @@ const APP_HELP = `
   tu correo con tu match.
 
 ¿Necesitas más ayuda?
-  Escríbenos a soporte@theconnection.co
+  Escríbenos a soporte@mourly.co
 `.trim();
 
 @Injectable()

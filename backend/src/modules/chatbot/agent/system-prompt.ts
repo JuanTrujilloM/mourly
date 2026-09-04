@@ -1,8 +1,5 @@
 import { ChatUserContext } from '../user-context/user-resolver.service';
 
-// Builds the per-request system prompt. The user's profile is injected so dating
-// tips are personalized without an extra round-trip (AC #3). The greeting block
-// only appears on the first message of a session (AC #2).
 export function buildSystemPrompt(
   context: ChatUserContext,
   isNewSession: boolean,
@@ -10,7 +7,7 @@ export function buildSystemPrompt(
   const greeting = isNewSession ? newSessionGreeting(context) : '';
 
   return [
-    `Eres el asistente de TheConnection, una app de citas para estudiantes universitarios en Colombia.`,
+    `Eres el asistente de Mourly, una app de citas para estudiantes universitarios en Colombia.`,
     `Responde en el idioma del usuario; por defecto, español. Tono cercano, breve y útil (es WhatsApp).`,
     ``,
     `Solo puedes ayudar con estos temas:`,

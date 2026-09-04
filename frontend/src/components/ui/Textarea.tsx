@@ -1,14 +1,13 @@
 import { forwardRef, type TextareaHTMLAttributes } from 'react';
 
 const base =
-  'w-full rounded-xl border bg-navy-soft px-4 py-2.5 text-sm text-cream placeholder:text-slate outline-none transition resize-none focus:border-cyan focus:ring-2 focus:ring-cyan/30';
+  'bg-surface text-ink placeholder:text-gris-500 min-h-24 w-full resize-none rounded-input border px-3.5 py-3 text-[15px] transition outline-none focus:border-ink focus:ring-1 focus:ring-ink';
 
-// Brand textarea. forwardRef so react-hook-form's register() can attach its ref.
 export const Textarea = forwardRef<
   HTMLTextAreaElement,
   TextareaHTMLAttributes<HTMLTextAreaElement> & { hasError?: boolean }
 >(function Textarea({ className = '', hasError = false, ...props }, ref) {
-  const borderColor = hasError ? 'border-blush' : 'border-white/10';
+  const borderColor = hasError ? 'border-error' : 'border-line';
   return (
     <textarea
       ref={ref}

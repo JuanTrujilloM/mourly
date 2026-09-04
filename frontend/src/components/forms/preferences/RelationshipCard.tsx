@@ -2,24 +2,21 @@
 
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import type { PreferencesValues } from '@/lib/validation/preferences';
-import {
-  RELATIONSHIP_OPTIONS,
-  ORIENTATION_OPTIONS,
-} from '@/lib/constants/preferences';
+import { useCatalog } from '@/hooks/useCatalog';
 import { Card } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { PillSelect } from '@/components/ui/PillSelect';
 
-// HU-03 — relationship type and sexual orientation (single-select each).
 export function RelationshipCard({
   form,
 }: {
   form: UseFormReturn<PreferencesValues>;
 }) {
   const { errors } = form.formState;
+  const { relationshipTypes, orientations } = useCatalog();
 
   return (
-    <Card title="Qué buscas" description="Define el tipo de conexión que quieres.">
+    <Card title="Qué buscás" description="Definí el tipo de relación que querés.">
       <div className="space-y-6">
         <Field
           label="Tipo de relación"
@@ -30,7 +27,7 @@ export function RelationshipCard({
             name="relationshipType"
             render={({ field }) => (
               <PillSelect
-                options={RELATIONSHIP_OPTIONS}
+                options={relationshipTypes}
                 value={field.value}
                 onChange={field.onChange}
               />
@@ -44,7 +41,7 @@ export function RelationshipCard({
             name="orientation"
             render={({ field }) => (
               <PillSelect
-                options={ORIENTATION_OPTIONS}
+                options={orientations}
                 value={field.value}
                 onChange={field.onChange}
               />

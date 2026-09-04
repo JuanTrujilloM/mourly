@@ -1,54 +1,82 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AdminGuard } from '../../common/guards/admin.guard';
-import { AdminService } from './admin.service';
+import { AdminUsersService } from './admin-users.service';
+import { AdminMatchesService } from './admin-matches.service';
+import { AdminModerationService } from './admin-moderation.service';
+import { AdminStatsService } from './admin-stats.service';
+import { AdminOperationsService } from './admin-operations.service';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
 
-// Admin panel API. Every route requires a valid session AND an ADMIN_EMAILS
-// allowlist match (AdminGuard runs after JwtAuthGuard). Venues live in their own
-// controller at /admin/venues.
 @Controller('admin')
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly users: AdminUsersService,
+    private readonly matches: AdminMatchesService,
+    private readonly moderation: AdminModerationService,
+    private readonly stats: AdminStatsService,
+    private readonly operations: AdminOperationsService,
+  ) {}
 
   @Get('users')
   listUsers() {
-    return this.adminService.listUsers();
+    return this.users.listUsers();
   }
 
   @Patch('users/:id/status')
   setUserStatus(@Param('id') id: string, @Body() dto: UpdateUserStatusDto) {
-    return this.adminService.setUserStatus(id, dto.status);
+    return this.users.setUserStatus(id, dto.status);
   }
 
   @Patch('users/:id/verify')
   verifyUser(@Param('id') id: string) {
-    return this.adminService.verifyUser(id);
+    return this.users.verifyUser(id);
   }
 
   @Get('matches')
   listMatches() {
-    return this.adminService.listMatches();
+    return this.matches.listMatches();
   }
 
   @Get('matches/:id')
   getMatch(@Param('id') id: string) {
-    return this.adminService.getMatchDetail(id);
+    return this.matches.getMatchDetail(id);
   }
 
   @Patch('matches/:id/cancel')
   cancelMatch(@Param('id') id: string) {
-    return this.adminService.cancelMatch(id);
+    return this.matches.cancelMatch(id);
   }
 
   @Get('feedback')
   listFeedback() {
-    return this.adminService.listFeedback();
+    return this.moderation.listFeedback();
   }
 
   @Get('reports')
   listReports() {
-    return this.adminService.listReports();
+    return this.moderation.listReports();
+  }
+
+  @Get('stats')
+  getStats() {
+    return this.stats.get();
+  }
+
+  @Post('matching/run')
+  @HttpCode(HttpStatus.OK)
+  runMatching() {
+    return this.operations.runWeeklyMatching();
   }
 }

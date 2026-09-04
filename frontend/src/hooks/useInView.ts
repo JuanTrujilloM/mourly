@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-// Fires once when the element scrolls into view. Used to drive scroll-triggered
-// reveals and counters without pulling in an animation library.
 export function useInView<T extends HTMLElement = HTMLDivElement>(
   rootMargin = '-10% 0px',
 ) {

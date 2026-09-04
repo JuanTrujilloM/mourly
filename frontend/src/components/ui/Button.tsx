@@ -1,35 +1,49 @@
-import type { ButtonHTMLAttributes } from 'react';
+import Link from 'next/link';
+import type { ButtonHTMLAttributes, ComponentProps } from 'react';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'sunset' | 'cyan';
+type Variant = 'primary' | 'momento' | 'secondary' | 'ghost';
+type Size = 'md' | 'sm';
 
-// Warm coral→flame gradient ("Atardecer") — the app-wide main CTA. Dark coral
-// text for contrast on the bright fill.
-const SUNSET =
-  'bg-gradient-to-r from-coral to-flame text-[#4A1B0C] hover:brightness-105 shadow-[0_8px_30px_-8px_rgba(255,122,60,0.7)]';
-
+// The brand lives in the moments, not in every button: primary is ink on
+// paper. `momento` is mandarina and counts as the screen's single accent.
 const variants: Record<Variant, string> = {
-  // Primary CTA is warm across the app; `sunset` kept as an explicit alias.
-  primary: SUNSET,
-  sunset: SUNSET,
-  // Cyan fill kept for the rare identity-forward action.
-  cyan: 'bg-cyan text-navy-deep hover:brightness-110 shadow-[0_8px_30px_-8px_rgba(0,229,255,0.6)]',
-  // Blush outline for secondary actions.
-  secondary:
-    'border border-blush/60 text-cream hover:bg-blush/10 hover:border-blush',
-  // Transparent for low-emphasis actions.
-  ghost: 'text-slate hover:text-cream',
+  primary: 'bg-btn-bg text-btn-fg hover:bg-btn-bg-hover',
+  momento: 'bg-accent text-verde-900 hover:opacity-90',
+  secondary: 'border-ink text-ink hover:bg-surface-2 border',
+  ghost: 'text-ink-2 hover:text-ink hover:bg-surface-2',
 };
 
-// Brand button. Defaults to the cyan primary CTA; pass `variant` to switch.
+const sizes: Record<Size, string> = {
+  md: 'h-12 px-6 text-[15px]',
+  sm: 'h-9 px-4 text-[13.5px]',
+};
+
+export function buttonClasses(
+  variant: Variant = 'primary',
+  size: Size = 'md',
+  className = '',
+): string {
+  return `inline-flex items-center justify-center gap-2 rounded-full font-[650] tracking-[-0.005em] whitespace-nowrap transition disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${sizes[size]} ${className}`;
+}
+
 export function Button({
   className = '',
   variant = 'primary',
+  size = 'md',
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }) {
-  return (
-    <button
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${className}`}
-      {...props}
-    />
-  );
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: Variant;
+  size?: Size;
+}) {
+  return <button className={buttonClasses(variant, size, className)} {...props} />;
+}
+
+// A link that looks like a button, so buttons never nest inside anchors.
+export function ButtonLink({
+  className = '',
+  variant = 'primary',
+  size = 'md',
+  ...props
+}: ComponentProps<typeof Link> & { variant?: Variant; size?: Size }) {
+  return <Link className={buttonClasses(variant, size, className)} {...props} />;
 }

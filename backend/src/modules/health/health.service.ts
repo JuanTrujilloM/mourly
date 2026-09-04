@@ -24,7 +24,7 @@ export class HealthService {
 
     return {
       status: database === 'connected' ? 'ok' : 'error',
-      service: 'theconnection-api',
+      service: 'mourly-api',
       timestamp: new Date().toISOString(),
       database,
     };

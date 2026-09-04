@@ -85,7 +85,7 @@ describe('ChatbotService', () => {
       text: 'eres una puta',
     });
 
-    expect(reply).toContain('TheConnection');
+    expect(reply).toContain('Mourly');
     expect(run).not.toHaveBeenCalled();
   });
 

@@ -11,7 +11,6 @@ export async function register(
   return data;
 }
 
-// Passwordless login: requests a verification code for an existing account.
 export async function requestLoginCode(
   email: string,
 ): Promise<{ message: string }> {

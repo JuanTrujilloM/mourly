@@ -33,7 +33,6 @@ class AgeRangeDto {
   max!: number;
 }
 
-// HU-03 payload (JSON). Shape mirrors the frontend form values exactly.
 export class CreatePreferencesDto {
   @ValidateNested()
   @Type(() => AgeRangeDto)

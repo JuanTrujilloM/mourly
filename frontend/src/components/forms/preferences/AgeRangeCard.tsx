@@ -5,7 +5,6 @@ import type { PreferencesValues } from '@/lib/validation/preferences';
 import { Card } from '@/components/ui/Card';
 import { RangeSlider } from '@/components/ui/RangeSlider';
 
-// HU-03 — preferred age range for the match (dual-handle slider).
 export function AgeRangeCard({
   form,
   bounds,
@@ -14,7 +13,7 @@ export function AgeRangeCard({
   bounds: { min: number; max: number };
 }) {
   return (
-    <Card title="Rango de edad" description="¿Qué edad buscas en tu match?">
+    <Card title="Rango de edad" description="¿Qué edad buscás en tu cita?">
       <Controller
         control={form.control}
         name="ageRange"

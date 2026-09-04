@@ -6,18 +6,12 @@ import { moreAvailabilityEmail } from '../modules/mail/templates/more-availabili
 import { matchRejectedEmail } from '../modules/mail/templates/match-rejected.template';
 import { reschedulingFailedEmail } from '../modules/mail/templates/rescheduling-failed.template';
 
-// Renders every notification email with sample data so the layout can be
-// checked in a browser without sending anything. Templates are pure functions,
-// so no Nest context is needed.
-// Usage (after `npm run build`):
-//   node dist/src/scripts/preview-emails.js [outputDir]   # default ./email-previews
-
 const partner = {
   name: 'Abby',
   age: 21,
   university: 'EAFIT',
   major: 'Diseño Interactivo',
-  photoUrl: 'https://picsum.photos/seed/theconnection/520/420',
+  photoUrl: 'https://picsum.photos/seed/mourly/520/420',
 };
 
 const availabilityUrl = 'http://localhost:3000/flow/sample-token/places';

@@ -4,6 +4,11 @@ model Date {
   venueId     String
   scheduledAt DateTime
   status      String
+
+  feedbackRequestedAt DateTime?
+  feedbackReminderAt  DateTime?
+  feedbackClosedAt    DateTime?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -11,4 +16,7 @@ model Date {
   match     Match      @relation(fields: [matchId], references: [id], onDelete: Cascade)
   venue     Venue      @relation(fields: [venueId], references: [id])
   feedbacks Feedback[]
+
+  // Drives the feedback-window cron scan (open windows ordered by date)
+  @@index([feedbackClosedAt, scheduledAt])
 }

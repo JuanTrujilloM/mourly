@@ -12,8 +12,6 @@ import {
 import { ChatTurn } from '../memory/conversation-cache.service';
 import { TOOL_DEFINITIONS, ToolName } from './tool-definitions';
 
-// Cap on agent loops (model → tools → model). Real queries resolve in 1 round;
-// this just bounds a misbehaving model.
 const MAX_TOOL_STEPS = 4;
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 
@@ -26,9 +24,6 @@ export interface RunInput {
   handlers: ToolHandlers;
 }
 
-// Owns the LLM and the tool-calling loop. OpenRouter is OpenAI-compatible, so we
-// drive it through ChatOpenAI with a custom baseURL — the only file that knows
-// the provider, keeping the LLM swappable.
 @Injectable()
 export class AgentRunnerService {
   private readonly model: ChatOpenAI;
@@ -82,13 +77,11 @@ export class AgentRunnerService {
       }
     }
 
-    // Tool budget exhausted: ask once more without tools for a final answer.
     const final = await this.model.invoke(messages);
     return contentToText(final.content);
   }
 }
 
-// AIMessage content can be a string or an array of content parts; flatten to text.
 function contentToText(content: MessageContent): string {
   if (typeof content === 'string') return content;
   return content

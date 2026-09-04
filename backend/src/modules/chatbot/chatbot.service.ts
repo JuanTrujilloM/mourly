@@ -11,13 +11,11 @@ import { ModerationService } from './moderation/moderation.service';
 import { UserResolverService } from './user-context/user-resolver.service';
 import { IncomingMessageDto } from './dto/incoming-message.dto';
 
-// Polite redirect for off-scope/offensive input (AC #7).
 const REDIRECT_MESSAGE =
-  'Estoy aquí para ayudarte con tus citas en TheConnection 😊. Puedo darte consejos ' +
+  'Estoy aquí para ayudarte con tus citas en Mourly 😊. Puedo darte consejos ' +
   'para tu cita, contarte sobre tu match actual o tu próxima cita, o ayudarte con la app. ' +
   '¿Con qué te ayudo?';
 
-// Graceful fallback when the model errors or times out (AC #1).
 const FALLBACK_MESSAGE =
   'Uy, tuve un problema para responder en este momento. ¿Puedes intentarlo de nuevo en un ratito?';
 
@@ -37,7 +35,6 @@ export class ChatbotService {
     private readonly rejectTool: RejectMatchTool,
   ) {}
 
-  // Single entry point the WhatsApp transport calls. Returns the reply text to send.
   async handleIncomingMessage(
     dto: IncomingMessageDto,
   ): Promise<{ reply: string }> {
@@ -72,14 +69,12 @@ export class ChatbotService {
     } catch (error) {
       this.logger.error(
         `Chatbot run failed for user ${userId}`,
-        error as Error,
+        error instanceof Error ? error.stack : String(error),
       );
       return { reply: FALLBACK_MESSAGE };
     }
   }
 
-  // Tools are bound to THIS user's id; the model can only ever read this user's
-  // data. That closure is the privacy boundary for AC #6.
   private buildHandlers(userId: string): ToolHandlers {
     return {
       get_match_details: () => this.matchTool.run(userId),
@@ -93,7 +88,7 @@ export class ChatbotService {
     const frontendUrl =
       this.config.get<string>('FRONTEND_URL') ?? 'http://localhost:3000';
     return (
-      '¡Hola! Para usar el asistente de TheConnection primero necesitas completar tu ' +
+      '¡Hola! Para usar el asistente de Mourly primero necesitas completar tu ' +
       `registro y verificar tu cuenta. Regístrate aquí: ${frontendUrl}/register`
     );
   }

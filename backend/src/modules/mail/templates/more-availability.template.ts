@@ -1,6 +1,5 @@
 import { ctaButton, emailLayout, escapeHtml } from './email-layout';
 
-// HU-08 no-overlap nudge: schedules didn't match, ask for more time slots.
 export interface MoreAvailabilityEmailData {
   recipientName: string;
   partnerName: string;

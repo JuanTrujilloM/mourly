@@ -5,19 +5,19 @@ import { GuestGate } from '@/components/shared/GuestGate';
 export default function LoginPage() {
   return (
     <GuestGate>
-      <div className="space-y-1">
-        <h1 className="text-cream text-xl font-bold">Inicia sesión</h1>
-        <p className="text-slate text-sm">
-          Te enviaremos un código de acceso a tu correo universitario.
+      <div className="space-y-2">
+        <h1 className="heading text-ink text-[28px]">Entrar</h1>
+        <p className="text-ink-2 text-sm">
+          Te enviamos un código de acceso a tu correo institucional.
         </p>
       </div>
 
       <LoginForm />
 
-      <p className="text-slate text-center text-xs">
-        ¿No tienes cuenta?{' '}
-        <Link href="/register" className="text-cyan underline">
-          Regístrate
+      <p className="text-ink-2 text-center text-xs">
+        ¿No tenés cuenta?{' '}
+        <Link href="/register" className="text-accent-text underline">
+          Registrate
         </Link>
       </p>
     </GuestGate>

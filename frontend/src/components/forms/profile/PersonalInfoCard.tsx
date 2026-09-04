@@ -2,23 +2,23 @@
 
 import type { UseFormReturn } from 'react-hook-form';
 import type { ProfileValues } from '@/lib/validation/profile';
-import { GENDER_OPTIONS } from '@/lib/constants/profile';
+import { useCatalog } from '@/hooks/useCatalog';
 import { Card } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 
-// HU-02 — name, date of birth, gender and height.
 export function PersonalInfoCard({
   form,
 }: {
   form: UseFormReturn<ProfileValues>;
 }) {
+  const { genders } = useCatalog();
   const { register, formState } = form;
   const { errors } = formState;
 
   return (
-    <Card title="Información personal" description="Lo básico sobre ti.">
+    <Card title="Información personal" description="Lo básico sobre vos.">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Nombre" htmlFor="name" error={errors.name?.message}>
           <Input
@@ -50,9 +50,9 @@ export function PersonalInfoCard({
             {...register('gender')}
           >
             <option value="" disabled>
-              Selecciona...
+              Elegí...
             </option>
-            {GENDER_OPTIONS.map((option) => (
+            {genders.map((option) => (
               <option key={option} value={option}>
                 {option}
               </option>

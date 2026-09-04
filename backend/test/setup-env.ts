@@ -1,0 +1,11 @@
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = 'test-secret-long-enough-for-validation-0123';
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test';
+process.env.ADMIN_EMAILS = 'admin@eafit.edu.co';
+process.env.FRONTEND_URL = 'http://localhost:3000';
+process.env.SMTP_HOST = '';
+process.env.WHATSAPP_TOKEN = '';
+process.env.OPENROUTER_API_KEY = '';
+process.env.THROTTLE_DEFAULT_LIMIT = '100000';
+process.env.THROTTLE_AUTH_LIMIT = '100000';
+process.env.THROTTLE_PUBLIC_LINK_LIMIT = '100000';

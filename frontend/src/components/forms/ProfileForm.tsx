@@ -8,8 +8,6 @@ import { PhotosCard } from './profile/PhotosCard';
 import { AcademicInfoCard } from './profile/AcademicInfoCard';
 import { AboutYouCard } from './profile/AboutYouCard';
 
-// HU-02 — personal profile form. `edit` switches between onboarding (create) and
-// editing a saved profile. All state logic lives in useProfileForm.
 export function ProfileForm({
   user,
   edit = false,
@@ -22,23 +20,22 @@ export function ProfileForm({
   const rootError = form.formState.errors.root?.message;
 
   if (edit && isLoadingProfile) {
-    return <p className="text-slate animate-pulse text-sm">Cargando tu perfil...</p>;
+    return <p className="text-ink-3 text-sm">Cargando tu perfil...</p>;
   }
 
-  const label = edit ? 'Guardar cambios' : 'Continuar →';
+  const label = edit ? 'Guardar cambios' : 'Continuar';
 
   return (
-    <form onSubmit={onSubmit} className="space-y-6 pb-28 sm:pb-6" noValidate>
+    <form onSubmit={onSubmit} className="space-y-6" noValidate>
       <PersonalInfoCard form={form} />
       <PhotosCard form={form} />
       <AcademicInfoCard form={form} university={university} />
       <AboutYouCard form={form} />
 
-      {rootError && <p className="text-blush text-sm">{rootError}</p>}
+      {rootError && <p className="text-error text-sm">{rootError}</p>}
 
-      {/* Fixed at the bottom on mobile, inline on desktop. */}
-      <div className="border-white/10 bg-navy-deep/90 fixed inset-x-0 bottom-0 border-t p-4 backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
-        <div className="mx-auto flex max-w-2xl justify-end sm:max-w-none">
+      <div className="bg-page border-line sticky bottom-0 -mx-5 border-t px-5 py-4 sm:-mx-7 sm:px-7">
+        <div className="flex justify-end">
           <Button type="submit" className="w-full sm:w-auto" disabled={isPending}>
             {isPending ? 'Guardando...' : label}
           </Button>

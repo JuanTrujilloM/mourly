@@ -1,7 +1,5 @@
 import { MatchCandidate } from './types';
 
-// Builds a fully-eligible baseline candidate; tests override only what they
-// exercise. Defaults describe a hetero man, 22, EAFIT, open preferences.
 export function makeCandidate(
   overrides: Partial<MatchCandidate> = {},
 ): MatchCandidate {

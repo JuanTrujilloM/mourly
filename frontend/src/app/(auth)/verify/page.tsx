@@ -4,10 +4,9 @@ import { VerificationForm } from '@/components/forms/VerificationForm';
 export default function VerifyPage() {
   return (
     <>
-      <h1 className="text-cream text-xl font-bold">Verifica tu correo</h1>
+      <h1 className="heading text-ink text-[28px]">Verificá tu correo</h1>
 
-      {/* useSearchParams requires a Suspense boundary or the production build fails. */}
-      <Suspense fallback={<p className="text-slate text-sm">Cargando...</p>}>
+      <Suspense fallback={<p className="text-ink-3 text-sm">Cargando...</p>}>
         <VerificationForm />
       </Suspense>
     </>

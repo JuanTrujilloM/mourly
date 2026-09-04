@@ -245,7 +245,7 @@ Read via `ConfigService` (same pattern as `mail.service.ts`).
 ## 7. App Help / FAQ content (draft — bot returns this, in Spanish)
 
 ```
-¿Cómo funciona TheConnection?
+¿Cómo funciona Mourly?
   Cada semana nuestra IA te presenta un único match curado y te acompaña hasta una
   cita real en un lugar físico. Nada de scrollear sin parar.
 
@@ -264,7 +264,7 @@ Read via `ConfigService` (same pattern as `mail.service.ts`).
   tu correo con tu match.
 
 ¿Necesitas más ayuda?
-  Escríbenos a soporte@theconnection.co
+  Escríbenos a soporte@mourly.co
 ```
 *(Adjust the support email / venue wording as needed.)*
 

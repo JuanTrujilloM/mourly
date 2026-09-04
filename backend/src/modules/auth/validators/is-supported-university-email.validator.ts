@@ -1,16 +1,22 @@
+import { Injectable } from '@nestjs/common';
 import {
   registerDecorator,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { isSupportedUniversityEmail } from '../constants/university-domains';
+import { UniversitiesService } from '../../universities/universities.service';
 
-// Custom validator to check if an email belongs to a supported university domain.
-@ValidatorConstraint({ name: 'isSupportedUniversityEmail', async: false })
+@Injectable()
+@ValidatorConstraint({ name: 'isSupportedUniversityEmail', async: true })
 export class IsSupportedUniversityEmailConstraint implements ValidatorConstraintInterface {
-  validate(value: unknown): boolean {
-    return typeof value === 'string' && isSupportedUniversityEmail(value);
+  constructor(private readonly universities: UniversitiesService) {}
+
+  validate(value: unknown): Promise<boolean> {
+    if (typeof value !== 'string') {
+      return Promise.resolve(false);
+    }
+    return this.universities.isSupportedEmail(value);
   }
 
   defaultMessage(): string {
@@ -18,7 +24,6 @@ export class IsSupportedUniversityEmailConstraint implements ValidatorConstraint
   }
 }
 
-// Decorator to apply the custom validator on DTO properties.
 export function IsSupportedUniversityEmail(
   validationOptions?: ValidationOptions,
 ) {

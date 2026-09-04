@@ -1,5 +1,3 @@
-// Allowed values for interests & preferences (HU-03). Mirror of the frontend
-// constants (frontend/src/lib/constants/preferences.ts); keep both in sync.
 export const RELATIONSHIP_TYPES = [
   'Casual',
   'Seria',
@@ -37,5 +35,4 @@ export const AGE_MAX = 40;
 export const MIN_HOBBIES = 3;
 export const MIN_VIBES = 1;
 
-// Default category for hobbies created on the fly from the tag input.
 export const DEFAULT_HOBBY_CATEGORY = 'general';

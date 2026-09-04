@@ -8,19 +8,16 @@ export class MailService implements OnModuleInit {
   private readonly logger = new Logger(MailService.name);
   private transporter!: nodemailer.Transporter;
   private readonly from: string;
-  // When SMTP is not configured we run in "dev" mode: emails are logged, not sent.
   private readonly devMode: boolean;
 
   constructor(private readonly config: ConfigService) {
     this.from = this.config.get<string>(
       'MAIL_FROM',
-      'TheConnection <no-reply@theconnection.co>',
+      'Mourly <no-reply@mourly.co>',
     );
     this.devMode = !this.config.get<string>('SMTP_HOST');
   }
 
-  // Build the transporter once at startup. In dev, jsonTransport swallows mail
-  // instead of opening an SMTP connection.
   onModuleInit() {
     this.transporter = this.devMode
       ? nodemailer.createTransport({ jsonTransport: true })
@@ -36,7 +33,6 @@ export class MailService implements OnModuleInit {
   }
 
   async sendVerificationCode(email: string, code: string): Promise<void> {
-    // Dev shortcut: log the code itself so you can verify locally without an inbox.
     if (this.devMode) {
       this.logger.warn(
         `[dev mail] verification code for ${email}: ${code} (SMTP not configured)`,
@@ -47,7 +43,6 @@ export class MailService implements OnModuleInit {
     await this.send(email, verificationCodeEmail(code));
   }
 
-  // Generic transactional send; templates author { subject, html }.
   async send(
     to: string,
     content: { subject: string; html: string },

@@ -10,9 +10,6 @@ import { ConversationCacheService } from './memory/conversation-cache.service';
 import { ModerationService } from './moderation/moderation.service';
 import { UserResolverService } from './user-context/user-resolver.service';
 
-// AI brain only. The future WhatsApp transport module imports this and calls
-// ChatbotService.handleIncomingMessage. PrismaModule is global, so it's available.
-// MatchesModule provides MatchResponseService for the reject_match tool.
 @Module({
   imports: [MatchesModule],
   providers: [
