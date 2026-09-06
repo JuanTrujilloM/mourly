@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   ForbiddenException,
   HttpStatus,
   Logger,
@@ -45,6 +46,32 @@ describe('AllExceptionsFilter', () => {
       statusCode: HttpStatus.FORBIDDEN,
       message: 'Admin access required.',
     });
+  });
+
+  it('forwards the retry delay a rate limited response carries', () => {
+    const { host, json } = buildHost();
+
+    filter.catch(
+      new HttpException(
+        { message: 'Esperá un momento.', retryAfterSeconds: 42 },
+        HttpStatus.TOO_MANY_REQUESTS,
+      ),
+      host,
+    );
+
+    expect(json).toHaveBeenCalledWith({
+      statusCode: HttpStatus.TOO_MANY_REQUESTS,
+      message: 'Esperá un momento.',
+      retryAfterSeconds: 42,
+    });
+  });
+
+  it('omits the retry delay when the response carries none', () => {
+    const { host, json } = buildHost();
+
+    filter.catch(new ForbiddenException('Admin access required.'), host);
+
+    expect(json.mock.calls[0][0]).not.toHaveProperty('retryAfterSeconds');
   });
 
   it('preserves the string array a validation pipe produces', () => {

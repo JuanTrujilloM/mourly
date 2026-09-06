@@ -3,7 +3,11 @@ import userEvent from '@testing-library/user-event';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithQuery, routerPush } from '@/test-utils';
-import { UNSUPPORTED_UNIVERSITY_MESSAGE } from '@/lib/constants/auth';
+import {
+  RESEND_COOLDOWN_SECONDS,
+  UNSUPPORTED_UNIVERSITY_MESSAGE,
+} from '@/lib/constants/auth';
+import { remainingResendCooldown } from '@/lib/utils/resend-cooldown';
 import * as authApi from '@/lib/api/auth';
 import * as waitlistApi from '@/lib/api/waitlist';
 import { RegisterForm } from './RegisterForm';
@@ -38,6 +42,7 @@ async function fillAndSubmit() {
 describe('RegisterForm', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    sessionStorage.clear();
   });
 
   it('sends a supported student to the verification step', async () => {
@@ -50,6 +55,17 @@ describe('RegisterForm', () => {
       expect(routerPush).toHaveBeenCalledWith(
         `/verify?email=${encodeURIComponent(EMAIL)}`,
       ),
+    );
+  });
+
+  it('records the cooldown so the verification screen resumes it', async () => {
+    register.mockResolvedValue({ message: 'ok' });
+
+    renderWithQuery(<RegisterForm />);
+    await fillAndSubmit();
+
+    await waitFor(() =>
+      expect(remainingResendCooldown(EMAIL)).toBe(RESEND_COOLDOWN_SECONDS),
     );
   });
 

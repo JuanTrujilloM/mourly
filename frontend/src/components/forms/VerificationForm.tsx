@@ -11,7 +11,11 @@ import {
 } from '@/lib/validation/auth';
 import { useVerifyCode } from '@/hooks/useVerifyCode';
 import { useResendCode } from '@/hooks/useResendCode';
-import { getApiErrorMessage, getApiErrorStatus } from '@/lib/utils/errors';
+import {
+  getApiErrorMessage,
+  getApiErrorStatus,
+  getApiRetryAfterSeconds,
+} from '@/lib/utils/errors';
 import { useResendCooldown } from './useResendCooldown';
 import { ResendCodeButton } from './ResendCodeButton';
 import { MissingEmailNotice } from './MissingEmailNotice';
@@ -30,7 +34,7 @@ export function VerificationForm() {
   const { mutateAsync: verify, isPending } = useVerifyCode();
   const { mutateAsync: resend, isPending: isResending } = useResendCode();
 
-  const { cooldown, startCooldown } = useResendCooldown();
+  const { cooldown, startCooldown } = useResendCooldown(email);
   const [resendNotice, setResendNotice] = useState<string | null>(null);
   const [resendLimitReached, setResendLimitReached] = useState(false);
 
@@ -66,6 +70,10 @@ export function VerificationForm() {
         setResendLimitReached(true);
         return;
       }
+      // Both the per-user cooldown and the route rate limit answer 429 with the
+      // seconds left, so the counter can pick up where the server actually is.
+      const retryAfter = getApiRetryAfterSeconds(error);
+      if (retryAfter) startCooldown(retryAfter);
       setResendNotice(getApiErrorMessage(error));
     }
   };

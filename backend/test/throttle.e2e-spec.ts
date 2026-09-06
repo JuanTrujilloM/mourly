@@ -30,6 +30,22 @@ describe('Rate limiting (e2e)', () => {
     await attempt().expect(429);
   });
 
+  it('explains the block in Spanish instead of leaking the exception name', async () => {
+    const attempt = () =>
+      request(server())
+        .post('/auth/resend')
+        .send({ email: 'ana@eafit.edu.co' });
+
+    await attempt();
+    await attempt();
+    const response = await attempt().expect(429);
+
+    expect(response.body.message).toBe(
+      'Estás yendo muy rápido. Esperá un momento y volvé a intentarlo.',
+    );
+    expect(response.body.retryAfterSeconds).toBeGreaterThan(0);
+  });
+
   it('applies a looser cap to ordinary routes', async () => {
     const attempt = () => request(server()).get('/health');
 

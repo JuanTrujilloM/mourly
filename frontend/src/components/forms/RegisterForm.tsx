@@ -8,6 +8,7 @@ import { registerSchema, type RegisterValues } from '@/lib/validation/auth';
 import { useRegister } from '@/hooks/useRegister';
 import { getApiErrorMessage } from '@/lib/utils/errors';
 import { UNSUPPORTED_UNIVERSITY_MESSAGE } from '@/lib/constants/auth';
+import { rememberResendCooldown } from '@/lib/utils/resend-cooldown';
 import { WaitlistDialog } from './WaitlistDialog';
 import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
@@ -27,6 +28,7 @@ export function RegisterForm() {
   const onSubmit = async (values: RegisterValues) => {
     try {
       await mutateAsync(values);
+      rememberResendCooldown(values.email);
       router.push(`/verify?email=${encodeURIComponent(values.email)}`);
     } catch (error) {
       const message = getApiErrorMessage(error);

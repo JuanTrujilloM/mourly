@@ -40,7 +40,10 @@ export class VerificationDeliveryService {
       await this.resendPolicy.getSecondsUntilResendAllowed(userId);
     if (secondsLeft > 0) {
       throw new HttpException(
-        cooldownMessage(secondsLeft),
+        {
+          message: cooldownMessage(secondsLeft),
+          retryAfterSeconds: secondsLeft,
+        },
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }

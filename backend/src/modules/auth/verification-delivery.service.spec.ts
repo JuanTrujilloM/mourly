@@ -79,7 +79,9 @@ describe('VerificationDeliveryService', () => {
       expect((failure as HttpException).getStatus()).toBe(
         HttpStatus.TOO_MANY_REQUESTS,
       );
-      expect((failure as HttpException).message).toContain('42');
+      expect((failure as HttpException).getResponse()).toMatchObject({
+        retryAfterSeconds: 42,
+      });
       expect(mail.sendVerificationCode).not.toHaveBeenCalled();
     });
 

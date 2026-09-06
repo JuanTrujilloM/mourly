@@ -15,3 +15,10 @@ export function getApiErrorMessage(
 export function getApiErrorStatus(error: unknown): number | undefined {
   return axios.isAxiosError(error) ? error.response?.status : undefined;
 }
+
+// Seconds the API asks us to wait before retrying, sent on every 429.
+export function getApiRetryAfterSeconds(error: unknown): number | undefined {
+  if (!axios.isAxiosError(error)) return undefined;
+  const seconds = error.response?.data?.retryAfterSeconds;
+  return typeof seconds === 'number' && seconds > 0 ? seconds : undefined;
+}
