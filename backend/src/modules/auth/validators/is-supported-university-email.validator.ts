@@ -6,6 +6,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { UniversitiesService } from '../../universities/universities.service';
+import { UNSUPPORTED_UNIVERSITY_MESSAGE } from '../../universities/university-messages';
 
 @Injectable()
 @ValidatorConstraint({ name: 'isSupportedUniversityEmail', async: true })
@@ -20,7 +21,7 @@ export class IsSupportedUniversityEmailConstraint implements ValidatorConstraint
   }
 
   defaultMessage(): string {
-    return 'Only verified university emails are accepted.';
+    return UNSUPPORTED_UNIVERSITY_MESSAGE;
   }
 }
 

@@ -4,12 +4,10 @@ import { VerificationCodeService } from './verification-code.service';
 import { VerificationDeliveryService } from './verification-delivery.service';
 import { UserLookupService } from './user-lookup.service';
 import { UniversitiesService } from '../universities/universities.service';
+import { UNSUPPORTED_UNIVERSITY_MESSAGE } from '../universities/university-messages';
 import { normalizeEmail } from './utils/normalize-email';
 import { NEUTRAL_MESSAGE, type Acknowledgement } from './auth.messages';
 import { RegisterDto } from './dto/register.dto';
-
-const UNSUPPORTED_EMAIL_MESSAGE =
-  'Only verified university emails are accepted.';
 
 @Injectable()
 export class RegistrationService {
@@ -24,7 +22,7 @@ export class RegistrationService {
   async register(dto: RegisterDto): Promise<Acknowledgement> {
     const email = normalizeEmail(dto.email);
     if (!(await this.universities.isSupportedEmail(email))) {
-      throw new BadRequestException(UNSUPPORTED_EMAIL_MESSAGE);
+      throw new BadRequestException(UNSUPPORTED_UNIVERSITY_MESSAGE);
     }
 
     const existing = await this.users.findByEmail(email);

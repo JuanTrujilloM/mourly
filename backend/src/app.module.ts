@@ -24,6 +24,7 @@ import { UniversitiesModule } from './modules/universities/universities.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { HobbiesModule } from './modules/hobbies/hobbies.module';
+import { WaitlistModule } from './modules/waitlist/waitlist.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { HobbiesModule } from './modules/hobbies/hobbies.module';
     FeedbackModule,
     ReportsModule,
     HobbiesModule,
+    WaitlistModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },

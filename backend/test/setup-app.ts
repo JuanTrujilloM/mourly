@@ -33,6 +33,7 @@ const MODEL_NAMES = [
   'feedback',
   'report',
   'university',
+  'waitlistEntry',
 ];
 
 const MODEL_METHODS = [
