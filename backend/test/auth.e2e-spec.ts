@@ -49,6 +49,15 @@ describe('Auth (e2e)', () => {
       expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
     });
 
+    it('accepts the domain however it was capitalised', async () => {
+      const response = await request(server())
+        .post('/auth/register')
+        .send({ email: 'Ana@EAFIT.edu.CO', cellphone: VALID_SIGNUP.cellphone })
+        .expect(200);
+
+      expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
+    });
+
     it('rejects a non-university email', async () => {
       await request(server())
         .post('/auth/register')

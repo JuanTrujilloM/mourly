@@ -123,4 +123,27 @@ describe('Universities admin CRUD (e2e)', () => {
 
     expect(response.body.message).toContain(UNSUPPORTED_UNIVERSITY_MESSAGE);
   });
+
+  describe('domains that only look like a supported one', () => {
+    const LOOK_ALIKES = [
+      'eafit.co',
+      'eafit.com',
+      'eafit.edu',
+      'eafit.edu.com',
+      'eafit.edu.co.evil.com',
+      'evil-eafit.edu.co',
+      'xeafit.edu.co',
+      'correo.eafit.edu.co',
+      'eаfit.edu.co',
+    ];
+
+    it.each(LOOK_ALIKES)('rejects %s', async (domain) => {
+      await request(server())
+        .post('/auth/register')
+        .send({ email: `bobo@${domain}`, cellphone: '+573001112233' })
+        .expect(400);
+
+      expect(context.prisma.user.create).not.toHaveBeenCalled();
+    });
+  });
 });
