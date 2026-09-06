@@ -1,12 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { MailService } from '../mail/mail.service';
 import { VerificationCodeService } from './verification-code.service';
+import { VerificationResendPolicyService } from './verification-resend-policy.service';
+import { RESEND_LIMIT_MESSAGE, cooldownMessage } from './verification-messages';
 
 @Injectable()
 export class VerificationDeliveryService {
   constructor(
     private readonly codes: VerificationCodeService,
     private readonly mail: MailService,
+    private readonly resendPolicy: VerificationResendPolicyService,
   ) {}
 
   async send(userId: string, email: string): Promise<void> {
@@ -14,18 +22,25 @@ export class VerificationDeliveryService {
     await this.mail.sendVerificationCode(email, code);
   }
 
-  async sendIfCooldownElapsed(userId: string, email: string): Promise<void> {
-    const secondsLeft = await this.codes.getSecondsUntilResendAllowed(userId);
+  async sendIfAllowed(userId: string, email: string): Promise<void> {
+    if (await this.resendPolicy.hasExhaustedResends(userId)) return;
+    const secondsLeft =
+      await this.resendPolicy.getSecondsUntilResendAllowed(userId);
     if (secondsLeft <= 0) {
       await this.send(userId, email);
     }
   }
 
-  async sendOrThrowCooldown(userId: string, email: string): Promise<void> {
-    const secondsLeft = await this.codes.getSecondsUntilResendAllowed(userId);
+  async sendOrThrow(userId: string, email: string): Promise<void> {
+    if (await this.resendPolicy.hasExhaustedResends(userId)) {
+      throw new ForbiddenException(RESEND_LIMIT_MESSAGE);
+    }
+
+    const secondsLeft =
+      await this.resendPolicy.getSecondsUntilResendAllowed(userId);
     if (secondsLeft > 0) {
       throw new HttpException(
-        `Please wait ${secondsLeft}s before requesting another code.`,
+        cooldownMessage(secondsLeft),
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }

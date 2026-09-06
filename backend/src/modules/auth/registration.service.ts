@@ -27,7 +27,7 @@ export class RegistrationService {
 
     const existing = await this.users.findByEmail(email);
     if (existing && (await this.codes.hasVerifiedEmail(existing.id))) {
-      await this.delivery.sendIfCooldownElapsed(existing.id, email);
+      await this.delivery.sendIfAllowed(existing.id, email);
       return { message: NEUTRAL_MESSAGE };
     }
     if (await this.users.isCellphoneTaken(dto.cellphone, existing?.id)) {

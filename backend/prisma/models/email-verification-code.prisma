@@ -1,11 +1,12 @@
 model EmailVerificationCode {
-  id         String    @id @default(uuid())
-  userId     String
-  codeHash   String // bcrypt hash of the 6-digit code — plaintext is never stored
-  expiresAt  DateTime
-  consumedAt DateTime?
-  attempts   Int       @default(0)
-  createdAt  DateTime  @default(now())
+  id          String    @id @default(uuid())
+  userId      String
+  codeHash    String // bcrypt hash of the 6-digit code — plaintext is never stored
+  expiresAt   DateTime
+  consumedAt  DateTime?
+  attempts    Int       @default(0)
+  resendCount Int       @default(0)
+  createdAt   DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

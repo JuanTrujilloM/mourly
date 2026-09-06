@@ -11,12 +11,13 @@ import {
 } from '@/lib/validation/auth';
 import { useVerifyCode } from '@/hooks/useVerifyCode';
 import { useResendCode } from '@/hooks/useResendCode';
-import { getApiErrorMessage } from '@/lib/utils/errors';
+import { getApiErrorMessage, getApiErrorStatus } from '@/lib/utils/errors';
 import { useResendCooldown } from './useResendCooldown';
 import { ResendCodeButton } from './ResendCodeButton';
 import { MissingEmailNotice } from './MissingEmailNotice';
 import { VerificationCodeField } from './VerificationCodeField';
 import { VerificationErrorNotice } from './VerificationErrorNotice';
+import { ResendLimitDialog } from './ResendLimitDialog';
 import { Button } from '@/components/ui/Button';
 
 export function VerificationForm() {
@@ -31,6 +32,7 @@ export function VerificationForm() {
 
   const { cooldown, startCooldown } = useResendCooldown();
   const [resendNotice, setResendNotice] = useState<string | null>(null);
+  const [resendLimitReached, setResendLimitReached] = useState(false);
 
   const {
     register,
@@ -59,6 +61,11 @@ export function VerificationForm() {
       setResendNotice('Te enviamos un código nuevo.');
       startCooldown();
     } catch (error) {
+      // 403 is the spent resend allowance; every other failure stays inline.
+      if (getApiErrorStatus(error) === 403) {
+        setResendLimitReached(true);
+        return;
+      }
       setResendNotice(getApiErrorMessage(error));
     }
   };
@@ -92,6 +99,11 @@ export function VerificationForm() {
         isResending={isResending}
         notice={resendNotice}
         onResend={onResend}
+      />
+
+      <ResendLimitDialog
+        open={resendLimitReached}
+        onClose={() => setResendLimitReached(false)}
       />
     </div>
   );

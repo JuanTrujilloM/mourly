@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { AxiosError, AxiosHeaders } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithQuery, searchParams } from '@/test-utils';
 import * as authApi from '@/lib/api/auth';
@@ -10,6 +11,19 @@ const EMAIL = 'ana@eafit.edu.co';
 vi.mock('@/lib/api/auth');
 
 const verifyCode = vi.mocked(authApi.verifyCode);
+const resendCode = vi.mocked(authApi.resendCode);
+
+function apiError(status: number, message: string): AxiosError {
+  const error = new AxiosError('request failed');
+  error.response = {
+    data: { message },
+    status,
+    statusText: 'Error',
+    headers: new AxiosHeaders(),
+    config: { headers: new AxiosHeaders() },
+  };
+  return error;
+}
 
 async function submitCode() {
   await userEvent.type(screen.getByLabelText(/código/i), '123456');
@@ -45,5 +59,36 @@ describe('VerificationForm', () => {
         '/register',
       ),
     );
+  });
+
+  it('shows the cooldown inline when a resend is too soon', async () => {
+    resendCode.mockRejectedValue(
+      apiError(429, 'Esperá 42s antes de pedir otro código.'),
+    );
+
+    renderWithQuery(<VerificationForm />);
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Reenviar código' }),
+    );
+
+    expect(
+      await screen.findByText('Esperá 42s antes de pedir otro código.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('opens the limit popup once the resend allowance is spent', async () => {
+    resendCode.mockRejectedValue(
+      apiError(403, 'Alcanzaste el máximo de reenvíos.'),
+    );
+
+    renderWithQuery(<VerificationForm />);
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Reenviar código' }),
+    );
+
+    expect(
+      await screen.findByText('Alcanzaste el máximo de reenvíos'),
+    ).toBeInTheDocument();
   });
 });

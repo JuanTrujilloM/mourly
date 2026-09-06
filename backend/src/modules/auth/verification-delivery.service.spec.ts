@@ -1,18 +1,21 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
 import { MailService } from '../mail/mail.service';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationDeliveryService } from './verification-delivery.service';
+import { VerificationResendPolicyService } from './verification-resend-policy.service';
 
-function setup(secondsLeft = 0) {
-  const codes = {
-    issueForUser: jest.fn().mockResolvedValue('123456'),
-    getSecondsUntilResendAllowed: jest.fn().mockResolvedValue(secondsLeft),
-  };
+function setup(secondsLeft = 0, exhausted = false) {
+  const codes = { issueForUser: jest.fn().mockResolvedValue('123456') };
   const mail = { sendVerificationCode: jest.fn().mockResolvedValue(undefined) };
+  const resendPolicy = {
+    getSecondsUntilResendAllowed: jest.fn().mockResolvedValue(secondsLeft),
+    hasExhaustedResends: jest.fn().mockResolvedValue(exhausted),
+  };
 
   const service = new VerificationDeliveryService(
     codes as unknown as VerificationCodeService,
     mail as unknown as MailService,
+    resendPolicy as unknown as VerificationResendPolicyService,
   );
   return { service, codes, mail };
 }
@@ -30,11 +33,11 @@ describe('VerificationDeliveryService', () => {
     );
   });
 
-  describe('sendIfCooldownElapsed', () => {
+  describe('sendIfAllowed', () => {
     it('sends when the cooldown has elapsed', async () => {
       const { service, mail } = setup(0);
 
-      await service.sendIfCooldownElapsed('u1', 'ana@eafit.edu.co');
+      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
 
       expect(mail.sendVerificationCode).toHaveBeenCalled();
     });
@@ -42,17 +45,25 @@ describe('VerificationDeliveryService', () => {
     it('stays silent while the cooldown is active', async () => {
       const { service, mail } = setup(30);
 
-      await service.sendIfCooldownElapsed('u1', 'ana@eafit.edu.co');
+      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
+
+      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
+    });
+
+    it('stays silent once the resend limit is spent', async () => {
+      const { service, mail } = setup(0, true);
+
+      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
 
       expect(mail.sendVerificationCode).not.toHaveBeenCalled();
     });
   });
 
-  describe('sendOrThrowCooldown', () => {
+  describe('sendOrThrow', () => {
     it('sends when the cooldown has elapsed', async () => {
       const { service, mail } = setup(0);
 
-      await service.sendOrThrowCooldown('u1', 'ana@eafit.edu.co');
+      await service.sendOrThrow('u1', 'ana@eafit.edu.co');
 
       expect(mail.sendVerificationCode).toHaveBeenCalled();
     });
@@ -61,7 +72,7 @@ describe('VerificationDeliveryService', () => {
       const { service, mail } = setup(42);
 
       const failure = await service
-        .sendOrThrowCooldown('u1', 'ana@eafit.edu.co')
+        .sendOrThrow('u1', 'ana@eafit.edu.co')
         .catch((error: HttpException) => error);
 
       expect(failure).toBeInstanceOf(HttpException);
@@ -69,6 +80,17 @@ describe('VerificationDeliveryService', () => {
         HttpStatus.TOO_MANY_REQUESTS,
       );
       expect((failure as HttpException).message).toContain('42');
+      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
+    });
+
+    it('reports a spent resend limit as 403 before the cooldown', async () => {
+      const { service, mail } = setup(42, true);
+
+      const failure = await service
+        .sendOrThrow('u1', 'ana@eafit.edu.co')
+        .catch((error: HttpException) => error);
+
+      expect(failure).toBeInstanceOf(ForbiddenException);
       expect(mail.sendVerificationCode).not.toHaveBeenCalled();
     });
   });

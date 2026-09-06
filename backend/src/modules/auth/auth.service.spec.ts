@@ -23,8 +23,8 @@ function setup() {
     hasVerifiedEmail: jest.fn().mockResolvedValue(false),
   };
   const delivery = {
-    sendIfCooldownElapsed: jest.fn().mockResolvedValue(undefined),
-    sendOrThrowCooldown: jest.fn().mockResolvedValue(undefined),
+    sendIfAllowed: jest.fn().mockResolvedValue(undefined),
+    sendOrThrow: jest.fn().mockResolvedValue(undefined),
   };
   const sessions = {
     issueFor: jest.fn().mockResolvedValue({ accessToken: 'a' }),
@@ -50,7 +50,7 @@ describe('AuthService', () => {
 
       const result = await service.login({ email: 'Ana@EAFIT.edu.co' });
 
-      expect(delivery.sendIfCooldownElapsed).toHaveBeenCalledWith(
+      expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
@@ -63,7 +63,7 @@ describe('AuthService', () => {
 
       const result = await service.login({ email: 'ghost@eafit.edu.co' });
 
-      expect(delivery.sendIfCooldownElapsed).not.toHaveBeenCalled();
+      expect(delivery.sendIfAllowed).not.toHaveBeenCalled();
       expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     });
   });
@@ -120,20 +120,23 @@ describe('AuthService', () => {
 
       const result = await service.resend({ email: 'ana@eafit.edu.co' });
 
-      expect(delivery.sendOrThrowCooldown).toHaveBeenCalledWith(
+      expect(delivery.sendOrThrow).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
       expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     });
 
-    it('stays silent for an already verified account', async () => {
+    it('still sends for an account that verified before', async () => {
       const { service, codes, delivery } = setup();
       codes.hasVerifiedEmail.mockResolvedValue(true);
 
       const result = await service.resend({ email: 'ana@eafit.edu.co' });
 
-      expect(delivery.sendOrThrowCooldown).not.toHaveBeenCalled();
+      expect(delivery.sendOrThrow).toHaveBeenCalledWith(
+        'u1',
+        'ana@eafit.edu.co',
+      );
       expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     });
 
@@ -143,7 +146,7 @@ describe('AuthService', () => {
 
       const result = await service.resend({ email: 'ghost@eafit.edu.co' });
 
-      expect(delivery.sendOrThrowCooldown).not.toHaveBeenCalled();
+      expect(delivery.sendOrThrow).not.toHaveBeenCalled();
       expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     });
   });

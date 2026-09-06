@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../../config/prisma.service';
 import { VerificationCodeService } from './verification-code.service';
+import { VerificationResendPolicyService } from './verification-resend-policy.service';
 
 function setup(env: Record<string, string> = {}) {
   const create = jest.fn().mockResolvedValue({ id: 'code-1' });
@@ -13,8 +14,11 @@ function setup(env: Record<string, string> = {}) {
   } as unknown as PrismaService;
 
   const config = { get: (key: string) => env[key] } as unknown as ConfigService;
-  const service = new VerificationCodeService(prisma, config);
-  return { service, create, deleteMany, findFirst, update };
+  const resendPolicy = {
+    nextResendCount: jest.fn().mockResolvedValue(0),
+  } as unknown as VerificationResendPolicyService;
+  const service = new VerificationCodeService(prisma, config, resendPolicy);
+  return { service, create, deleteMany, findFirst, update, resendPolicy };
 }
 
 function activeCode(overrides: Record<string, unknown> = {}) {
@@ -120,30 +124,14 @@ describe('VerificationCodeService', () => {
     });
   });
 
-  describe('getSecondsUntilResendAllowed', () => {
-    it('allows an immediate send when no code exists', async () => {
-      const { service } = setup();
+  describe('issueForUser', () => {
+    it('stamps the code with the resend count the policy reports', async () => {
+      const { service, create, resendPolicy } = setup();
+      jest.spyOn(resendPolicy, 'nextResendCount').mockResolvedValue(2);
 
-      expect(await service.getSecondsUntilResendAllowed('u1')).toBe(0);
-    });
+      await service.issueForUser('u1');
 
-    it('reports the remaining cooldown for a fresh code', async () => {
-      const { service, findFirst } = setup();
-      findFirst.mockResolvedValue(activeCode({ createdAt: new Date() }));
-
-      const remaining = await service.getSecondsUntilResendAllowed('u1');
-
-      expect(remaining).toBeGreaterThan(0);
-      expect(remaining).toBeLessThanOrEqual(60);
-    });
-
-    it('reports zero once the cooldown has passed', async () => {
-      const { service, findFirst } = setup();
-      findFirst.mockResolvedValue(
-        activeCode({ createdAt: new Date(Date.now() - 120_000) }),
-      );
-
-      expect(await service.getSecondsUntilResendAllowed('u1')).toBe(0);
+      expect(create.mock.calls[0][0].data.resendCount).toBe(2);
     });
   });
 });
