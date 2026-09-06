@@ -127,7 +127,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
 
       expect(response.body.message).toBe(
-        'Invalid or expired verification code.',
+        'El código es incorrecto o expiró. Si todavía no tenés cuenta, registrate primero.',
       );
     });
 

@@ -16,6 +16,7 @@ import { useResendCooldown } from './useResendCooldown';
 import { ResendCodeButton } from './ResendCodeButton';
 import { MissingEmailNotice } from './MissingEmailNotice';
 import { VerificationCodeField } from './VerificationCodeField';
+import { VerificationErrorNotice } from './VerificationErrorNotice';
 import { Button } from '@/components/ui/Button';
 
 export function VerificationForm() {
@@ -62,11 +63,13 @@ export function VerificationForm() {
     }
   };
 
+  // The API answers login and register neutrally, so a code is only sent when
+  // the email is eligible: this copy must not promise one outright.
   return (
     <div className="space-y-4">
       <p className="text-ink-2 text-sm">
-        Ingresá el código de 6 dígitos que enviamos a{' '}
-        <span className="text-ink font-medium">{email}</span>.
+        Si <span className="text-ink font-medium">{email}</span> es una cuenta
+        válida, te enviamos un código de 6 dígitos. Ingresalo acá.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
@@ -75,8 +78,8 @@ export function VerificationForm() {
           error={errors.code}
         />
 
-        {errors.root && (
-          <p className="text-error text-sm">{errors.root.message}</p>
+        {errors.root?.message && (
+          <VerificationErrorNotice message={errors.root.message} />
         )}
 
         <Button type="submit" className="w-full" disabled={isPending}>
