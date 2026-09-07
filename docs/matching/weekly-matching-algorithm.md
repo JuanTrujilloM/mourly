@@ -98,7 +98,7 @@ history) into this infra-free shape so the engine never touches the DB:
 interface MatchCandidate {
   userId: string;
   // hard-filter inputs
-  gender: string; genderInterest: string;
+  gender: string; genderInterests: string[];
   age: number; minAge: number; maxAge: number;
   university: string; requiresSameUniversity: boolean;
   // soft-score inputs
@@ -125,18 +125,19 @@ expressed compatible preferences with each other".
 | Age (AC #4) | `b.age ∈ [a.minAge, a.maxAge]` **and** `a.age ∈ [b.minAge, b.maxAge]` |
 | University (AC #5) | if either sets `requiresSameUniversity`, both must share `university` |
 
-`attractedTo(viewer, target)`: `true` if `viewer.genderInterest === 'Todos'`, else the
-target's gender must map to the viewer's interest bucket:
+`attractedTo(viewer, target)`: the target's gender must map to a bucket contained in the
+viewer's `genderInterests` (a multi-select of one or more buckets):
 
 ```
 Masculino → Hombres    Femenino → Mujeres    No binario → No binario
 ```
 
-`Prefiero no decir` has no bucket, so such a profile only matches partners open to `Todos`.
+`Prefiero no decir` has no bucket, so such a profile only matches partners who selected every bucket.
 
-> **Why genderInterest, not orientation?** `genderInterest` is the enumerable "who I want"
-> field; it operationally encodes AC #3 ("orientation + gender preference"). The free-form
-> `orientation` label is not used as a hard filter to avoid contradictions.
+> **Why genderInterests, not orientation?** `genderInterests` is the enumerable "who I want"
+> field; it operationally encodes AC #3 ("orientation + gender preference"). A separate
+> orientation label was removed on 2026-09-07: it was never a filter, it could contradict the
+> interest field, and it was a sensitive datum collected without a use.
 
 Only pairs that pass eligibility become **edges** in the matching graph.
 

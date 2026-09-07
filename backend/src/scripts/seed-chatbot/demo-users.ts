@@ -64,10 +64,9 @@ export async function seedDemoUsers(
     create: {
       userId: me.id,
       relationshipType: 'Seria',
-      orientation: 'Bisexual',
       minAge: 20,
       maxAge: 28,
-      genderInterest: 'Todos',
+      genderInterests: ['Hombres', 'Mujeres', 'No binario'],
       sameUniversity: false,
       heightRange: 'Indiferente',
       energyVibe: 'Tranquila',

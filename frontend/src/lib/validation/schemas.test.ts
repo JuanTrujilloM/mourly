@@ -19,8 +19,7 @@ const VALID_PREFERENCES = {
   ageRange: { min: 20, max: 28 },
   hobbies: ['Cine', 'Café', 'Correr'],
   relationshipType: 'Seria',
-  orientation: 'Heterosexual',
-  genderInterest: 'Hombres',
+  genderInterests: ['Hombres'],
   sameUniversity: false,
   heightRange: 'Indiferente',
   energyVibe: ['Tranquilo/a'],
@@ -134,6 +133,22 @@ describe('profileSchema', () => {
 });
 
 describe('preferencesSchema', () => {
+  it('requires at least one gender interest', () => {
+    expect(
+      preferencesSchema.safeParse({ ...VALID_PREFERENCES, genderInterests: [] })
+        .success,
+    ).toBe(false);
+  });
+
+  it('accepts several gender interests', () => {
+    expect(
+      preferencesSchema.safeParse({
+        ...VALID_PREFERENCES,
+        genderInterests: ['Mujeres', 'No binario'],
+      }).success,
+    ).toBe(true);
+  });
+
   it('accepts complete preferences', () => {
     expect(preferencesSchema.safeParse(VALID_PREFERENCES).success).toBe(true);
   });

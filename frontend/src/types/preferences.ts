@@ -1,10 +1,9 @@
 export interface PreferencesResponse {
   id: string;
   relationshipType: string;
-  orientation: string;
   minAge: number;
   maxAge: number;
-  genderInterest: string;
+  genderInterests: string[];
   sameUniversity: boolean;
   heightRange: string;
   energyVibe: string;

@@ -21,7 +21,6 @@ const context: ChatUserContext = {
   semester: '5',
   interests: [],
   relationshipType: null,
-  orientation: null,
   energyVibe: null,
 };
 

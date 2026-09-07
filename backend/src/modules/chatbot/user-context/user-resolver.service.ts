@@ -10,7 +10,6 @@ export interface ChatUserContext {
   semester: string | null;
   interests: string[];
   relationshipType: string | null;
-  orientation: string | null;
   energyVibe: string | null;
 }
 
@@ -50,7 +49,6 @@ type LoadedUser = {
   } | null;
   preferences: {
     relationshipType: string;
-    orientation: string;
     energyVibe: string;
   } | null;
 };
@@ -67,7 +65,6 @@ function toContext(userId: string, user: LoadedUser): ChatUserContext {
     semester: profile?.semester ?? null,
     interests: profile?.hobbies.map((entry) => entry.hobby.name) ?? [],
     relationshipType: preferences?.relationshipType ?? null,
-    orientation: preferences?.orientation ?? null,
     energyVibe: preferences?.energyVibe ?? null,
   };
 }

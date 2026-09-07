@@ -25,7 +25,7 @@ export const PRIVACIDAD: LegalDocument = {
         'Identificación y contacto: nombre, correo institucional, número de celular (WhatsApp) y fecha de nacimiento.',
         'Académicos: universidad, carrera y semestre.',
         'Perfil: género, estatura, biografía, hobbies e intereses, y las fotos que usted sube.',
-        'Datos sensibles: orientación sexual, interés de género, tipo de relación que busca, y la información que usted registre en un reporte sobre otra persona.',
+        'Datos sensibles: los géneros que le interesan (que, junto con su propio género, pueden revelar su orientación sexual), el tipo de relación que busca, y la información que usted registre en un reporte sobre otra persona. Mourly no pregunta ni almacena una etiqueta de orientación sexual.',
         'Actividad: propuestas de cita, disponibilidad horaria, citas confirmadas y su feedback posterior (si ocurrió, calificación, comentarios, motivo de inasistencia y gasto aproximado).',
         'Conversaciones con el asistente de Mourly en WhatsApp.',
         'Técnicos: dirección IP, dispositivo y registros de acceso.',
@@ -34,7 +34,7 @@ export const PRIVACIDAD: LegalDocument = {
     {
       heading: 'Datos sensibles: su autorización es libre y separada',
       paragraphs: [
-        'Su orientación sexual, su interés de género, sus preferencias de relación y la información de los reportes son datos sensibles (artículo 5 de la Ley 1581 de 2012). Usted no está obligado a autorizar su tratamiento y su negativa no le impide crear una cuenta ni ejercer sus derechos. Sin embargo, la función de emparejamiento no puede operar sin esta información: si no la autoriza, su cuenta permanece activa pero no recibe propuestas de cita.',
+        'Los géneros que le interesan, sus preferencias de relación y la información de los reportes son datos sensibles (artículo 5 de la Ley 1581 de 2012), porque pueden revelar su orientación sexual. Usted no está obligado a autorizar su tratamiento y su negativa no le impide crear una cuenta ni ejercer sus derechos. Sin embargo, la función de emparejamiento no puede operar sin esta información: si no la autoriza, su cuenta permanece activa pero no recibe propuestas de cita.',
         'La autorización para datos sensibles se solicita de forma separada de la aceptación de los Términos y condiciones, y puede revocarla en cualquier momento escribiendo al canal indicado arriba.',
       ],
     },

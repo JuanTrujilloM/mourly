@@ -19,7 +19,6 @@ export interface Catalog {
   genders: string[];
   semesters: string[];
   relationshipTypes: string[];
-  orientations: string[];
   genderInterests: string[];
   heightRanges: string[];
   venueTypes: string[];

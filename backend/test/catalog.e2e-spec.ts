@@ -36,7 +36,6 @@ describe('Catalog (e2e)', () => {
       'genders',
       'semesters',
       'relationshipTypes',
-      'orientations',
       'genderInterests',
       'heightRanges',
       'venueTypes',

@@ -21,10 +21,9 @@ const DETAIL_USER = {
   },
   preferences: {
     relationshipType: 'Seria',
-    orientation: 'Heterosexual',
     minAge: 20,
     maxAge: 28,
-    genderInterest: 'Hombres',
+    genderInterests: ['Hombres'],
     sameUniversity: false,
     heightRange: 'Indiferente',
     energyVibe: 'Tranquila',

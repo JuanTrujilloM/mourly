@@ -40,7 +40,6 @@ describe('UserResolverService', () => {
       },
       preferences: {
         relationshipType: 'Seria',
-        orientation: 'Heterosexual',
         energyVibe: 'Tranquila',
       },
     });

@@ -5,14 +5,14 @@ const man = (id: string, over = {}) =>
   makeCandidate({
     userId: id,
     gender: 'Masculino',
-    genderInterest: 'Mujeres',
+    genderInterests: ['Mujeres'],
     ...over,
   });
 const woman = (id: string, over = {}) =>
   makeCandidate({
     userId: id,
     gender: 'Femenino',
-    genderInterest: 'Hombres',
+    genderInterests: ['Hombres'],
     ...over,
   });
 

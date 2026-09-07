@@ -6,7 +6,7 @@ export function makeCandidate(
   return {
     userId: 'user',
     gender: 'Masculino',
-    genderInterest: 'Mujeres',
+    genderInterests: ['Mujeres'],
     age: 22,
     minAge: 18,
     maxAge: 30,

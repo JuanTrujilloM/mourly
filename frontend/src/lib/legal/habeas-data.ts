@@ -24,7 +24,7 @@ export const HABEAS_DATA: LegalDocument = {
     {
       heading: 'Datos sensibles',
       paragraphs: [
-        'Su orientación sexual, su interés de género, sus preferencias de relación y la información contenida en reportes son datos sensibles. Usted no está obligado a autorizar su tratamiento. Esa autorización se solicita de forma separada y puede negarla o revocarla sin que ello afecte el resto de sus derechos.',
+        'Los géneros que le interesan, sus preferencias de relación y la información contenida en reportes son datos sensibles, porque pueden revelar su orientación sexual. Usted no está obligado a autorizar su tratamiento. Esa autorización se solicita de forma separada y puede negarla o revocarla sin que ello afecte el resto de sus derechos.',
       ],
     },
     {
