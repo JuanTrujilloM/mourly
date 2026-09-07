@@ -24,8 +24,9 @@ export const COMPANY: Company = {
   city: 'Medellín, Colombia',
   foundedYear: 2026,
   domain: 'mourly.com',
-  // Ley 1581 requires a physical address in the habeas data notice; the line
-  // is omitted while this is empty. Fill it before the legal pages go live.
+  // Ley 1581 asks for a physical address in the habeas data notice; the line
+  // is omitted while this is empty. Publish the address declared to the
+  // Cámara de Comercio once the SAS is registered.
   address: '',
   contactEmail: 'cloud@mourly.com',
 };
