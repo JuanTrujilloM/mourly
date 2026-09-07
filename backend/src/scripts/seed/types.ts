@@ -15,10 +15,9 @@ export interface StudentSeed {
   hobbies: string[];
   preferences: {
     relationshipType: string;
-    orientation: string;
     minAge: number;
     maxAge: number;
-    genderInterest: 'Hombres' | 'Mujeres' | 'No binario' | 'Todos';
+    genderInterests: ('Hombres' | 'Mujeres' | 'No binario')[];
     sameUniversity: boolean;
     heightRange: string;
     energyVibe: string[];

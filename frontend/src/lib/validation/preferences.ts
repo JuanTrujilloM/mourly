@@ -10,8 +10,9 @@ export const preferencesSchema = z.object({
   relationshipType: z
     .string()
     .min(1, 'Elegí qué tipo de relación buscás.'),
-  orientation: z.string().min(1, 'Elegí tu orientación.'),
-  genderInterest: z.string().min(1, 'Elegí qué género te interesa.'),
+  genderInterests: z
+    .array(z.string())
+    .min(1, 'Elegí al menos un género que te interese.'),
   sameUniversity: z.boolean({
     message: 'Indicá tu preferencia de universidad.',
   }),

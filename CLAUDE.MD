@@ -84,7 +84,7 @@ mourly/
 - Relations: N ProfileInterest → Interest
 
 **Preferences**
-- id, userId, relationshipType, orientation, minAge, maxAge, genderInterest, sameUniversity, heightRange, energyVibe
+- id, userId, relationshipType, minAge, maxAge, genderInterests (string[]), sameUniversity, heightRange, energyVibe
 
 **Match**
 - id, userAId, userBId, compatibilityScore (float), status, createdAt, updatedAt
@@ -128,10 +128,10 @@ Validate that the domain belongs to a supported private university. Send a verif
 Fields: name, date of birth (>17), gender, height, photos (1–5), biography (max 150 chars), social media (optional), university (auto-detected from email), major, semester, first thing you want your date to know about you.
 
 ### HU-03: Interests and preferences
-Fields: interests (multi-select, min 3), hobbies (min 3), relationship type, sexual orientation, height and body type preference, facial features (optional), energy/vibe.
+Fields: interests (multi-select, min 3), hobbies (min 3), relationship type, genders of interest (multi-select, min 1: Hombres / Mujeres / No binario; no separate sexual-orientation question), height and body type preference, facial features (optional), energy/vibe.
 
 ### HU-04: AI matching algorithm
-Runs weekly. Evaluates: interests, hobbies, relationship type, orientation, physical preferences, energy/vibe, university, semester. Generates exactly 1 match per user without repeating previous matches.
+Runs weekly. Evaluates: interests, hobbies, relationship type, gender interest (mutual), physical preferences, energy/vibe, university, semester. Generates exactly 1 match per user without repeating previous matches.
 
 ### HU-05: Match notification via WhatsApp
 Sends name, age, university, major, photo, bio of the match + unique tokenized link to select availability.

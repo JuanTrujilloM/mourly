@@ -15,7 +15,7 @@ const USER = {
     hobbies: [{ hobby: { name: 'Cine' } }],
   },
   preferences: {
-    genderInterest: 'Hombres',
+    genderInterests: ['Hombres'],
     minAge: 20,
     maxAge: 28,
     sameUniversity: false,

@@ -23,10 +23,9 @@ type DetailUser = {
   } | null;
   preferences: {
     relationshipType: string;
-    orientation: string;
     minAge: number;
     maxAge: number;
-    genderInterest: string;
+    genderInterests: string[];
     sameUniversity: boolean;
     heightRange: string;
     energyVibe: string;
@@ -39,10 +38,9 @@ function mapPreferences(preferences: DetailUser['preferences']) {
   }
   return {
     relationshipType: preferences.relationshipType,
-    orientation: preferences.orientation,
     minAge: preferences.minAge,
     maxAge: preferences.maxAge,
-    genderInterest: preferences.genderInterest,
+    genderInterests: preferences.genderInterests,
     sameUniversity: preferences.sameUniversity,
     heightRange: preferences.heightRange,
     energyVibe: preferences.energyVibe,

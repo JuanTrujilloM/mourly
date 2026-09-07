@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsBoolean,
@@ -12,13 +13,13 @@ import {
 } from 'class-validator';
 import {
   RELATIONSHIP_TYPES,
-  ORIENTATIONS,
   GENDER_INTERESTS,
   HEIGHT_RANGES,
   AGE_MIN,
   AGE_MAX,
   MIN_HOBBIES,
   MIN_VIBES,
+  MIN_GENDER_INTERESTS,
 } from '../constants/preferences-options';
 
 class AgeRangeDto {
@@ -48,11 +49,13 @@ export class CreatePreferencesDto {
   @IsIn(RELATIONSHIP_TYPES, { message: 'Invalid relationship type.' })
   relationshipType!: string;
 
-  @IsIn(ORIENTATIONS, { message: 'Invalid orientation.' })
-  orientation!: string;
-
-  @IsIn(GENDER_INTERESTS, { message: 'Invalid gender interest.' })
-  genderInterest!: string;
+  @IsArray()
+  @ArrayMinSize(MIN_GENDER_INTERESTS, {
+    message: 'Select at least one gender.',
+  })
+  @ArrayMaxSize(GENDER_INTERESTS.length, { message: 'Too many genders.' })
+  @IsIn(GENDER_INTERESTS, { each: true, message: 'Invalid gender interest.' })
+  genderInterests!: string[];
 
   @IsBoolean()
   sameUniversity!: boolean;

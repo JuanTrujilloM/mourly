@@ -8,12 +8,12 @@ import { MatchCandidate } from './engine/types';
 function candidate(
   userId: string,
   gender: string,
-  genderInterest: string,
+  genderInterests: string[],
 ): MatchCandidate {
   return {
     userId,
     gender,
-    genderInterest,
+    genderInterests,
     age: 23,
     minAge: 18,
     maxAge: 30,
@@ -64,8 +64,8 @@ describe('WeeklyMatchingService', () => {
 
   it('persists the pairs the engine produced as pending', async () => {
     const { service, createMany } = setup([
-      candidate('m', 'Masculino', 'Mujeres'),
-      candidate('w', 'Femenino', 'Hombres'),
+      candidate('m', 'Masculino', ['Mujeres']),
+      candidate('w', 'Femenino', ['Hombres']),
     ]);
 
     const pairs = await service.runWeeklyMatching();
@@ -78,8 +78,8 @@ describe('WeeklyMatchingService', () => {
 
   it('invites every created pair after the cron run', async () => {
     const { service, invites } = setup([
-      candidate('m', 'Masculino', 'Mujeres'),
-      candidate('w', 'Femenino', 'Hombres'),
+      candidate('m', 'Masculino', ['Mujeres']),
+      candidate('w', 'Femenino', ['Hombres']),
     ]);
 
     await service.handleWeeklyCron();

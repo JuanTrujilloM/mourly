@@ -6,9 +6,18 @@ const GENDER_TO_INTEREST: Record<string, string> = {
   'No binario': 'No binario',
 };
 
+const EVERY_INTEREST = Object.values(GENDER_TO_INTEREST);
+
+function openToEveryone(viewer: MatchCandidate): boolean {
+  return EVERY_INTEREST.every((interest) =>
+    viewer.genderInterests.includes(interest),
+  );
+}
+
 function attractedTo(viewer: MatchCandidate, target: MatchCandidate): boolean {
-  if (viewer.genderInterest === 'Todos') return true;
-  return GENDER_TO_INTEREST[target.gender] === viewer.genderInterest;
+  const interest = GENDER_TO_INTEREST[target.gender];
+  if (!interest) return openToEveryone(viewer);
+  return viewer.genderInterests.includes(interest);
 }
 
 function agesMutuallyInRange(a: MatchCandidate, b: MatchCandidate): boolean {

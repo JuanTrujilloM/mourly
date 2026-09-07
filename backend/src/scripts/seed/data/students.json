@@ -24,10 +24,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 21,
       "maxAge": 28,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Más alta",
       "energyVibe": [
@@ -61,10 +62,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 20,
       "maxAge": 26,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -97,10 +99,11 @@
     ],
     "preferences": {
       "relationshipType": "Casual abierto a seria",
-      "orientation": "Heterosexual",
       "minAge": 21,
       "maxAge": 29,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Similar",
       "energyVibe": [
@@ -134,10 +137,11 @@
     ],
     "preferences": {
       "relationshipType": "Abierto a todo",
-      "orientation": "Heterosexual",
       "minAge": 19,
       "maxAge": 26,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -171,10 +175,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Gay",
       "minAge": 21,
       "maxAge": 30,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -208,10 +213,13 @@
     ],
     "preferences": {
       "relationshipType": "Seria abierta a casual",
-      "orientation": "Bisexual",
       "minAge": 19,
       "maxAge": 27,
-      "genderInterest": "Todos",
+      "genderInterests": [
+        "Hombres",
+        "Mujeres",
+        "No binario"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -244,10 +252,13 @@
     ],
     "preferences": {
       "relationshipType": "Abierto a todo",
-      "orientation": "Otro",
       "minAge": 19,
       "maxAge": 28,
-      "genderInterest": "Todos",
+      "genderInterests": [
+        "Hombres",
+        "Mujeres",
+        "No binario"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -281,10 +292,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 22,
       "maxAge": 30,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Más alta",
       "energyVibe": [
@@ -318,10 +330,11 @@
     ],
     "preferences": {
       "relationshipType": "Casual abierto a seria",
-      "orientation": "Heterosexual",
       "minAge": 20,
       "maxAge": 27,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -355,10 +368,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Gay",
       "minAge": 21,
       "maxAge": 29,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -392,10 +406,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 21,
       "maxAge": 28,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Más alta",
       "energyVibe": [
@@ -429,10 +444,11 @@
     ],
     "preferences": {
       "relationshipType": "Casual",
-      "orientation": "Heterosexual",
       "minAge": 19,
       "maxAge": 26,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -466,10 +482,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Lesbiana",
       "minAge": 20,
       "maxAge": 28,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -503,10 +520,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 21,
       "maxAge": 29,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Similar",
       "energyVibe": [
@@ -540,10 +558,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 20,
       "maxAge": 28,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -577,10 +596,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria abierta a casual",
-      "orientation": "Lesbiana",
       "minAge": 20,
       "maxAge": 28,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -614,10 +634,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 21,
       "maxAge": 29,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": true,
       "heightRange": "Más alta",
       "energyVibe": [
@@ -651,10 +672,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 20,
       "maxAge": 28,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": true,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -688,10 +710,11 @@
     ],
     "preferences": {
       "relationshipType": "Casual abierto a seria",
-      "orientation": "Heterosexual",
       "minAge": 21,
       "maxAge": 29,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Similar",
       "energyVibe": [
@@ -725,10 +748,11 @@
     ],
     "preferences": {
       "relationshipType": "Casual",
-      "orientation": "Heterosexual",
       "minAge": 19,
       "maxAge": 27,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -762,10 +786,13 @@
     ],
     "preferences": {
       "relationshipType": "Abierto a todo",
-      "orientation": "Bisexual",
       "minAge": 19,
       "maxAge": 28,
-      "genderInterest": "Todos",
+      "genderInterests": [
+        "Hombres",
+        "Mujeres",
+        "No binario"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -798,10 +825,13 @@
     ],
     "preferences": {
       "relationshipType": "Amistad",
-      "orientation": "Prefiero no decir",
       "minAge": 20,
       "maxAge": 30,
-      "genderInterest": "Todos",
+      "genderInterests": [
+        "Hombres",
+        "Mujeres",
+        "No binario"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
@@ -835,10 +865,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 21,
       "maxAge": 29,
-      "genderInterest": "Hombres",
+      "genderInterests": [
+        "Hombres"
+      ],
       "sameUniversity": false,
       "heightRange": "Más alta",
       "energyVibe": [
@@ -872,10 +903,11 @@
     ],
     "preferences": {
       "relationshipType": "Seria",
-      "orientation": "Heterosexual",
       "minAge": 20,
       "maxAge": 28,
-      "genderInterest": "Mujeres",
+      "genderInterests": [
+        "Mujeres"
+      ],
       "sameUniversity": false,
       "heightRange": "Indiferente",
       "energyVibe": [
