@@ -3,6 +3,7 @@
 
 export interface Company {
   name: string;
+  legalName: string;
   legalStatus: string;
   city: string;
   foundedYear: number;
@@ -20,7 +21,9 @@ export interface Founder {
 
 export const COMPANY: Company = {
   name: 'Mourly',
-  legalStatus: 'Sociedad por acciones simplificada en constitución',
+  legalName: 'Mourly S.A.S.',
+  legalStatus:
+    'Mourly S.A.S. está en proceso de registro ante la Cámara de Comercio de Medellín',
   city: 'Medellín, Colombia',
   foundedYear: 2026,
   domain: 'mourly.com',

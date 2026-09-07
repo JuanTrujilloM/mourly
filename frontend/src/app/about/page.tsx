@@ -49,8 +49,8 @@ export default function AboutPage() {
             for young adults to meet offline.
           </p>
           <p className="label text-ink-3 mt-8">
-            {COMPANY.name} · {COMPANY.city} · Fundada en {COMPANY.foundedYear}{' '}
-            · Sociedad en constitución
+            {COMPANY.legalName} · {COMPANY.city} · Fundada en{' '}
+            {COMPANY.foundedYear} · Registro en proceso
           </p>
 
           <SectionLabel>Misión</SectionLabel>

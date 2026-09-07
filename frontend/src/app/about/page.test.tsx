@@ -24,6 +24,13 @@ describe('AboutPage', () => {
     }
   });
 
+  it('names the company as Mourly S.A.S. with registration in progress', () => {
+    render(<AboutPage />);
+
+    expect(screen.getByText(/Mourly S\.A\.S\./)).toBeInTheDocument();
+    expect(screen.getByText(/Registro en proceso/)).toBeInTheDocument();
+  });
+
   it('exposes the single public mailbox', () => {
     render(<AboutPage />);
 
