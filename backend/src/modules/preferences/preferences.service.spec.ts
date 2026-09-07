@@ -5,9 +5,8 @@ import { CreatePreferencesDto } from './dto/create-preferences.dto';
 
 const DTO = {
   relationshipType: 'Seria',
-  orientation: 'Heterosexual',
   ageRange: { min: 20, max: 28 },
-  genderInterest: 'Hombres',
+  genderInterests: ['Hombres', 'No binario'],
   sameUniversity: false,
   heightRange: 'Indiferente',
   energyVibe: ['Tranquilo/a', 'Aventurero/a'],
@@ -117,6 +116,16 @@ describe('PreferencesService', () => {
       expect(preferencesUpsert.mock.calls[0][0].update.energyVibe).toBe(
         'Tranquilo/a, Aventurero/a',
       );
+    });
+
+    it('stores every selected gender interest and nothing about orientation', async () => {
+      const { service, preferencesUpsert } = setup();
+
+      await service.save('u1', DTO);
+
+      const stored = preferencesUpsert.mock.calls[0][0].update;
+      expect(stored.genderInterests).toEqual(['Hombres', 'No binario']);
+      expect(stored).not.toHaveProperty('orientation');
     });
 
     it('maps the age range onto the stored columns', async () => {

@@ -33,8 +33,7 @@ export function usePreferencesForm(user: AuthUser, edit = false) {
       ageRange: { min: 20, max: 28 },
       hobbies: [],
       relationshipType: undefined,
-      orientation: undefined,
-      genderInterest: undefined,
+      genderInterests: [],
       sameUniversity: undefined,
       heightRange: undefined,
       energyVibe: [],
@@ -77,9 +76,7 @@ function toFormValues(preferences: PreferencesResponse): PreferencesValues {
     hobbies: preferences.hobbies,
     relationshipType:
       preferences.relationshipType as PreferencesValues['relationshipType'],
-    orientation: preferences.orientation as PreferencesValues['orientation'],
-    genderInterest:
-      preferences.genderInterest as PreferencesValues['genderInterest'],
+    genderInterests: preferences.genderInterests,
     sameUniversity: preferences.sameUniversity,
     heightRange: preferences.heightRange as PreferencesValues['heightRange'],
     energyVibe: preferences.energyVibe

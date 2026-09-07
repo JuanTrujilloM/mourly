@@ -13,7 +13,7 @@ export function RelationshipCard({
   form: UseFormReturn<PreferencesValues>;
 }) {
   const { errors } = form.formState;
-  const { relationshipTypes, orientations } = useCatalog();
+  const { relationshipTypes } = useCatalog();
 
   return (
     <Card title="Qué buscás" description="Definí el tipo de relación que querés.">
@@ -28,20 +28,6 @@ export function RelationshipCard({
             render={({ field }) => (
               <PillSelect
                 options={relationshipTypes}
-                value={field.value}
-                onChange={field.onChange}
-              />
-            )}
-          />
-        </Field>
-
-        <Field label="Orientación sexual" error={errors.orientation?.message}>
-          <Controller
-            control={form.control}
-            name="orientation"
-            render={({ field }) => (
-              <PillSelect
-                options={orientations}
                 value={field.value}
                 onChange={field.onChange}
               />

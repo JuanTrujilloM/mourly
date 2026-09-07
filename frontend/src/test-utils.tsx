@@ -7,9 +7,12 @@ import type { AuthUser } from '@/types/auth';
 export const routerReplace = vi.fn();
 export const routerPush = vi.fn();
 
+// Shared across every test file, so a suite that seeds it must clear it too.
+export const searchParams = new URLSearchParams();
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: routerReplace, push: routerPush }),
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => searchParams,
   useParams: () => ({}),
   usePathname: () => '/',
 }));

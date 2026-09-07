@@ -35,10 +35,9 @@ export class PreferencesService {
 
     const data = {
       relationshipType: dto.relationshipType,
-      orientation: dto.orientation,
       minAge: dto.ageRange.min,
       maxAge: dto.ageRange.max,
-      genderInterest: dto.genderInterest,
+      genderInterests: [...new Set(dto.genderInterests)],
       sameUniversity: dto.sameUniversity,
       heightRange: dto.heightRange,
       energyVibe: dto.energyVibe.join(', '),

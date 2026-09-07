@@ -49,7 +49,6 @@ describe('useCatalog', () => {
       genders: ['Femenino'],
       semesters: ['6'],
       relationshipTypes: ['Seria'],
-      orientations: ['Heterosexual'],
       genderInterests: ['Hombres'],
       heightRanges: ['Indiferente'],
       venueTypes: ['Café'],

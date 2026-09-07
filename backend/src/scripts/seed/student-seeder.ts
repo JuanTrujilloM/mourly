@@ -43,10 +43,9 @@ export async function seedStudents(
       data: {
         userId: user.id,
         relationshipType: student.preferences.relationshipType,
-        orientation: student.preferences.orientation,
         minAge: student.preferences.minAge,
         maxAge: student.preferences.maxAge,
-        genderInterest: student.preferences.genderInterest,
+        genderInterests: student.preferences.genderInterests,
         sameUniversity: student.preferences.sameUniversity,
         heightRange: student.preferences.heightRange,
         energyVibe: student.preferences.energyVibe.join(', '),

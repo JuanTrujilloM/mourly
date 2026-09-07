@@ -2,10 +2,9 @@ model Preferences {
   id               String   @id @default(cuid())
   userId           String   @unique
   relationshipType String
-  orientation      String
   minAge           Int
   maxAge           Int
-  genderInterest   String
+  genderInterests  String[]
   sameUniversity   Boolean
   heightRange      String
   energyVibe       String

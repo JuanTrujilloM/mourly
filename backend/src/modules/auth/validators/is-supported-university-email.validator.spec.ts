@@ -35,7 +35,7 @@ describe('IsSupportedUniversityEmailConstraint', () => {
 
   it('explains the rule in its message', () => {
     expect(setup(true).constraint.defaultMessage()).toBe(
-      'Only verified university emails are accepted.',
+      'Todavía no llegamos a tu universidad.',
     );
   });
 });

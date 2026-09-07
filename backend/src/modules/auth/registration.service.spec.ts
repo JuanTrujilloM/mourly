@@ -20,7 +20,7 @@ function setup() {
   const codes = { hasVerifiedEmail: jest.fn().mockResolvedValue(false) };
   const delivery = {
     send: jest.fn().mockResolvedValue(undefined),
-    sendIfCooldownElapsed: jest.fn().mockResolvedValue(undefined),
+    sendIfAllowed: jest.fn().mockResolvedValue(undefined),
   };
   const users = {
     findByEmail: jest.fn().mockResolvedValue(null),
@@ -83,7 +83,7 @@ describe('RegistrationService', () => {
     expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     expect(update).not.toHaveBeenCalled();
     expect(create).not.toHaveBeenCalled();
-    expect(delivery.sendIfCooldownElapsed).toHaveBeenCalledWith(
+    expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
       'verified-user',
       'ana@eafit.edu.co',
     );

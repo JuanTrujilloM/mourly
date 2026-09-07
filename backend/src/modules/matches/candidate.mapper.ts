@@ -37,7 +37,7 @@ export type LoadedCandidate = {
     hobbies: { hobby: { name: string } }[];
   } | null;
   preferences: {
-    genderInterest: string;
+    genderInterests: string[];
     minAge: number;
     maxAge: number;
     sameUniversity: boolean;
@@ -73,7 +73,7 @@ export function toCandidate(
   return {
     userId: user.id,
     gender: profile.gender,
-    genderInterest: preferences.genderInterest,
+    genderInterests: preferences.genderInterests,
     age: ageFrom(profile.dateOfBirth),
     minAge: preferences.minAge,
     maxAge: preferences.maxAge,

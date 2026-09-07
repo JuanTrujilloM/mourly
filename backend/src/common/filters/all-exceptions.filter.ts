@@ -9,7 +9,11 @@ import {
 import type { Response } from 'express';
 import { Prisma } from '../../generated/prisma/client';
 
-type ErrorBody = { statusCode: number; message: string | string[] };
+type ErrorBody = {
+  statusCode: number;
+  message: string | string[];
+  retryAfterSeconds?: number;
+};
 
 const SERVER_ERROR_THRESHOLD = 500;
 
@@ -59,8 +63,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (typeof payload === 'string') {
       return { statusCode: status, message: payload };
     }
-    const message = (payload as { message?: string | string[] }).message;
-    return { statusCode: status, message: message ?? exception.message };
+    const { message, retryAfterSeconds } = payload as {
+      message?: string | string[];
+      retryAfterSeconds?: number;
+    };
+    return {
+      statusCode: status,
+      message: message ?? exception.message,
+      ...(retryAfterSeconds === undefined ? {} : { retryAfterSeconds }),
+    };
   }
 
   private fromPrismaError(

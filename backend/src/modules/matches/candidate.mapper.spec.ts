@@ -13,7 +13,7 @@ const LOADED = {
     hobbies: [{ hobby: { name: 'Cine' } }, { hobby: { name: 'Viajar' } }],
   },
   preferences: {
-    genderInterest: 'Hombres',
+    genderInterests: ['Hombres'],
     minAge: 20,
     maxAge: 28,
     sameUniversity: false,
@@ -77,7 +77,7 @@ describe('toCandidate', () => {
     expect(candidate).toMatchObject({
       userId: 'u1',
       gender: 'Femenino',
-      genderInterest: 'Hombres',
+      genderInterests: ['Hombres'],
       age: 23,
       university: 'EAFIT',
       requiresSameUniversity: false,

@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card';
 import { Field } from '@/components/ui/Field';
 import { PillSelect } from '@/components/ui/PillSelect';
 import { Chip } from '@/components/ui/Chip';
+import { ChipGroup } from '@/components/ui/ChipGroup';
 
 export function LookingForCard({
   form,
@@ -19,12 +20,15 @@ export function LookingForCard({
   return (
     <Card title="Tu cita ideal" description="Contanos a quién buscás.">
       <div className="space-y-6">
-        <Field label="¿Qué género te interesa?" error={errors.genderInterest?.message}>
+        <Field
+          label="¿Qué género te interesa? Elegí uno o varios."
+          error={errors.genderInterests?.message}
+        >
           <Controller
             control={form.control}
-            name="genderInterest"
+            name="genderInterests"
             render={({ field }) => (
-              <PillSelect
+              <ChipGroup
                 options={genderInterests}
                 value={field.value}
                 onChange={field.onChange}

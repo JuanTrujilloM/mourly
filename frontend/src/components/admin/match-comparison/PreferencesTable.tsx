@@ -11,8 +11,7 @@ export function PreferencesTable({
   if (!a.preferences || !b.preferences) return null;
   const rows: { label: string; key: keyof AdminPreferences }[] = [
     { label: 'Busca', key: 'relationshipType' },
-    { label: 'Orientación', key: 'orientation' },
-    { label: 'Interés de género', key: 'genderInterest' },
+    { label: 'Le interesan', key: 'genderInterests' },
     { label: 'Rango de edad', key: 'minAge' },
     { label: 'Preferencia de estatura', key: 'heightRange' },
     { label: 'Energía / vibe', key: 'energyVibe' },
@@ -22,6 +21,7 @@ export function PreferencesTable({
   const render = (prefs: AdminPreferences, key: keyof AdminPreferences) => {
     if (key === 'minAge') return `${prefs.minAge}–${prefs.maxAge}`;
     if (key === 'sameUniversity') return prefs.sameUniversity ? 'Sí' : 'No';
+    if (key === 'genderInterests') return prefs.genderInterests.join(', ');
     return String(prefs[key]);
   };
 

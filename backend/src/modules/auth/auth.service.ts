@@ -30,7 +30,7 @@ export class AuthService {
     const email = normalizeEmail(dto.email);
     const user = await this.users.findByEmail(email);
     if (user) {
-      await this.delivery.sendIfCooldownElapsed(user.id, email);
+      await this.delivery.sendIfAllowed(user.id, email);
     }
     return { message: NEUTRAL_MESSAGE };
   }
@@ -56,8 +56,8 @@ export class AuthService {
   async resend(dto: ResendCodeDto): Promise<Acknowledgement> {
     const email = normalizeEmail(dto.email);
     const user = await this.users.findByEmail(email);
-    if (user && !(await this.codes.hasVerifiedEmail(user.id))) {
-      await this.delivery.sendOrThrowCooldown(user.id, email);
+    if (user) {
+      await this.delivery.sendOrThrow(user.id, email);
     }
     return { message: NEUTRAL_MESSAGE };
   }

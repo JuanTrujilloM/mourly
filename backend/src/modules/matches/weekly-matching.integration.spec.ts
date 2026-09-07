@@ -31,7 +31,7 @@ interface StoredOption {
   userBSelected: boolean;
 }
 
-function buildUser(id: string, gender: string, interest: string) {
+function buildUser(id: string, gender: string, interest: string[]) {
   return {
     id,
     isVerified: true,
@@ -46,7 +46,7 @@ function buildUser(id: string, gender: string, interest: string) {
       hobbies: [{ hobby: { name: 'Cine' } }],
     },
     preferences: {
-      genderInterest: interest,
+      genderInterests: interest,
       minAge: 18,
       maxAge: 30,
       sameUniversity: false,
@@ -59,8 +59,8 @@ function buildUser(id: string, gender: string, interest: string) {
 
 function makeStore() {
   const users = [
-    buildUser('m', 'Masculino', 'Mujeres'),
-    buildUser('w', 'Femenino', 'Hombres'),
+    buildUser('m', 'Masculino', ['Mujeres']),
+    buildUser('w', 'Femenino', ['Hombres']),
   ];
   const matches: StoredMatch[] = [];
   const venueOptions: StoredOption[] = [];

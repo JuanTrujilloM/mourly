@@ -7,7 +7,6 @@ const EMPTY_CATALOG: Catalog = {
   genders: [],
   semesters: [],
   relationshipTypes: [],
-  orientations: [],
   genderInterests: [],
   heightRanges: [],
   venueTypes: [],

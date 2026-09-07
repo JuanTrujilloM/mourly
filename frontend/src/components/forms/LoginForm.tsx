@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { loginSchema, type LoginValues } from '@/lib/validation/auth';
 import { useLogin } from '@/hooks/useLogin';
 import { getApiErrorMessage } from '@/lib/utils/errors';
+import { rememberResendCooldown } from '@/lib/utils/resend-cooldown';
 import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -23,6 +24,7 @@ export function LoginForm() {
   const onSubmit = async (values: LoginValues) => {
     try {
       await mutateAsync(values.email);
+      rememberResendCooldown(values.email);
       router.push(`/verify?email=${encodeURIComponent(values.email)}`);
     } catch (error) {
       setError('root', { message: getApiErrorMessage(error) });

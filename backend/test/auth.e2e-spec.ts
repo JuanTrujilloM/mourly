@@ -49,6 +49,15 @@ describe('Auth (e2e)', () => {
       expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
     });
 
+    it('accepts the domain however it was capitalised', async () => {
+      const response = await request(server())
+        .post('/auth/register')
+        .send({ email: 'Ana@EAFIT.edu.CO', cellphone: VALID_SIGNUP.cellphone })
+        .expect(200);
+
+      expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
+    });
+
     it('rejects a non-university email', async () => {
       await request(server())
         .post('/auth/register')
@@ -127,7 +136,7 @@ describe('Auth (e2e)', () => {
         .expect(400);
 
       expect(response.body.message).toBe(
-        'Invalid or expired verification code.',
+        'El código es incorrecto o expiró. Si todavía no tenés cuenta, registrate primero.',
       );
     });
 
@@ -176,6 +185,99 @@ describe('Auth (e2e)', () => {
         isAdmin: false,
       });
       expect(response.body).not.toHaveProperty('profile');
+    });
+  });
+
+  describe('POST /auth/resend', () => {
+    const KNOWN_USER = { id: 'u1', email: VALID_SIGNUP.email };
+
+    function pendingCode(overrides: Record<string, unknown> = {}) {
+      return {
+        id: 'code-1',
+        consumedAt: null,
+        attempts: 0,
+        resendCount: 0,
+        createdAt: new Date(Date.now() - 120_000),
+        expiresAt: new Date(Date.now() + 300_000),
+        ...overrides,
+      };
+    }
+
+    it('answers neutrally for an unknown email', async () => {
+      const response = await request(server())
+        .post('/auth/resend')
+        .send({ email: 'ghost@eafit.edu.co' })
+        .expect(200);
+
+      expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
+      expect(
+        context.prisma.emailVerificationCode.create,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('sends a new code to an account that verified before', async () => {
+      context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
+      context.prisma.emailVerificationCode.findFirst.mockResolvedValue(
+        pendingCode({ consumedAt: new Date() }),
+      );
+
+      await request(server())
+        .post('/auth/resend')
+        .send({ email: VALID_SIGNUP.email })
+        .expect(200);
+
+      expect(context.prisma.emailVerificationCode.create).toHaveBeenCalled();
+    });
+
+    it('refuses a resend that is still inside the cooldown', async () => {
+      context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
+      context.prisma.emailVerificationCode.findFirst.mockResolvedValue(
+        pendingCode({ createdAt: new Date() }),
+      );
+
+      await request(server())
+        .post('/auth/resend')
+        .send({ email: VALID_SIGNUP.email })
+        .expect(429);
+
+      expect(
+        context.prisma.emailVerificationCode.create,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('answers 403 once the three resends are spent', async () => {
+      context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
+      context.prisma.emailVerificationCode.findFirst.mockResolvedValue(
+        pendingCode({ resendCount: 3 }),
+      );
+
+      const response = await request(server())
+        .post('/auth/resend')
+        .send({ email: VALID_SIGNUP.email })
+        .expect(403);
+
+      expect(response.body.message).toBe(
+        'Alcanzaste el máximo de reenvíos. Esperá unos minutos y volvé a intentarlo.',
+      );
+      expect(
+        context.prisma.emailVerificationCode.create,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('allows a resend again once the last code expired', async () => {
+      context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
+      context.prisma.emailVerificationCode.findFirst.mockResolvedValue(
+        pendingCode({ resendCount: 3, expiresAt: new Date(Date.now() - 1000) }),
+      );
+
+      await request(server())
+        .post('/auth/resend')
+        .send({ email: VALID_SIGNUP.email })
+        .expect(200);
+
+      const [{ data }] = context.prisma.emailVerificationCode.create.mock
+        .calls[0] as [{ data: { resendCount: number } }];
+      expect(data.resendCount).toBe(0);
     });
   });
 

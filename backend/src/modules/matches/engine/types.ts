@@ -2,7 +2,7 @@ export interface MatchCandidate {
   userId: string;
 
   gender: string;
-  genderInterest: string;
+  genderInterests: string[];
   age: number;
   minAge: number;
   maxAge: number;

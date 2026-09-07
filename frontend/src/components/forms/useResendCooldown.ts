@@ -1,11 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { RESEND_COOLDOWN_SECONDS } from '@/lib/constants/auth';
+import {
+  rememberResendCooldown,
+  remainingResendCooldown,
+} from '@/lib/utils/resend-cooldown';
 
-const RESEND_COOLDOWN_SECONDS = 60;
-
-export function useResendCooldown() {
-  const [cooldown, setCooldown] = useState(0);
+// The countdown resumes from the deadline stored when the code was sent, so a
+// reload does not restart it. Without storage the reader answers a full
+// cooldown, which is also what a server render gets.
+export function useResendCooldown(email: string) {
+  const [cooldown, setCooldown] = useState(() =>
+    remainingResendCooldown(email),
+  );
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -13,8 +21,13 @@ export function useResendCooldown() {
     return () => clearTimeout(timer);
   }, [cooldown]);
 
-  return {
-    cooldown,
-    startCooldown: () => setCooldown(RESEND_COOLDOWN_SECONDS),
-  };
+  const startCooldown = useCallback(
+    (seconds = RESEND_COOLDOWN_SECONDS) => {
+      rememberResendCooldown(email, seconds);
+      setCooldown(seconds);
+    },
+    [email],
+  );
+
+  return { cooldown, startCooldown };
 }

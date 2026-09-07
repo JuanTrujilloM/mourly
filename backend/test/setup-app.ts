@@ -2,7 +2,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { useContainer } from 'class-validator';
-import { ThrottlerGuard } from '@nestjs/throttler';
+import { FriendlyThrottlerGuard } from '../src/common/guards/friendly-throttler.guard';
 import cookieParser from 'cookie-parser';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/config/prisma.service';
@@ -33,6 +33,7 @@ const MODEL_NAMES = [
   'feedback',
   'report',
   'university',
+  'waitlistEntry',
 ];
 
 const MODEL_METHODS = [
@@ -126,7 +127,9 @@ export async function createTestApp(
     .useValue(prisma);
 
   if (!options.throttle) {
-    builder.overrideGuard(ThrottlerGuard).useValue({ canActivate: () => true });
+    builder
+      .overrideGuard(FriendlyThrottlerGuard)
+      .useValue({ canActivate: () => true });
   }
 
   const moduleRef: TestingModule = await builder.compile();

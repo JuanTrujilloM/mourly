@@ -14,7 +14,6 @@ import {
   HEIGHT_RANGES,
   MIN_HOBBIES,
   MIN_VIBES,
-  ORIENTATIONS,
   RELATIONSHIP_TYPES,
 } from '../preferences/constants/preferences-options';
 import { VENUE_TYPES } from './venue-types';
@@ -24,7 +23,6 @@ export interface Catalog {
   genders: readonly string[];
   semesters: readonly string[];
   relationshipTypes: readonly string[];
-  orientations: readonly string[];
   genderInterests: readonly string[];
   heightRanges: readonly string[];
   venueTypes: readonly string[];
@@ -55,7 +53,6 @@ export class CatalogService {
       genders: GENDERS,
       semesters: SEMESTERS,
       relationshipTypes: RELATIONSHIP_TYPES,
-      orientations: ORIENTATIONS,
       genderInterests: GENDER_INTERESTS,
       heightRanges: HEIGHT_RANGES,
       venueTypes: VENUE_TYPES,

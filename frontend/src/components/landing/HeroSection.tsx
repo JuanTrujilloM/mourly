@@ -31,7 +31,8 @@ export function HeroSection() {
           </div>
 
           <p className="text-ink-3 mt-8 text-sm">
-            EAFIT, UPB, CES y EIA ya están adentro.
+            Estudiantes verificados de EAFIT, UPB, CES y EIA ya pueden usar
+            Mourly.
           </p>
         </div>
 

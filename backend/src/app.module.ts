@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './config/prisma.module';
 import { validateEnv } from './config/env.validation';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { CsrfOriginGuard } from './common/security/csrf-origin.guard';
+import { FriendlyThrottlerGuard } from './common/guards/friendly-throttler.guard';
 import {
   THROTTLE_DEFAULT_LIMIT,
   THROTTLE_WINDOW_MS,
@@ -24,6 +25,7 @@ import { UniversitiesModule } from './modules/universities/universities.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { HobbiesModule } from './modules/hobbies/hobbies.module';
+import { WaitlistModule } from './modules/waitlist/waitlist.module';
 
 @Module({
   imports: [
@@ -46,10 +48,11 @@ import { HobbiesModule } from './modules/hobbies/hobbies.module';
     FeedbackModule,
     ReportsModule,
     HobbiesModule,
+    WaitlistModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: FriendlyThrottlerGuard },
     { provide: APP_GUARD, useClass: CsrfOriginGuard },
   ],
 })

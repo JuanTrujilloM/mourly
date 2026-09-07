@@ -11,11 +11,17 @@ import {
 } from '@/lib/validation/auth';
 import { useVerifyCode } from '@/hooks/useVerifyCode';
 import { useResendCode } from '@/hooks/useResendCode';
-import { getApiErrorMessage } from '@/lib/utils/errors';
+import {
+  getApiErrorMessage,
+  getApiErrorStatus,
+  getApiRetryAfterSeconds,
+} from '@/lib/utils/errors';
 import { useResendCooldown } from './useResendCooldown';
 import { ResendCodeButton } from './ResendCodeButton';
 import { MissingEmailNotice } from './MissingEmailNotice';
 import { VerificationCodeField } from './VerificationCodeField';
+import { VerificationErrorNotice } from './VerificationErrorNotice';
+import { ResendLimitDialog } from './ResendLimitDialog';
 import { Button } from '@/components/ui/Button';
 
 export function VerificationForm() {
@@ -28,8 +34,9 @@ export function VerificationForm() {
   const { mutateAsync: verify, isPending } = useVerifyCode();
   const { mutateAsync: resend, isPending: isResending } = useResendCode();
 
-  const { cooldown, startCooldown } = useResendCooldown();
+  const { cooldown, startCooldown } = useResendCooldown(email);
   const [resendNotice, setResendNotice] = useState<string | null>(null);
+  const [resendLimitReached, setResendLimitReached] = useState(false);
 
   const {
     register,
@@ -58,15 +65,26 @@ export function VerificationForm() {
       setResendNotice('Te enviamos un código nuevo.');
       startCooldown();
     } catch (error) {
+      // 403 is the spent resend allowance; every other failure stays inline.
+      if (getApiErrorStatus(error) === 403) {
+        setResendLimitReached(true);
+        return;
+      }
+      // Both the per-user cooldown and the route rate limit answer 429 with the
+      // seconds left, so the counter can pick up where the server actually is.
+      const retryAfter = getApiRetryAfterSeconds(error);
+      if (retryAfter) startCooldown(retryAfter);
       setResendNotice(getApiErrorMessage(error));
     }
   };
 
+  // The API answers login and register neutrally, so a code is only sent when
+  // the email is eligible: this copy must not promise one outright.
   return (
     <div className="space-y-4">
       <p className="text-ink-2 text-sm">
-        Ingresá el código de 6 dígitos que enviamos a{' '}
-        <span className="text-ink font-medium">{email}</span>.
+        Si <span className="text-ink font-medium">{email}</span> es una cuenta
+        válida, te enviamos un código de 6 dígitos. Ingresalo acá.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
@@ -75,8 +93,8 @@ export function VerificationForm() {
           error={errors.code}
         />
 
-        {errors.root && (
-          <p className="text-error text-sm">{errors.root.message}</p>
+        {errors.root?.message && (
+          <VerificationErrorNotice message={errors.root.message} />
         )}
 
         <Button type="submit" className="w-full" disabled={isPending}>
@@ -89,6 +107,11 @@ export function VerificationForm() {
         isResending={isResending}
         notice={resendNotice}
         onResend={onResend}
+      />
+
+      <ResendLimitDialog
+        open={resendLimitReached}
+        onClose={() => setResendLimitReached(false)}
       />
     </div>
   );
