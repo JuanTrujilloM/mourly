@@ -1,4 +1,9 @@
-const UNIVERSITIES = ['EAFIT', 'UPB', 'CES', 'EIA'];
+const UNIVERSITIES = [
+  { name: 'EAFIT', color: 'text-u-eafit' },
+  { name: 'UPB', color: 'text-u-upb' },
+  { name: 'CES', color: 'text-u-ces' },
+  { name: 'EIA', color: 'text-u-eia' },
+];
 
 // A printed strip, not a marquee: the brand allows no movement here. Siglas
 // as typographic badges, never official logos: a logo reads as a partnership
@@ -14,10 +19,10 @@ export function UniversitiesSection() {
         <ul className="flex flex-wrap justify-center gap-3">
           {UNIVERSITIES.map((university) => (
             <li
-              key={university}
-              className="display text-ink border-line rounded-full border px-5 py-1.5 text-[26px] tracking-[0.02em]"
+              key={university.name}
+              className={`display border-line rounded-full border px-5 py-1.5 text-[26px] tracking-[0.02em] ${university.color}`}
             >
-              {university}
+              {university.name}
             </li>
           ))}
         </ul>

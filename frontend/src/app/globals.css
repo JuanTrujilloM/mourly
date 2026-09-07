@@ -38,6 +38,15 @@
   --color-gris-400: #98A39C;
   --color-error: #B3261E;
 
+  /* Terceros: color institucional de cada universidad, solo para los sellos
+     de la franja de la landing. EAFIT y UPB salen de sus manuales de
+     identidad (RGB 0/75/133; Pantone 1795 C), CES y EIA de sus sitios.
+     EIA se oscurece desde #21B8D2 para llegar a 3:1 sobre hueso. */
+  --color-u-eafit: #004B85;
+  --color-u-upb: #D22630;
+  --color-u-ces: #1568E0;
+  --color-u-eia: #0E8FA6;
+
   /* Tipografía (variables las define next/font en layout.tsx) */
   --font-sans: var(--font-bricolage);
   --font-serif: var(--font-newsreader);

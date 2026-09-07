@@ -16,4 +16,13 @@ describe('UniversitiesSection', () => {
 
     expect(badges).toEqual(['EAFIT', 'UPB', 'CES', 'EIA']);
   });
+
+  it('sets each badge in its own institutional color', () => {
+    render(<UniversitiesSection />);
+
+    expect(screen.getByText('EAFIT')).toHaveClass('text-u-eafit');
+    expect(screen.getByText('UPB')).toHaveClass('text-u-upb');
+    expect(screen.getByText('CES')).toHaveClass('text-u-ces');
+    expect(screen.getByText('EIA')).toHaveClass('text-u-eia');
+  });
 });
