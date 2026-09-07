@@ -9,3 +9,16 @@ HTMLDialogElement.prototype.close = function close() {
   this.open = false;
   this.dispatchEvent(new Event('close'));
 };
+
+// jsdom has no IntersectionObserver, so Reveal would throw on mount. The stub
+// never fires: revealed content stays in the DOM at opacity 0, still queryable.
+class IntersectionObserverStub {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords() {
+    return [];
+  }
+}
+globalThis.IntersectionObserver =
+  IntersectionObserverStub as unknown as typeof IntersectionObserver;
