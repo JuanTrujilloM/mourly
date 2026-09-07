@@ -4,9 +4,9 @@ import sello from '@/assets/brand/sello-verde.svg';
 
 const REASONS = [
   {
-    title: 'Una cita por semana',
+    title: 'Un match por semana, con criterio',
     description:
-      'Nada de deslizar durante horas. Una sola persona, elegida por lo que tienen en común.',
+      'Cada jueves nuestro sistema cruza lo que tienen en común, lo que buscan, cuándo pueden y cómo les fue en citas anteriores, y te propone una sola persona. Sin likes, sin deslizar.',
   },
   {
     title: 'Cita real, lugar real',

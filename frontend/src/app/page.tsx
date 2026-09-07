@@ -4,6 +4,7 @@ import { UniversitiesSection } from '@/components/landing/UniversitiesSection';
 import { HowItWorksSection } from '@/components/landing/HowItWorksSection';
 import { WhySection } from '@/components/landing/WhySection';
 import { PricingSection } from '@/components/landing/PricingSection';
+import { AboutSection } from '@/components/landing/AboutSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 
 export default function HomePage() {
@@ -16,6 +17,7 @@ export default function HomePage() {
         <HowItWorksSection />
         <WhySection />
         <PricingSection />
+        <AboutSection />
       </main>
       <LandingFooter />
     </div>

@@ -3,9 +3,10 @@ import Link from 'next/link';
 import sello from '@/assets/brand/sello-verde.svg';
 
 const LEGAL_LINKS = [
-  { label: 'Términos', href: '#' },
-  { label: 'Privacidad', href: '#' },
-  { label: 'Habeas Data', href: '#' },
+  { label: 'Sobre Mourly', href: '/about' },
+  { label: 'Términos', href: '/terminos' },
+  { label: 'Privacidad', href: '/privacidad' },
+  { label: 'Habeas Data', href: '/habeas-data' },
 ];
 
 // The wordmark lives in the navbar; a second dot on the same screen would be a feed.
