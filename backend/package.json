@@ -41,11 +41,11 @@
     "class-validator": "^0.15.1",
     "cookie-parser": "^1.4.7",
     "helmet": "^8.2.0",
-    "nodemailer": "^9.0.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.21.0",
     "reflect-metadata": "^0.2.2",
+    "resend": "^6.27.0",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
@@ -60,7 +60,6 @@
     "@types/jest": "^30.0.0",
     "@types/multer": "^2.1.0",
     "@types/node": "^24.0.0",
-    "@types/nodemailer": "^8.0.1",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^7.0.0",
     "dotenv": "^17.4.2",
