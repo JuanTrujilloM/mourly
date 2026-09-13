@@ -13,6 +13,7 @@ const DEFAULT_PORT = 3000;
 const DEFAULT_FRONTEND_URL = 'http://localhost:3000';
 const UPLOADS_DIRECTORY = 'uploads';
 const UPLOADS_PREFIX = '/uploads/';
+const TRUSTED_PROXY_HOPS = 1;
 
 function hardenStaticHeaders(response: ServerResponse): void {
   response.setHeader('X-Content-Type-Options', 'nosniff');
@@ -24,6 +25,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
+  app.set('trust proxy', TRUSTED_PROXY_HOPS);
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(cookieParser());
   app.useStaticAssets(join(process.cwd(), UPLOADS_DIRECTORY), {

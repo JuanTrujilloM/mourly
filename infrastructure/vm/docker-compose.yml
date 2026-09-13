@@ -1,0 +1,43 @@
+# Production stack for the GCP VM. Only Caddy publishes ports; the API is reachable
+# solely through it, which is what makes `trust proxy` (1 hop) in main.ts safe.
+services:
+  api:
+    image: ${API_IMAGE}
+    restart: unless-stopped
+    env_file: api.env
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      # The VM has 1 GB of RAM; cap the heap so Node collects garbage before the kernel kills it.
+      NODE_OPTIONS: --max-old-space-size=384
+    expose:
+      - "3001"
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+      ACME_EMAIL: ${ACME_EMAIL}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Holds the TLS certificates; losing it forces a re-issue and can hit Let's Encrypt rate limits.
+      - caddy_data:/data
+      - caddy_config:/config
+
+  # One-off: `docker compose run --rm migrate` before starting a new API image.
+  migrate:
+    image: ${MIGRATE_IMAGE}
+    profiles: ["migrate"]
+    restart: "no"
+    env_file: api.env
+
+volumes:
+  caddy_data:
+  caddy_config:
