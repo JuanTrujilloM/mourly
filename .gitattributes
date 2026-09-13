@@ -1,0 +1,2 @@
+*.sh text eol=lf
+infrastructure/vm/* text eol=lf
