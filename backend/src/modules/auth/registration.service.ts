@@ -35,7 +35,7 @@ export class RegistrationService {
     }
 
     const user = await this.upsertUser(email, dto.cellphone, existing?.id);
-    await this.delivery.send(user.id, email);
+    await this.delivery.sendIfAllowed(user.id, email);
     return { message: NEUTRAL_MESSAGE };
   }
 

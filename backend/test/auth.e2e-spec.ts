@@ -97,6 +97,39 @@ describe('Auth (e2e)', () => {
       expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
     });
 
+    it('does not send another code to an unverified signup inside the cooldown', async () => {
+      context.prisma.user.findUnique.mockResolvedValue({
+        id: 'u1',
+        email: VALID_SIGNUP.email,
+        cellphone: VALID_SIGNUP.cellphone,
+      });
+      context.prisma.user.update.mockResolvedValue({ id: 'u1' });
+      context.prisma.emailVerificationCode.findFirst.mockImplementation(
+        ({ where }: { where: { consumedAt: unknown } }) =>
+          Promise.resolve(
+            where.consumedAt === null
+              ? {
+                  id: 'code-1',
+                  consumedAt: null,
+                  resendCount: 0,
+                  createdAt: new Date(),
+                  expiresAt: new Date(Date.now() + 300_000),
+                }
+              : null,
+          ),
+      );
+
+      const response = await request(server())
+        .post('/auth/register')
+        .send(VALID_SIGNUP)
+        .expect(200);
+
+      expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
+      expect(
+        context.prisma.emailVerificationCode.create,
+      ).not.toHaveBeenCalled();
+    });
+
     it('strips unknown fields instead of trusting them', async () => {
       await request(server())
         .post('/auth/register')
@@ -229,23 +262,24 @@ describe('Auth (e2e)', () => {
       expect(context.prisma.emailVerificationCode.create).toHaveBeenCalled();
     });
 
-    it('refuses a resend that is still inside the cooldown', async () => {
+    it('answers neutrally without sending while the cooldown is active', async () => {
       context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
       context.prisma.emailVerificationCode.findFirst.mockResolvedValue(
         pendingCode({ createdAt: new Date() }),
       );
 
-      await request(server())
+      const response = await request(server())
         .post('/auth/resend')
         .send({ email: VALID_SIGNUP.email })
-        .expect(429);
+        .expect(200);
 
+      expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
       expect(
         context.prisma.emailVerificationCode.create,
       ).not.toHaveBeenCalled();
     });
 
-    it('answers 403 once the three resends are spent', async () => {
+    it('answers neutrally without sending once the three resends are spent', async () => {
       context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
       context.prisma.emailVerificationCode.findFirst.mockResolvedValue(
         pendingCode({ resendCount: 3 }),
@@ -254,14 +288,27 @@ describe('Auth (e2e)', () => {
       const response = await request(server())
         .post('/auth/resend')
         .send({ email: VALID_SIGNUP.email })
-        .expect(403);
+        .expect(200);
 
-      expect(response.body.message).toBe(
-        'Alcanzaste el máximo de reenvíos. Esperá unos minutos y volvé a intentarlo.',
-      );
+      expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
       expect(
         context.prisma.emailVerificationCode.create,
       ).not.toHaveBeenCalled();
+    });
+
+    it('locks the account row before reading the pending code', async () => {
+      context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
+
+      await request(server())
+        .post('/auth/resend')
+        .send({ email: VALID_SIGNUP.email })
+        .expect(200);
+
+      const [lockOrder] = context.prisma.$queryRaw.mock.invocationCallOrder;
+      const [readOrder] =
+        context.prisma.emailVerificationCode.findFirst.mock.invocationCallOrder;
+      expect(lockOrder).toBeLessThan(readOrder);
+      expect(context.prisma.$transaction).toHaveBeenCalled();
     });
 
     it('allows a resend again once the last code expired', async () => {

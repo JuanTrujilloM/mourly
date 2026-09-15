@@ -57,7 +57,7 @@ export class AuthService {
     const email = normalizeEmail(dto.email);
     const user = await this.users.findByEmail(email);
     if (user) {
-      await this.delivery.sendOrThrow(user.id, email);
+      await this.delivery.sendIfAllowed(user.id, email);
     }
     return { message: NEUTRAL_MESSAGE };
   }

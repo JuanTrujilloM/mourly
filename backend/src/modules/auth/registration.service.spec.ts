@@ -19,7 +19,6 @@ function setup() {
 
   const codes = { hasVerifiedEmail: jest.fn().mockResolvedValue(false) };
   const delivery = {
-    send: jest.fn().mockResolvedValue(undefined),
     sendIfAllowed: jest.fn().mockResolvedValue(undefined),
   };
   const users = {
@@ -47,7 +46,10 @@ describe('RegistrationService', () => {
     expect(create).toHaveBeenCalledWith({
       data: { email: 'ana@eafit.edu.co', cellphone: '+573001112233' },
     });
-    expect(delivery.send).toHaveBeenCalledWith('new-user', 'ana@eafit.edu.co');
+    expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
+      'new-user',
+      'ana@eafit.edu.co',
+    );
     expect(result).toEqual({ message: NEUTRAL_MESSAGE });
   });
 
@@ -97,7 +99,7 @@ describe('RegistrationService', () => {
 
     expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     expect(create).not.toHaveBeenCalled();
-    expect(delivery.send).not.toHaveBeenCalled();
+    expect(delivery.sendIfAllowed).not.toHaveBeenCalled();
   });
 
   it('gives the same message whether or not the account exists', async () => {

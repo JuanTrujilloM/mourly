@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithQuery, searchParams } from '@/test-utils';
 import * as authApi from '@/lib/api/auth';
 import { rememberResendCooldown } from '@/lib/utils/resend-cooldown';
+import { hasSpentResends, recordResend } from '@/lib/utils/resend-allowance';
 import { VerificationForm } from './VerificationForm';
 
 const EMAIL = 'ana@eafit.edu.co';
@@ -150,10 +151,9 @@ describe('VerificationForm', () => {
   });
 
   describe('resend limit', () => {
-    it('opens the popup once the resend allowance is spent', async () => {
-      resendCode.mockRejectedValue(
-        apiError(403, 'Alcanzaste el máximo de reenvíos.'),
-      );
+    it('opens the popup without asking the API once the allowance is spent', async () => {
+      resendCode.mockResolvedValue({ message: 'ok' });
+      for (let index = 0; index < 3; index += 1) recordResend(EMAIL);
 
       await renderPastCooldown();
       await userEvent.click(resendButton());
@@ -163,6 +163,18 @@ describe('VerificationForm', () => {
           screen.getByText('Alcanzaste el máximo de reenvíos'),
         ).toBeInTheDocument(),
       );
+      expect(resendCode).not.toHaveBeenCalled();
+    });
+
+    it('counts a successful resend toward the allowance', async () => {
+      resendCode.mockResolvedValue({ message: 'ok' });
+      recordResend(EMAIL);
+      recordResend(EMAIL);
+
+      await renderPastCooldown();
+      await userEvent.click(resendButton());
+
+      await waitFor(() => expect(hasSpentResends(EMAIL)).toBe(true));
     });
 
     it('confirms the send and restarts the countdown when it works', async () => {

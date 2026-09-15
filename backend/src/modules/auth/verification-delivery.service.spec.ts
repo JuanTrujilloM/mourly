@@ -1,99 +1,36 @@
-import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
 import { MailService } from '../mail/mail.service';
-import { VerificationCodeService } from './verification-code.service';
+import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationDeliveryService } from './verification-delivery.service';
-import { VerificationResendPolicyService } from './verification-resend-policy.service';
 
-function setup(secondsLeft = 0, exhausted = false) {
-  const codes = { issueForUser: jest.fn().mockResolvedValue('123456') };
+function setup(issued: string | null) {
+  const issuer = { issueIfAllowed: jest.fn().mockResolvedValue(issued) };
   const mail = { sendVerificationCode: jest.fn().mockResolvedValue(undefined) };
-  const resendPolicy = {
-    getSecondsUntilResendAllowed: jest.fn().mockResolvedValue(secondsLeft),
-    hasExhaustedResends: jest.fn().mockResolvedValue(exhausted),
-  };
 
   const service = new VerificationDeliveryService(
-    codes as unknown as VerificationCodeService,
+    issuer as unknown as VerificationCodeIssuerService,
     mail as unknown as MailService,
-    resendPolicy as unknown as VerificationResendPolicyService,
   );
-  return { service, codes, mail };
+  return { service, issuer, mail };
 }
 
 describe('VerificationDeliveryService', () => {
-  it('issues a code and mails it', async () => {
-    const { service, codes, mail } = setup();
+  it('mails the code the issuer granted', async () => {
+    const { service, issuer, mail } = setup('123456');
 
-    await service.send('u1', 'ana@eafit.edu.co');
+    await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
 
-    expect(codes.issueForUser).toHaveBeenCalledWith('u1');
+    expect(issuer.issueIfAllowed).toHaveBeenCalledWith('u1');
     expect(mail.sendVerificationCode).toHaveBeenCalledWith(
       'ana@eafit.edu.co',
       '123456',
     );
   });
 
-  describe('sendIfAllowed', () => {
-    it('sends when the cooldown has elapsed', async () => {
-      const { service, mail } = setup(0);
+  it('stays silent when the issuer refuses', async () => {
+    const { service, mail } = setup(null);
 
-      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
+    await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
 
-      expect(mail.sendVerificationCode).toHaveBeenCalled();
-    });
-
-    it('stays silent while the cooldown is active', async () => {
-      const { service, mail } = setup(30);
-
-      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
-
-      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
-    });
-
-    it('stays silent once the resend limit is spent', async () => {
-      const { service, mail } = setup(0, true);
-
-      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
-
-      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('sendOrThrow', () => {
-    it('sends when the cooldown has elapsed', async () => {
-      const { service, mail } = setup(0);
-
-      await service.sendOrThrow('u1', 'ana@eafit.edu.co');
-
-      expect(mail.sendVerificationCode).toHaveBeenCalled();
-    });
-
-    it('reports the remaining wait as 429', async () => {
-      const { service, mail } = setup(42);
-
-      const failure = await service
-        .sendOrThrow('u1', 'ana@eafit.edu.co')
-        .catch((error: HttpException) => error);
-
-      expect(failure).toBeInstanceOf(HttpException);
-      expect((failure as HttpException).getStatus()).toBe(
-        HttpStatus.TOO_MANY_REQUESTS,
-      );
-      expect((failure as HttpException).getResponse()).toMatchObject({
-        retryAfterSeconds: 42,
-      });
-      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
-    });
-
-    it('reports a spent resend limit as 403 before the cooldown', async () => {
-      const { service, mail } = setup(42, true);
-
-      const failure = await service
-        .sendOrThrow('u1', 'ana@eafit.edu.co')
-        .catch((error: HttpException) => error);
-
-      expect(failure).toBeInstanceOf(ForbiddenException);
-      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
-    });
+    expect(mail.sendVerificationCode).not.toHaveBeenCalled();
   });
 });

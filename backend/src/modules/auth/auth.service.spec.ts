@@ -24,7 +24,6 @@ function setup() {
   };
   const delivery = {
     sendIfAllowed: jest.fn().mockResolvedValue(undefined),
-    sendOrThrow: jest.fn().mockResolvedValue(undefined),
   };
   const sessions = {
     issueFor: jest.fn().mockResolvedValue({ accessToken: 'a' }),
@@ -120,7 +119,7 @@ describe('AuthService', () => {
 
       const result = await service.resend({ email: 'ana@eafit.edu.co' });
 
-      expect(delivery.sendOrThrow).toHaveBeenCalledWith(
+      expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
@@ -133,7 +132,7 @@ describe('AuthService', () => {
 
       const result = await service.resend({ email: 'ana@eafit.edu.co' });
 
-      expect(delivery.sendOrThrow).toHaveBeenCalledWith(
+      expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
@@ -146,7 +145,7 @@ describe('AuthService', () => {
 
       const result = await service.resend({ email: 'ghost@eafit.edu.co' });
 
-      expect(delivery.sendOrThrow).not.toHaveBeenCalled();
+      expect(delivery.sendIfAllowed).not.toHaveBeenCalled();
       expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     });
   });
