@@ -76,9 +76,9 @@ Las otras tres son texto corto que espeja el copy de WhatsApp.
   background-image no son confiables en Outlook/Gmail.
 - **`escapeHtml()` en todo valor interpolado** (nombres, lugares): son input de
   usuario/admin dentro de HTML.
-- **La foto es la URL pública de S3** (`isPrimary`, o la primera). En dev local las
+- **La foto es la URL pública de GCS** (`isPrimary`, o la primera). En dev local las
   fotos apuntan a `localhost` y no cargan en un inbox real — se resuelve solo al
-  configurar S3. Sin foto, la tarjeta se omite.
+  configurar `GCS_BUCKET`. Sin foto, la tarjeta se omite.
 - **`expiresInDays` se deriva del TTL real del token**
   (`AvailabilityLinkService.ttlHours()` → `Math.ceil(h/24)`), no de una constante
   aparte: el banner nunca miente sobre la expiración.

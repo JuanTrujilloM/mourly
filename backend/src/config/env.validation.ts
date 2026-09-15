@@ -32,13 +32,15 @@ function databaseUrlErrors(url: string): string[] {
   return url ? [] : ['DATABASE_URL is required.'];
 }
 
+const REQUIRED_IN_PRODUCTION = ['RESEND_API_KEY', 'GCS_BUCKET'];
+
 function productionErrors(source: Record<string, unknown>): string[] {
   if (readString(source, 'NODE_ENV') !== 'production') {
     return [];
   }
-  return readString(source, 'RESEND_API_KEY')
-    ? []
-    : ['RESEND_API_KEY is required in production.'];
+  return REQUIRED_IN_PRODUCTION.filter((key) => !readString(source, key)).map(
+    (key) => `${key} is required in production.`,
+  );
 }
 
 export function validateEnv(

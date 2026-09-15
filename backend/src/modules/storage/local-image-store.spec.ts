@@ -69,7 +69,7 @@ describe('LocalImageStore', () => {
   it('ignores a url that does not belong to local storage', async () => {
     const store = buildStore();
 
-    await store.remove('https://bucket.s3.us-east-1.amazonaws.com/a.jpg');
+    await store.remove('https://storage.googleapis.com/mourly-media/a.jpg');
 
     expect(unlinkMock).not.toHaveBeenCalled();
   });

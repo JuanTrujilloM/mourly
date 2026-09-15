@@ -74,8 +74,18 @@ describe('validateEnv', () => {
       );
     });
 
-    it('accepts a production configuration with a Resend API key', () => {
-      const config = { ...PRODUCTION_BASE, RESEND_API_KEY: 're_live' };
+    it('requires a GCS bucket so photos survive a deploy', () => {
+      expect(() =>
+        validateEnv({ ...PRODUCTION_BASE, RESEND_API_KEY: 're_live' }),
+      ).toThrow(/GCS_BUCKET is required in production/);
+    });
+
+    it('accepts a complete production configuration', () => {
+      const config = {
+        ...PRODUCTION_BASE,
+        RESEND_API_KEY: 're_live',
+        GCS_BUCKET: 'mourly-media',
+      };
 
       expect(validateEnv(config)).toBe(config);
     });

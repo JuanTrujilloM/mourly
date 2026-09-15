@@ -59,9 +59,7 @@ WHATSAPP_TOKEN=
 WHATSAPP_PHONE_NUMBER_ID=
 WHATSAPP_VERIFY_TOKEN=
 OPENAI_API_KEY=
-AWS_REGION=us-east-1
-AWS_S3_BUCKET=
-AWS_SQS_QUEUE_URL=
+GCS_BUCKET=
 ```
 
 > Replace `<your-mac-username>` with your system username (e.g. `juantrujillo`). No password required locally.
