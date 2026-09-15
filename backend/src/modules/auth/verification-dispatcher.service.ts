@@ -1,5 +1,8 @@
 import { Injectable, Logger, OnApplicationShutdown } from '@nestjs/common';
+import { TimeoutError, withTimeout } from '../../common/utils/with-timeout';
 import { VerificationDeliveryService } from './verification-delivery.service';
+
+const SHUTDOWN_DRAIN_TIMEOUT_MS = 15_000;
 
 @Injectable()
 export class VerificationDispatcherService implements OnApplicationShutdown {
@@ -20,8 +23,15 @@ export class VerificationDispatcherService implements OnApplicationShutdown {
     await Promise.all([...this.pending]);
   }
 
-  onApplicationShutdown(): Promise<void> {
-    return this.drain();
+  async onApplicationShutdown(): Promise<void> {
+    try {
+      await withTimeout(this.drain(), SHUTDOWN_DRAIN_TIMEOUT_MS, 'Drain');
+    } catch (error) {
+      if (!(error instanceof TimeoutError)) throw error;
+      this.logger.warn(
+        `Shutting down with ${this.pending.size} verification deliveries still pending`,
+      );
+    }
   }
 
   private logFailure(userId: string, error: unknown): void {
