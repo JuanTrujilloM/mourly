@@ -5,6 +5,8 @@ import { CandidateLoaderService } from './candidate-loader.service';
 import { MatchInviteService } from './match-invite.service';
 import { stableMatch } from './engine/stable-matching';
 import { MatchPair } from './engine/types';
+import { JobClaimService } from '../scheduling/job-claim.service';
+import { SCHEDULED_JOBS } from '../scheduling/scheduled-jobs';
 import {
   GENERATED_MATCH_STATUS,
   WEEKLY_MATCHING_CRON,
@@ -19,10 +21,12 @@ export class WeeklyMatchingService {
     private readonly prisma: PrismaService,
     private readonly candidates: CandidateLoaderService,
     private readonly invites: MatchInviteService,
+    private readonly jobs: JobClaimService,
   ) {}
 
   @Cron(WEEKLY_MATCHING_CRON, { timeZone: WEEKLY_MATCHING_TIMEZONE })
   async handleWeeklyCron(): Promise<void> {
+    if (!(await this.jobs.claim(SCHEDULED_JOBS.weeklyMatching))) return;
     const created = await this.runWeeklyMatching();
     this.logger.log(`Weekly matching created ${created.length} match(es).`);
     await this.invites.inviteForPairs(created);

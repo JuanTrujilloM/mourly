@@ -7,5 +7,5 @@ model WaitlistEntry {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([domain])
+  @@index([createdAt, id])
 }

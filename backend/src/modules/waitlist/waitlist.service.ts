@@ -5,6 +5,16 @@ import { getEmailDomain } from '../universities/email-domain';
 import { normalizeEmail } from '../auth/utils/normalize-email';
 import { ALREADY_SUPPORTED_MESSAGE, JOINED_MESSAGE } from './waitlist.messages';
 import { JoinWaitlistDto } from './dto/join-waitlist.dto';
+import { DEFAULT_PAGE_SIZE, ListWaitlistDto } from './dto/list-waitlist.dto';
+
+const WAITLIST_ENTRY_SELECT = {
+  id: true,
+  name: true,
+  email: true,
+  cellphone: true,
+  domain: true,
+  createdAt: true,
+} as const;
 
 @Injectable()
 export class WaitlistService {
@@ -28,9 +38,15 @@ export class WaitlistService {
     return { message: JOINED_MESSAGE };
   }
 
-  findAll() {
-    return this.prisma.waitlistEntry.findMany({
-      orderBy: { createdAt: 'desc' },
+  async findPage({ take = DEFAULT_PAGE_SIZE, cursor }: ListWaitlistDto) {
+    const rows = await this.prisma.waitlistEntry.findMany({
+      select: WAITLIST_ENTRY_SELECT,
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: take + 1,
+      ...(cursor && { cursor: { id: cursor }, skip: 1 }),
     });
+    const items = rows.slice(0, take);
+    const nextCursor = rows.length > take ? items[items.length - 1].id : null;
+    return { items, nextCursor };
   }
 }

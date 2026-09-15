@@ -3,6 +3,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { VenuesModule } from '../venues/venues.module';
 import { AvailabilityLinkModule } from '../availability-link/availability-link.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { SchedulingModule } from '../scheduling/scheduling.module';
 import { MatchesController } from './matches.controller';
 import { MatchesService } from './matches.service';
 import { VenueSelectionService } from './venue-selection.service';
@@ -24,6 +25,7 @@ import { MatchHistoryService } from './match-history.service';
     VenuesModule,
     AvailabilityLinkModule,
     NotificationsModule,
+    SchedulingModule,
   ],
   controllers: [MatchesController],
   providers: [

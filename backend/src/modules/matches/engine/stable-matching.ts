@@ -1,4 +1,4 @@
-import { areMutuallyEligible } from './eligibility';
+import { eligiblePairs } from './gender-buckets';
 import { compatibilityScore } from './scoring';
 import { MatchCandidate, MatchPair } from './types';
 
@@ -16,15 +16,10 @@ function compareEdges(x: ScoredEdge, y: ScoredEdge): number {
 
 export function stableMatch(candidates: MatchCandidate[]): MatchPair[] {
   const edges: ScoredEdge[] = [];
-  for (let i = 0; i < candidates.length; i++) {
-    for (let j = i + 1; j < candidates.length; j++) {
-      const a = candidates[i];
-      const b = candidates[j];
-      if (!areMutuallyEligible(a, b)) continue;
-      const [aId, bId] =
-        a.userId < b.userId ? [a.userId, b.userId] : [b.userId, a.userId];
-      edges.push({ aId, bId, score: compatibilityScore(a, b) });
-    }
+  for (const [a, b] of eligiblePairs(candidates)) {
+    const [aId, bId] =
+      a.userId < b.userId ? [a.userId, b.userId] : [b.userId, a.userId];
+    edges.push({ aId, bId, score: compatibilityScore(a, b) });
   }
 
   edges.sort(compareEdges);

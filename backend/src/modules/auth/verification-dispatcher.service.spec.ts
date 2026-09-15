@@ -22,6 +22,7 @@ function setup() {
 
 describe('VerificationDispatcherService', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
   });
 
@@ -67,6 +68,28 @@ describe('VerificationDispatcherService', () => {
       'Verification delivery failed for user u1',
       expect.stringContaining('Resend send failed'),
     );
+  });
+
+  it('stops waiting on shutdown when a delivery hangs', async () => {
+    jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => undefined);
+    const { service, delivery } = setup();
+    delivery.sendIfAllowed.mockReturnValue(deferred().promise);
+
+    service.dispatch('u1', 'ana@eafit.edu.co');
+    const shuttingDown = service.onApplicationShutdown();
+    await jest.advanceTimersByTimeAsync(15_000);
+    await shuttingDown;
+
+    expect(Logger.prototype.warn).toHaveBeenCalledWith(
+      'Shutting down with 1 verification deliveries still pending',
+    );
+  });
+
+  it('rethrows unexpected shutdown failures', async () => {
+    const { service } = setup();
+    jest.spyOn(service, 'drain').mockRejectedValue(new Error('boom'));
+
+    await expect(service.onApplicationShutdown()).rejects.toThrow('boom');
   });
 
   it('logs non-error rejections as text', async () => {

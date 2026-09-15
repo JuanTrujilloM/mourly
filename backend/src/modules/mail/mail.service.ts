@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
+import { withTimeout } from '../../common/utils/with-timeout';
 import { verificationCodeEmail } from './templates/verification-code.template';
+
+const SEND_TIMEOUT_MS = 10_000;
 
 @Injectable()
 export class MailService {
@@ -47,12 +50,16 @@ export class MailService {
       return;
     }
 
-    const { error } = await this.resend!.emails.send({
-      from: this.from,
-      to,
-      subject: content.subject,
-      html: content.html,
-    });
+    const { error } = await withTimeout(
+      this.resend!.emails.send({
+        from: this.from,
+        to,
+        subject: content.subject,
+        html: content.html,
+      }),
+      SEND_TIMEOUT_MS,
+      'Resend send',
+    );
 
     if (error) {
       throw new Error(`Resend send failed: ${error.message}`);
