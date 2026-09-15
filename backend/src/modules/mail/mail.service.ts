@@ -16,6 +16,9 @@ export class MailService {
       'Mourly <no-reply@mourly.com>',
     );
     const apiKey = this.config.get<string>('RESEND_API_KEY');
+    if (!apiKey && this.config.get<string>('NODE_ENV') === 'production') {
+      throw new Error('RESEND_API_KEY is required in production');
+    }
     this.devMode = !apiKey;
     // HTTPS API, not SMTP — hosts like Render block outbound SMTP ports (25/465/587)
     // on their free tier, which leaves nodemailer's SMTP transport hanging forever.

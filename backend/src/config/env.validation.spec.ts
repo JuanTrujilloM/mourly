@@ -61,6 +61,32 @@ describe('validateEnv', () => {
     expect(() => validateEnv({})).toThrow(/DATABASE_URL[\s\S]*JWT_SECRET/);
   });
 
+  describe('in production', () => {
+    const PRODUCTION_BASE = {
+      NODE_ENV: 'production',
+      DATABASE_URL: 'postgresql://x',
+      JWT_SECRET: LONG_SECRET,
+    };
+
+    it('requires a Resend API key so codes are never logged', () => {
+      expect(() => validateEnv(PRODUCTION_BASE)).toThrow(
+        /RESEND_API_KEY is required in production/,
+      );
+    });
+
+    it('accepts a production configuration with a Resend API key', () => {
+      const config = { ...PRODUCTION_BASE, RESEND_API_KEY: 're_live' };
+
+      expect(validateEnv(config)).toBe(config);
+    });
+  });
+
+  it('does not require a Resend API key outside production', () => {
+    expect(() =>
+      validateEnv({ DATABASE_URL: 'postgresql://x', JWT_SECRET: LONG_SECRET }),
+    ).not.toThrow();
+  });
+
   it('ignores non string values', () => {
     expect(() => validateEnv({ DATABASE_URL: 42, JWT_SECRET: null })).toThrow(
       /DATABASE_URL is required/,

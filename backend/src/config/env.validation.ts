@@ -32,12 +32,22 @@ function databaseUrlErrors(url: string): string[] {
   return url ? [] : ['DATABASE_URL is required.'];
 }
 
+function productionErrors(source: Record<string, unknown>): string[] {
+  if (readString(source, 'NODE_ENV') !== 'production') {
+    return [];
+  }
+  return readString(source, 'RESEND_API_KEY')
+    ? []
+    : ['RESEND_API_KEY is required in production.'];
+}
+
 export function validateEnv(
   source: Record<string, unknown>,
 ): Record<string, unknown> {
   const errors = [
     ...databaseUrlErrors(readString(source, 'DATABASE_URL')),
     ...jwtSecretErrors(readString(source, 'JWT_SECRET')),
+    ...productionErrors(source),
   ];
 
   if (errors.length > 0) {
