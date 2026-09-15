@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Runs on the VM as root, invoked by .github/workflows/deploy-backend.yml.
 # Usage: deploy.sh <api-image> <migrate-image> <directory-with-uploaded-files>
-set -euo pipefail
+set -Eeuo pipefail
 
 API_IMAGE="$1"
 MIGRATE_IMAGE="$2"
 UPLOAD_DIR="$3"
-APP_DIR=/opt/mourly
+APP_DIR="${APP_DIR:-/opt/mourly}"
 REGISTRY=us-east1-docker.pkg.dev
 IMAGE_REPOSITORY="${API_IMAGE%:*}"
 # Two images of roughly 400 MB are pulled per deploy; stop early rather than fill the disk mid-pull.
@@ -55,10 +55,31 @@ compose() {
     "$@"
 }
 
+# Migrations are already applied at this point, so they must stay backward compatible
+# (expand first, contract in a later release) for the previous image to run on them.
+roll_back() {
+  trap - ERR
+  local previous
+  previous="$(released_image)"
+  if [ -z "$previous" ]; then
+    echo "No previous release to roll back to" >&2
+    return
+  fi
+  echo "Rolling back to $previous" >&2
+  docker compose \
+    --project-name mourly \
+    --file "$APP_DIR/docker-compose.yml" \
+    --env-file "$APP_DIR/.env" \
+    --env-file "$APP_DIR/release.env" \
+    up -d api
+  rm -f "$APP_DIR/release.next.env"
+}
+
 ensure_free_disk
 compose pull api migrate
 # Migrations run before the new API starts; if they fail, the old containers keep serving.
 compose run --rm migrate
+trap roll_back ERR
 compose up -d --remove-orphans
 compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
 
@@ -66,6 +87,7 @@ API_CONTAINER="$(compose ps -q api)"
 for _ in $(seq 1 30); do
   STATUS="$(docker inspect -f '{{.State.Health.Status}}' "$API_CONTAINER")"
   if [ "$STATUS" = "healthy" ]; then
+    trap - ERR
     PREVIOUS_API_IMAGE="$(released_image)"
     # Promoted only after a healthy start, so a manual `compose up` never picks a broken release.
     mv "$APP_DIR/release.next.env" "$APP_DIR/release.env"
@@ -79,4 +101,5 @@ done
 
 echo "API did not become healthy; last status: $STATUS" >&2
 compose logs --tail 50 api >&2
+roll_back
 exit 1
