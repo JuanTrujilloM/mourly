@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { CandidateLoaderService } from './candidate-loader.service';
 import { MatchInviteService } from './match-invite.service';
+import { JobClaimService } from '../scheduling/job-claim.service';
 import { WeeklyMatchingService } from './weekly-matching.service';
 import { MatchCandidate } from './engine/types';
 
@@ -37,13 +38,15 @@ function setup(candidates: MatchCandidate[] = []) {
   const prisma = { match: { createMany } } as unknown as PrismaService;
   const loader = { load: jest.fn().mockResolvedValue(candidates) };
   const invites = { inviteForPairs: jest.fn().mockResolvedValue(undefined) };
+  const jobs = { claim: jest.fn().mockResolvedValue(true) };
 
   const service = new WeeklyMatchingService(
     prisma,
     loader as unknown as CandidateLoaderService,
     invites as unknown as MatchInviteService,
+    jobs as unknown as JobClaimService,
   );
-  return { service, createMany, loader, invites };
+  return { service, createMany, loader, invites, jobs };
 }
 
 describe('WeeklyMatchingService', () => {
@@ -87,6 +90,17 @@ describe('WeeklyMatchingService', () => {
     expect(invites.inviteForPairs).toHaveBeenCalledWith(
       expect.arrayContaining([expect.objectContaining({ userAId: 'm' })]),
     );
+  });
+
+  it('skips the run when another instance claimed this tick', async () => {
+    const { service, loader, invites, jobs } = setup();
+    jobs.claim.mockResolvedValue(false);
+
+    await service.handleWeeklyCron();
+
+    expect(jobs.claim).toHaveBeenCalledWith('weekly-matching');
+    expect(loader.load).not.toHaveBeenCalled();
+    expect(invites.inviteForPairs).not.toHaveBeenCalled();
   });
 
   it('still runs the invite step when nothing matched', async () => {

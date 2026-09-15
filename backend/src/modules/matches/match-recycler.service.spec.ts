@@ -2,16 +2,19 @@ import { Logger } from '@nestjs/common';
 import { MatchLoaderService } from './match-loader.service';
 import { MatchReschedulerService } from './match-rescheduler.service';
 import { MatchRecyclerService } from './match-recycler.service';
+import { JobClaimService } from '../scheduling/job-claim.service';
 
 function setup(overdue: { id: string }[] = []) {
   const loader = { loadOverdue: jest.fn().mockResolvedValue(overdue) };
   const rescheduler = { recycle: jest.fn().mockResolvedValue('recycled') };
+  const jobs = { claim: jest.fn().mockResolvedValue(true) };
 
   const service = new MatchRecyclerService(
     loader as unknown as MatchLoaderService,
     rescheduler as unknown as MatchReschedulerService,
+    jobs as unknown as JobClaimService,
   );
-  return { service, loader, rescheduler };
+  return { service, loader, rescheduler, jobs };
 }
 
 describe('MatchRecyclerService', () => {
@@ -30,6 +33,16 @@ describe('MatchRecyclerService', () => {
 
     expect(loader.loadOverdue).toHaveBeenCalledTimes(1);
     expect(loader.loadOverdue.mock.calls[0][0]).toBeInstanceOf(Date);
+  });
+
+  it('skips the run when another instance claimed this tick', async () => {
+    const { service, loader, jobs } = setup();
+    jobs.claim.mockResolvedValue(false);
+
+    await service.recycleExpired();
+
+    expect(jobs.claim).toHaveBeenCalledWith('match-recycling');
+    expect(loader.loadOverdue).not.toHaveBeenCalled();
   });
 
   it('recycles every overdue match', async () => {

@@ -178,21 +178,17 @@ damage they can do.
 
 ### Blocks a multi-instance deploy
 
-**The cron jobs have no distributed lock.** Weekly matching, match
-recycling, response timeouts and the feedback window all run on `@Cron`
-inside the API process. With two instances behind a load balancer every
-job fires twice: duplicate matches for every eligible student and
-duplicate notifications. `Match` has no unique constraint on the pair
-either, so nothing stops it at the database level. Needs a lock (the
-stack already runs Redis) or moving the jobs to a single scheduled worker
-before scaling past one instance.
-
 **Rate limiting counts in memory.** `ThrottlerModule` uses its default
 in-process store, so the effective limit is the configured value times
 the number of instances.
 
 **The chatbot conversation cache is a `Map`.** Lost on restart and not
 shared between instances; a user mid-conversation starts over.
+
+Both need a shared store such as Redis before scaling past one instance.
+The cron jobs no longer do: each run first claims its minute in
+`ScheduledJobRun` (primary key on job name and tick), so only one instance
+executes a given tick.
 
 ### Incomplete features
 
