@@ -4,7 +4,7 @@ import { RegistrationService } from './registration.service';
 import { UserLookupService } from './user-lookup.service';
 import { UniversitiesService } from '../universities/universities.service';
 import { VerificationCodeService } from './verification-code.service';
-import { VerificationDeliveryService } from './verification-delivery.service';
+import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { NEUTRAL_MESSAGE } from './auth.messages';
 
 const VALID_DTO = {
@@ -18,8 +18,8 @@ function setup() {
   const prisma = { user: { create, update } } as unknown as PrismaService;
 
   const codes = { hasVerifiedEmail: jest.fn().mockResolvedValue(false) };
-  const delivery = {
-    sendIfAllowed: jest.fn().mockResolvedValue(undefined),
+  const dispatcher = {
+    dispatch: jest.fn(),
   };
   const users = {
     findByEmail: jest.fn().mockResolvedValue(null),
@@ -30,23 +30,23 @@ function setup() {
   const service = new RegistrationService(
     prisma,
     codes as unknown as VerificationCodeService,
-    delivery as unknown as VerificationDeliveryService,
+    dispatcher as unknown as VerificationDispatcherService,
     users as unknown as UserLookupService,
     universities as unknown as UniversitiesService,
   );
-  return { service, codes, delivery, users, universities, create, update };
+  return { service, codes, dispatcher, users, universities, create, update };
 }
 
 describe('RegistrationService', () => {
   it('creates the user, normalizes the email and sends a code', async () => {
-    const { service, create, delivery } = setup();
+    const { service, create, dispatcher } = setup();
 
     const result = await service.register(VALID_DTO);
 
     expect(create).toHaveBeenCalledWith({
       data: { email: 'ana@eafit.edu.co', cellphone: '+573001112233' },
     });
-    expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
+    expect(dispatcher.dispatch).toHaveBeenCalledWith(
       'new-user',
       'ana@eafit.edu.co',
     );
@@ -76,7 +76,7 @@ describe('RegistrationService', () => {
   });
 
   it('answers neutrally for an already verified account without touching it', async () => {
-    const { service, users, codes, update, create, delivery } = setup();
+    const { service, users, codes, update, create, dispatcher } = setup();
     users.findByEmail.mockResolvedValue({ id: 'verified-user' });
     codes.hasVerifiedEmail.mockResolvedValue(true);
 
@@ -85,21 +85,21 @@ describe('RegistrationService', () => {
     expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     expect(update).not.toHaveBeenCalled();
     expect(create).not.toHaveBeenCalled();
-    expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
+    expect(dispatcher.dispatch).toHaveBeenCalledWith(
       'verified-user',
       'ana@eafit.edu.co',
     );
   });
 
   it('answers neutrally when the cellphone belongs to someone else', async () => {
-    const { service, users, create, delivery } = setup();
+    const { service, users, create, dispatcher } = setup();
     users.isCellphoneTaken.mockResolvedValue(true);
 
     const result = await service.register(VALID_DTO);
 
     expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     expect(create).not.toHaveBeenCalled();
-    expect(delivery.sendIfAllowed).not.toHaveBeenCalled();
+    expect(dispatcher.dispatch).not.toHaveBeenCalled();
   });
 
   it('gives the same message whether or not the account exists', async () => {

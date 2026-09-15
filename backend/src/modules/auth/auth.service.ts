@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { VerificationCodeService } from './verification-code.service';
-import { VerificationDeliveryService } from './verification-delivery.service';
+import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { SessionService, type Session } from './session.service';
 import { SafeUserService, type SafeUser } from './safe-user.service';
 import { UserLookupService } from './user-lookup.service';
@@ -20,7 +20,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly codes: VerificationCodeService,
-    private readonly delivery: VerificationDeliveryService,
+    private readonly dispatcher: VerificationDispatcherService,
     private readonly sessions: SessionService,
     private readonly safeUsers: SafeUserService,
     private readonly users: UserLookupService,
@@ -30,7 +30,7 @@ export class AuthService {
     const email = normalizeEmail(dto.email);
     const user = await this.users.findByEmail(email);
     if (user) {
-      await this.delivery.sendIfAllowed(user.id, email);
+      this.dispatcher.dispatch(user.id, email);
     }
     return { message: NEUTRAL_MESSAGE };
   }
@@ -57,7 +57,7 @@ export class AuthService {
     const email = normalizeEmail(dto.email);
     const user = await this.users.findByEmail(email);
     if (user) {
-      await this.delivery.sendIfAllowed(user.id, email);
+      this.dispatcher.dispatch(user.id, email);
     }
     return { message: NEUTRAL_MESSAGE };
   }

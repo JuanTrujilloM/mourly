@@ -13,6 +13,7 @@ import { UserLookupService } from './user-lookup.service';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationDeliveryService } from './verification-delivery.service';
+import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-university-email.validator';
@@ -39,6 +40,7 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
     VerificationCodeService,
     VerificationCodeIssuerService,
     VerificationDeliveryService,
+    VerificationDispatcherService,
     RefreshTokenService,
     JwtStrategy,
     IsSupportedUniversityEmailConstraint,

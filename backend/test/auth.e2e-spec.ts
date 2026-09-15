@@ -1,5 +1,7 @@
+import { Logger } from '@nestjs/common';
 import request from 'supertest';
 import type { Server } from 'http';
+import { VerificationDispatcherService } from '../src/modules/auth/verification-dispatcher.service';
 import { createTestApp, type TestApp } from './setup-app';
 
 const NEUTRAL_MESSAGE =
@@ -38,6 +40,8 @@ describe('Auth (e2e)', () => {
   });
 
   const server = () => context.app.getHttpServer() as Server;
+  const drainDeliveries = () =>
+    context.app.get(VerificationDispatcherService).drain();
 
   describe('POST /auth/register', () => {
     it('accepts a supported university email', async () => {
@@ -124,6 +128,7 @@ describe('Auth (e2e)', () => {
         .send(VALID_SIGNUP)
         .expect(200);
 
+      await drainDeliveries();
       expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
       expect(
         context.prisma.emailVerificationCode.create,
@@ -242,6 +247,7 @@ describe('Auth (e2e)', () => {
         .send({ email: 'ghost@eafit.edu.co' })
         .expect(200);
 
+      await drainDeliveries();
       expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
       expect(
         context.prisma.emailVerificationCode.create,
@@ -259,6 +265,7 @@ describe('Auth (e2e)', () => {
         .send({ email: VALID_SIGNUP.email })
         .expect(200);
 
+      await drainDeliveries();
       expect(context.prisma.emailVerificationCode.create).toHaveBeenCalled();
     });
 
@@ -273,6 +280,7 @@ describe('Auth (e2e)', () => {
         .send({ email: VALID_SIGNUP.email })
         .expect(200);
 
+      await drainDeliveries();
       expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
       expect(
         context.prisma.emailVerificationCode.create,
@@ -290,6 +298,7 @@ describe('Auth (e2e)', () => {
         .send({ email: VALID_SIGNUP.email })
         .expect(200);
 
+      await drainDeliveries();
       expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
       expect(
         context.prisma.emailVerificationCode.create,
@@ -304,11 +313,50 @@ describe('Auth (e2e)', () => {
         .send({ email: VALID_SIGNUP.email })
         .expect(200);
 
+      await drainDeliveries();
       const [lockOrder] = context.prisma.$queryRaw.mock.invocationCallOrder;
       const [readOrder] =
         context.prisma.emailVerificationCode.findFirst.mock.invocationCallOrder;
       expect(lockOrder).toBeLessThan(readOrder);
       expect(context.prisma.$transaction).toHaveBeenCalled();
+    });
+
+    it('answers before the code is issued and mailed, so timing hides the account', async () => {
+      context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
+      let release!: () => void;
+      const gate = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      context.prisma.$transaction.mockImplementationOnce(async () => {
+        await gate;
+        return false;
+      });
+
+      const outcome = await Promise.race([
+        request(server())
+          .post('/auth/resend')
+          .send({ email: VALID_SIGNUP.email })
+          .then((response) => response.status),
+        new Promise((resolve) => setTimeout(() => resolve('waiting'), 1500)),
+      ]);
+      release();
+
+      expect(outcome).toBe(200);
+    });
+
+    it('still answers neutrally when the delivery fails', async () => {
+      jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+      context.prisma.user.findUnique.mockResolvedValue(KNOWN_USER);
+      context.prisma.emailVerificationCode.create.mockRejectedValueOnce(
+        new Error('database down'),
+      );
+
+      const response = await request(server())
+        .post('/auth/resend')
+        .send({ email: VALID_SIGNUP.email })
+        .expect(200);
+
+      expect(response.body).toEqual({ message: NEUTRAL_MESSAGE });
     });
 
     it('allows a resend again once the last code expired', async () => {
@@ -322,6 +370,7 @@ describe('Auth (e2e)', () => {
         .send({ email: VALID_SIGNUP.email })
         .expect(200);
 
+      await drainDeliveries();
       const [{ data }] = context.prisma.emailVerificationCode.create.mock
         .calls[0] as [{ data: { resendCount: number } }];
       expect(data.resendCount).toBe(0);

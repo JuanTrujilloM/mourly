@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { VerificationCodeService } from './verification-code.service';
-import { VerificationDeliveryService } from './verification-delivery.service';
+import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { UserLookupService } from './user-lookup.service';
 import { UniversitiesService } from '../universities/universities.service';
 import { UNSUPPORTED_UNIVERSITY_MESSAGE } from '../universities/university-messages';
@@ -14,7 +14,7 @@ export class RegistrationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly codes: VerificationCodeService,
-    private readonly delivery: VerificationDeliveryService,
+    private readonly dispatcher: VerificationDispatcherService,
     private readonly users: UserLookupService,
     private readonly universities: UniversitiesService,
   ) {}
@@ -27,7 +27,7 @@ export class RegistrationService {
 
     const existing = await this.users.findByEmail(email);
     if (existing && (await this.codes.hasVerifiedEmail(existing.id))) {
-      await this.delivery.sendIfAllowed(existing.id, email);
+      this.dispatcher.dispatch(existing.id, email);
       return { message: NEUTRAL_MESSAGE };
     }
     if (await this.users.isCellphoneTaken(dto.cellphone, existing?.id)) {
@@ -35,7 +35,7 @@ export class RegistrationService {
     }
 
     const user = await this.upsertUser(email, dto.cellphone, existing?.id);
-    await this.delivery.sendIfAllowed(user.id, email);
+    this.dispatcher.dispatch(user.id, email);
     return { message: NEUTRAL_MESSAGE };
   }
 
