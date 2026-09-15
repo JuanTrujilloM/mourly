@@ -8,6 +8,37 @@ MIGRATE_IMAGE="$2"
 UPLOAD_DIR="$3"
 APP_DIR=/opt/mourly
 REGISTRY=us-east1-docker.pkg.dev
+IMAGE_REPOSITORY="${API_IMAGE%:*}"
+# Two images of roughly 400 MB are pulled per deploy; stop early rather than fill the disk mid-pull.
+MIN_FREE_DISK_KB=$((1500 * 1024))
+
+free_disk_kb() {
+  df --output=avail -k /var/lib/docker | tail -n 1 | tr -d ' '
+}
+
+ensure_free_disk() {
+  if [ "$(free_disk_kb)" -lt "$MIN_FREE_DISK_KB" ]; then
+    docker image prune -f
+  fi
+  if [ "$(free_disk_kb)" -lt "$MIN_FREE_DISK_KB" ]; then
+    echo "Not enough free disk to pull a release: $(free_disk_kb) KB available" >&2
+    exit 1
+  fi
+}
+
+released_image() {
+  sed -n 's/^API_IMAGE=//p' "$APP_DIR/release.env" 2>/dev/null || true
+}
+
+# `image prune` only removes dangling images, and every release has its own SHA tag,
+# so old releases are removed explicitly. The previous API image stays for rollbacks.
+remove_old_images() {
+  local keep="$1"
+  docker image ls "$IMAGE_REPOSITORY" --format '{{.Repository}}:{{.Tag}}' |
+    grep -vxF -e "$API_IMAGE" -e "$MIGRATE_IMAGE" -e "${keep:-none}" |
+    xargs -r docker image rm || true
+  docker image prune -f
+}
 
 install -m 644 "$UPLOAD_DIR/docker-compose.yml" "$UPLOAD_DIR/Caddyfile" "$APP_DIR/"
 printf 'API_IMAGE=%s\nMIGRATE_IMAGE=%s\n' "$API_IMAGE" "$MIGRATE_IMAGE" > "$APP_DIR/release.next.env"
@@ -24,6 +55,7 @@ compose() {
     "$@"
 }
 
+ensure_free_disk
 compose pull api migrate
 # Migrations run before the new API starts; if they fail, the old containers keep serving.
 compose run --rm migrate
@@ -34,9 +66,10 @@ API_CONTAINER="$(compose ps -q api)"
 for _ in $(seq 1 30); do
   STATUS="$(docker inspect -f '{{.State.Health.Status}}' "$API_CONTAINER")"
   if [ "$STATUS" = "healthy" ]; then
+    PREVIOUS_API_IMAGE="$(released_image)"
     # Promoted only after a healthy start, so a manual `compose up` never picks a broken release.
     mv "$APP_DIR/release.next.env" "$APP_DIR/release.env"
-    docker image prune -f
+    remove_old_images "$PREVIOUS_API_IMAGE"
     rm -rf "$UPLOAD_DIR"
     echo "Deploy healthy: $API_IMAGE"
     exit 0
