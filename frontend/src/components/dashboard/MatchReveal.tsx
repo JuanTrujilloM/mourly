@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/Button';
 import type { CurrentMatch, MatchPartner } from '@/types/match';
 
@@ -22,7 +23,9 @@ export function MatchReveal({
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  return (
+  // Portaled to <body>: the tab track's translateX makes it the containing
+  // block for fixed descendants, which would trap the overlay inside a panel.
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -76,6 +79,7 @@ export function MatchReveal({
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
