@@ -56,7 +56,7 @@ export interface ImageStore {
 }
 ```
 
-`StorageModule` binds `IMAGE_STORE` to `S3ImageStore` or `LocalImageStore` in a factory. `StorageService` never learns which one it got. Do the same for any adapter with a dev and a production form.
+`StorageModule` binds `IMAGE_STORE` to `GcsImageStore` or `LocalImageStore` in a factory. `StorageService` never learns which one it got. Do the same for any adapter with a dev and a production form.
 
 ## Error handling
 

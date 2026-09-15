@@ -63,6 +63,15 @@ describe('MailService', () => {
     });
   });
 
+  describe('in production without Resend configured', () => {
+    it('refuses to start instead of logging codes', () => {
+      expect(() => setup({ NODE_ENV: 'production' })).toThrow(
+        'RESEND_API_KEY is required in production',
+      );
+      expect(Logger.prototype.warn).not.toHaveBeenCalled();
+    });
+  });
+
   describe('with Resend configured', () => {
     const RESEND_ENV = {
       RESEND_API_KEY: 're_test_key',

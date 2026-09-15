@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { randomInt } from 'crypto';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../../config/prisma.service';
-import { VerificationResendPolicyService } from './verification-resend-policy.service';
 
 export type VerificationResult =
   | 'ok'
@@ -13,30 +10,10 @@ export type VerificationResult =
   | 'mismatch';
 
 const MAX_ATTEMPTS = 5;
-const SALT_ROUNDS = 10;
 
 @Injectable()
 export class VerificationCodeService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
-    private readonly resendPolicy: VerificationResendPolicyService,
-  ) {}
-
-  async issueForUser(userId: string): Promise<string> {
-    const code = randomInt(0, 1_000_000).toString().padStart(6, '0');
-    const codeHash = await bcrypt.hash(code, SALT_ROUNDS);
-    const resendCount = await this.resendPolicy.nextResendCount(userId);
-
-    await this.prisma.emailVerificationCode.deleteMany({
-      where: { userId, consumedAt: null },
-    });
-    await this.prisma.emailVerificationCode.create({
-      data: { userId, codeHash, resendCount, expiresAt: this.computeExpiry() },
-    });
-
-    return code;
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   async validate(userId: string, code: string): Promise<VerificationResult> {
     const record = await this.prisma.emailVerificationCode.findFirst({
@@ -70,12 +47,5 @@ export class VerificationCodeService {
       select: { id: true },
     });
     return consumed !== null;
-  }
-
-  private computeExpiry(): Date {
-    const ttlMinutes = Number(
-      this.config.get<string>('EMAIL_CODE_TTL_MINUTES') ?? 10,
-    );
-    return new Date(Date.now() + ttlMinutes * 60 * 1000);
   }
 }

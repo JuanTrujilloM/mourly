@@ -11,8 +11,9 @@ import { SessionCookiesService } from './session-cookies.service';
 import { SafeUserService } from './safe-user.service';
 import { UserLookupService } from './user-lookup.service';
 import { VerificationCodeService } from './verification-code.service';
+import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationDeliveryService } from './verification-delivery.service';
-import { VerificationResendPolicyService } from './verification-resend-policy.service';
+import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-university-email.validator';
@@ -37,8 +38,9 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
     SafeUserService,
     UserLookupService,
     VerificationCodeService,
+    VerificationCodeIssuerService,
     VerificationDeliveryService,
-    VerificationResendPolicyService,
+    VerificationDispatcherService,
     RefreshTokenService,
     JwtStrategy,
     IsSupportedUniversityEmailConstraint,
