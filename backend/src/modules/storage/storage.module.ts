@@ -2,18 +2,19 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IMAGE_STORE, type ImageStore } from './image-store';
 import { LocalImageStore } from './local-image-store';
-import { S3ImageStore } from './s3-image-store';
+import { GcsImageStore } from './gcs-image-store';
 import { StorageService } from './storage.service';
 
-function createImageStore(config: ConfigService): ImageStore {
-  const bucket = config.get<string>('AWS_S3_BUCKET');
-  const region = config.get<string>('AWS_REGION');
-
-  if (bucket && region) {
-    return new S3ImageStore(bucket, region);
+export function createImageStore(config: ConfigService): ImageStore {
+  const bucket = config.get<string>('GCS_BUCKET');
+  if (bucket) {
+    return new GcsImageStore(bucket);
+  }
+  if (config.get<string>('NODE_ENV') === 'production') {
+    throw new Error('GCS_BUCKET is required in production');
   }
   new Logger(StorageModule.name).warn(
-    'S3 is not configured; images are saved to local disk (/uploads).',
+    'GCS is not configured; images are saved to local disk (/uploads).',
   );
   return new LocalImageStore(config);
 }
