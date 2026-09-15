@@ -102,7 +102,33 @@ describe('Waitlist (e2e)', () => {
         .set('Cookie', cookie)
         .expect(200);
 
-      expect(response.body).toHaveLength(1);
+      expect(response.body).toEqual({
+        items: [{ id: 'w1', ...LEAD }],
+        nextCursor: null,
+      });
+    });
+
+    it('rejects a page size above the limit', async () => {
+      const cookie = await context.accessCookie('u2', 'admin@eafit.edu.co');
+
+      await request(server())
+        .get('/admin/waitlist?take=500')
+        .set('Cookie', cookie)
+        .expect(400);
+    });
+
+    it('passes a numeric page size and cursor to the query', async () => {
+      const cookie = await context.accessCookie('u2', 'admin@eafit.edu.co');
+      context.prisma.waitlistEntry.findMany.mockResolvedValue([]);
+
+      await request(server())
+        .get('/admin/waitlist?take=10&cursor=w9')
+        .set('Cookie', cookie)
+        .expect(200);
+
+      expect(context.prisma.waitlistEntry.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ take: 11, cursor: { id: 'w9' } }),
+      );
     });
   });
 });

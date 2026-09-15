@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { MatchResponseService } from './match-response.service';
 import { MatchTimeoutService } from './match-timeout.service';
+import { JobClaimService } from '../scheduling/job-claim.service';
 
 function setup(stale: { id: string; userAId: string; userBId: string }[] = []) {
   const findMany = jest.fn().mockResolvedValue(stale);
@@ -10,12 +11,14 @@ function setup(stale: { id: string; userAId: string; userBId: string }[] = []) {
     terminate: jest.fn().mockResolvedValue(undefined),
     notifyRejected: jest.fn().mockResolvedValue(undefined),
   };
+  const jobs = { claim: jest.fn().mockResolvedValue(true) };
 
   const service = new MatchTimeoutService(
     prisma,
     responses as unknown as MatchResponseService,
+    jobs as unknown as JobClaimService,
   );
-  return { service, findMany, responses };
+  return { service, findMany, responses, jobs };
 }
 
 describe('MatchTimeoutService', () => {
@@ -25,6 +28,16 @@ describe('MatchTimeoutService', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+  });
+
+  it('skips the run when another instance claimed this tick', async () => {
+    const { service, findMany, jobs } = setup();
+    jobs.claim.mockResolvedValue(false);
+
+    await service.rejectStaleMatches();
+
+    expect(jobs.claim).toHaveBeenCalledWith('response-timeout');
+    expect(findMany).not.toHaveBeenCalled();
   });
 
   it('looks only at unscheduled active matches past the cutoff', async () => {

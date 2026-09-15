@@ -1,6 +1,7 @@
 import { PrismaService } from '../../config/prisma.service';
 import { VenuesService } from '../venues/venues.service';
 import { MatchInviteService } from './match-invite.service';
+import { JobClaimService } from '../scheduling/job-claim.service';
 import { WeeklyMatchingService } from './weekly-matching.service';
 import { CandidateLoaderService } from './candidate-loader.service';
 import { MatchHistoryService } from './match-history.service';
@@ -168,7 +169,12 @@ describe('weekly matching → venue selection integration', () => {
       prisma,
       new MatchHistoryService(prisma),
     );
-    const weekly = new WeeklyMatchingService(prisma, loader, invites);
+    const weekly = new WeeklyMatchingService(
+      prisma,
+      loader,
+      invites,
+      new JobClaimService(prisma),
+    );
     const venueSelection = new VenueSelectionService(
       prisma,
       new VenueRankingService(prisma, new VenuesService(prisma)),

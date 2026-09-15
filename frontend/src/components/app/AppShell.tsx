@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { Logo } from '@/components/shared/Logo';
 import { PhoneShell } from '@/components/shared/PhoneShell';
 import { useMyProfile } from '@/hooks/useMyProfile';
+import { useVisitedTabs } from '@/hooks/useVisitedTabs';
 import {
   AVAILABILITY_STATUS,
   type AvailabilityStatus,
@@ -16,8 +17,9 @@ import { TABS, TabBar, tabIndexFor } from './TabBar';
 
 const PANELS = [DashboardPanel, ProfilePanel, InterestsPanel];
 
-// The three tabs stay mounted on a horizontal track that slides 320 ms with
-// the brand curve. Tabs change the URL through the native history API, which
+// The three tabs sit on a horizontal track that slides 320 ms with the brand
+// curve. Each panel mounts on its first visit and then stays mounted, so its
+// queries wait until needed and unsaved form edits survive tab switches. Tabs change the URL through the native history API, which
 // Next.js syncs with usePathname, so deep links and back/forward keep working.
 export function AppShell({
   user,
@@ -28,6 +30,7 @@ export function AppShell({
 }) {
   const pathname = usePathname();
   const active = tabIndexFor(pathname);
+  const visited = useVisitedTabs(active);
   const { data: profile, isLoading } = useMyProfile();
 
   const status =
@@ -63,7 +66,7 @@ export function AppShell({
                 inert={hidden}
                 className="h-full w-full shrink-0 overflow-x-hidden overflow-y-auto px-5 pt-3 sm:px-7"
               >
-                <Panel user={user} status={status} />
+                {visited.has(index) && <Panel user={user} status={status} />}
               </section>
             );
           })}

@@ -7,6 +7,8 @@ import {
 } from './feedback-recipients';
 import { PendingDateRepository } from './pending-date.repository';
 import { FEEDBACK_WINDOW_CRON } from './feedback-window.constants';
+import { JobClaimService } from '../scheduling/job-claim.service';
+import { SCHEDULED_JOBS } from '../scheduling/scheduled-jobs';
 
 const PARTICIPANTS = 2;
 
@@ -19,10 +21,12 @@ export class FeedbackWindowService {
   constructor(
     private readonly dates: PendingDateRepository,
     private readonly notifications: NotificationsService,
+    private readonly jobs: JobClaimService,
   ) {}
 
   @Cron(FEEDBACK_WINDOW_CRON)
   async runFeedbackCycle(): Promise<void> {
+    if (!(await this.jobs.claim(SCHEDULED_JOBS.feedbackWindow))) return;
     const now = new Date();
     await this.requestPending(now);
     await this.remindPending(now);

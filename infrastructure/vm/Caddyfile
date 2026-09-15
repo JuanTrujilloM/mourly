@@ -4,5 +4,10 @@
 
 {$API_DOMAIN} {
 	encode zstd gzip
-	reverse_proxy api:3001
+	# While a deploy recreates the API container, hold requests and retry the dial
+	# instead of answering 502. Nest boots in a few seconds; 30 s leaves margin.
+	reverse_proxy api:3001 {
+		lb_try_duration 30s
+		lb_try_interval 250ms
+	}
 }

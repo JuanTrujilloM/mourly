@@ -10,7 +10,9 @@ jest.mock('resend', () => ({
 const ResendMock = Resend as jest.MockedClass<typeof Resend>;
 
 function setup(env: Record<string, string> = {}) {
-  const send = jest.fn().mockResolvedValue({ data: { id: 'email_1' }, error: null });
+  const send = jest
+    .fn()
+    .mockResolvedValue({ data: { id: 'email_1' }, error: null });
   ResendMock.mockImplementation(
     () => ({ emails: { send } }) as unknown as Resend,
   );
@@ -25,6 +27,7 @@ function setup(env: Record<string, string> = {}) {
 
 describe('MailService', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
     jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => undefined);
   });
@@ -113,11 +116,30 @@ describe('MailService', () => {
 
     it('throws when Resend reports an error', async () => {
       const { service, send } = setup(RESEND_ENV);
-      send.mockResolvedValue({ data: null, error: { message: 'invalid domain' } });
+      send.mockResolvedValue({
+        data: null,
+        error: { message: 'invalid domain' },
+      });
 
       await expect(
-        service.send('ana@eafit.edu.co', { subject: 'Hola', html: '<p>Hola</p>' }),
+        service.send('ana@eafit.edu.co', {
+          subject: 'Hola',
+          html: '<p>Hola</p>',
+        }),
       ).rejects.toThrow('invalid domain');
+    });
+
+    it('gives up when Resend never answers', async () => {
+      const { service, send } = setup(RESEND_ENV);
+      send.mockReturnValue(new Promise(() => {}));
+
+      const sending = service.send('ana@eafit.edu.co', {
+        subject: 'Hola',
+        html: '<p>Hola</p>',
+      });
+      jest.advanceTimersByTime(10_000);
+
+      await expect(sending).rejects.toThrow('Resend send timed out');
     });
   });
 });
