@@ -8,7 +8,7 @@ export function buildSystemPrompt(
 
   return [
     `Eres el asistente de Mourly, una app de citas para estudiantes universitarios en Colombia.`,
-    `Responde en el idioma del usuario; por defecto, español. Tono cercano, breve y útil (es WhatsApp).`,
+    `Responde en el idioma del usuario; por defecto, español. Tono cercano, breve y útil (es un chat de texto).`,
     ``,
     `Solo puedes ayudar con estos temas:`,
     `- Consejos para citas (personalizados con el perfil del usuario).`,

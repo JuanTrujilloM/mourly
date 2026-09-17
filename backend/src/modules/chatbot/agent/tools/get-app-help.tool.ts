@@ -10,7 +10,7 @@ const APP_HELP = `
 
 ¿Cómo confirmo una cita?
   Cuando recibas tu match, eliges tus horarios disponibles, ambos escogen lugar y, si
-  hay coincidencia, confirmamos la cita automáticamente y te avisamos por WhatsApp.
+  hay coincidencia, confirmamos la cita automáticamente y te avisamos por SMS.
 
 ¿Puedo pausar los matches?
   Sí. En tu perfil puedes cambiar tu disponibilidad a "Pausado" cuando quieras.
