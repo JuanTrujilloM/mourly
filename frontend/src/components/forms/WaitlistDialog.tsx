@@ -93,7 +93,7 @@ export function WaitlistDialog({
             </Field>
 
             <Field
-              label="WhatsApp"
+              label="Celular"
               htmlFor="waitlist-cellphone"
               error={errors.cellphone?.message}
             >
