@@ -25,7 +25,7 @@ export function logSummary(seededMatches: boolean): void {
   }
   console.log('Primary test login: valentina.rios@eafit.edu.co');
   console.log('  1) POST /auth/login { email } → code is logged to the server');
-  console.log('     console ([dev mail] ...) when SMTP is not configured.');
+  console.log('     console ([dev mail] ...) when RESEND_API_KEY is not set.');
   console.log('  2) POST /auth/verify with that code to get a session.');
   console.log('Admin view: set ADMIN_EMAILS=valentina.rios@eafit.edu.co');
   console.log('Chatbot: message from cellphone +573001000001 (Valentina).');
