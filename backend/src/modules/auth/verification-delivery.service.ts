@@ -19,7 +19,7 @@ export class VerificationDeliveryService {
 
   async send(userId: string, email: string): Promise<void> {
     const code = await this.codes.issueForUser(userId);
-    await this.mail.sendVerificationCode(email, code);
+    await this.mail.sendVerificationCode(email, code, this.codes.ttlMinutes);
   }
 
   async sendIfAllowed(userId: string, email: string): Promise<void> {

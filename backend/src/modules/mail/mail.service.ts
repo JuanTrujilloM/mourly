@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
+import type { EmailMessage } from './email-message';
+import { CONTACT_EMAIL, DEFAULT_MAIL_FROM } from './mail.constants';
 import { verificationCodeEmail } from './templates/verification-code.template';
 
 @Injectable()
@@ -8,47 +10,38 @@ export class MailService {
   private readonly logger = new Logger(MailService.name);
   private readonly resend: Resend | null;
   private readonly from: string;
-  private readonly devMode: boolean;
+  private readonly replyTo: string;
 
-  constructor(private readonly config: ConfigService) {
-    this.from = this.config.get<string>(
-      'MAIL_FROM',
-      'Mourly <no-reply@mourly.com>',
-    );
-    const apiKey = this.config.get<string>('RESEND_API_KEY');
-    this.devMode = !apiKey;
-    // HTTPS API, not SMTP — hosts like Render block outbound SMTP ports (25/465/587)
-    // on their free tier, which leaves nodemailer's SMTP transport hanging forever.
+  constructor(config: ConfigService) {
+    this.from = config.get<string>('MAIL_FROM', DEFAULT_MAIL_FROM);
+    this.replyTo = config.get<string>('MAIL_REPLY_TO', CONTACT_EMAIL);
+    const apiKey = config.get<string>('RESEND_API_KEY');
     this.resend = apiKey ? new Resend(apiKey) : null;
   }
 
-  async sendVerificationCode(email: string, code: string): Promise<void> {
-    if (this.devMode) {
-      this.logger.warn(
-        `[dev mail] verification code for ${email}: ${code} (RESEND_API_KEY not configured)`,
-      );
-      return;
-    }
-
-    await this.send(email, verificationCodeEmail(code));
+  sendVerificationCode(
+    email: string,
+    code: string,
+    ttlMinutes: number,
+  ): Promise<void> {
+    return this.send(email, verificationCodeEmail({ code, ttlMinutes }));
   }
 
-  async send(
-    to: string,
-    content: { subject: string; html: string },
-  ): Promise<void> {
-    if (this.devMode) {
+  async send(to: string, message: EmailMessage): Promise<void> {
+    if (!this.resend) {
       this.logger.warn(
-        `[dev mail] to ${to}: "${content.subject}" (RESEND_API_KEY not configured)`,
+        `[dev mail] to ${to}: "${message.subject}" (RESEND_API_KEY not configured)`,
       );
       return;
     }
 
-    const { error } = await this.resend!.emails.send({
+    const { error } = await this.resend.emails.send({
       from: this.from,
       to,
-      subject: content.subject,
-      html: content.html,
+      replyTo: this.replyTo,
+      subject: message.subject,
+      html: message.html,
+      text: message.text,
     });
 
     if (error) {
