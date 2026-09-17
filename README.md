@@ -55,6 +55,13 @@ DATABASE_URL="postgresql://<your-mac-username>@localhost:5432/mourly"
 # Optional for local dev (leave empty if not testing these features)
 JWT_SECRET=any-random-string-for-local-dev
 JWT_EXPIRES_IN=7d
+# Email: leave RESEND_API_KEY empty to log codes to the console instead of sending
+RESEND_API_KEY=
+MAIL_FROM="Mourly <no-reply@mourly.com>"
+MAIL_REPLY_TO=cloud@mourly.com
+EMAIL_CODE_TTL_MINUTES=10
+# Only the verification code goes out by email unless this is true
+EMAIL_NOTIFICATIONS_ENABLED=false
 WHATSAPP_TOKEN=
 WHATSAPP_PHONE_NUMBER_ID=
 WHATSAPP_VERIFY_TOKEN=
