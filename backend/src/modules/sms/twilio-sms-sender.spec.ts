@@ -58,4 +58,16 @@ describe('TwilioSmsSender', () => {
       'Invalid To number',
     );
   });
+
+  it('gives up on a provider that never answers', async () => {
+    jest.useFakeTimers();
+    const { sender, create } = buildSender({ from: '+15005550006' });
+    create.mockReturnValue(new Promise(() => undefined));
+
+    const sending = sender.send('+573001112233', 'Hola');
+    jest.advanceTimersByTime(10_000);
+
+    await expect(sending).rejects.toThrow('Twilio send timed out');
+    jest.useRealTimers();
+  });
 });

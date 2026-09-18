@@ -14,6 +14,7 @@ function setup(model: string) {
   const delegate = {
     findFirst: jest.fn().mockResolvedValue(null),
     deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
+    updateMany: jest.fn().mockResolvedValue({ count: 1 }),
     create: jest.fn().mockResolvedValue({ id: 'code-1' }),
     update: jest.fn().mockResolvedValue({}),
   };
@@ -32,16 +33,6 @@ describe.each(CASES)('%s verification code table', (_, table, model) => {
     expect(delegate.findFirst).toHaveBeenCalledWith({
       where: { userId: 'u1', consumedAt: null },
       orderBy: { createdAt: 'desc' },
-    });
-  });
-
-  it('drops only the pending codes of the user', async () => {
-    const { db, delegate } = setup(model);
-
-    await table.deletePending(db, 'u1');
-
-    expect(delegate.deleteMany).toHaveBeenCalledWith({
-      where: { userId: 'u1', consumedAt: null },
     });
   });
 

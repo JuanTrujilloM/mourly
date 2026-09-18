@@ -36,7 +36,7 @@ export class VerificationCodeIssuerService {
     const decision = decideResend(latest, Date.now());
     if (!decision.allowed) return false;
 
-    await this.table.deletePending(tx, userId);
+    await this.table.retirePending(tx, userId);
     await this.table.create(tx, {
       userId,
       codeHash,

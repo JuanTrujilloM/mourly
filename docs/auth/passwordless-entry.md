@@ -14,7 +14,7 @@
 /verify código ──> POST /auth/verify ──> isVerified = true + sesión (cookies)
         │
         ▼  nextRouteFor(user)
-/onboarding/celular ──> PATCH /auth/phone { cellphone }   (guarda +57…, borra códigos)
+/onboarding/celular ──> PATCH /auth/phone { cellphone }   (guarda +57…, agota códigos)
                     ──> POST  /auth/phone/send            (SMS con el código)
                     ──> POST  /auth/phone/verify { code } (cellphoneVerifiedAt)
         │
@@ -36,8 +36,8 @@ no existe. Cuentas que nunca verifican el correo se borran a los 7 días
 |---|---|---|---|
 | `POST` | `/auth/request-code` | rate limit | Valida dominio, `upsert` por correo normalizado, despacha el código por correo en segundo plano, responde `CODE_SENT_MESSAGE` |
 | `POST` | `/auth/verify` | rate limit | Valida el código de correo, marca `isVerified`, emite cookies de sesión |
-| `PATCH` | `/auth/phone` | JWT | Normaliza a E.164, rechaza un número de otra cuenta, guarda y resetea `cellphoneVerifiedAt` y los códigos pendientes |
-| `POST` | `/auth/phone/send` | JWT | Emite un código (misma política que el correo) y lo manda por `SMS_SENDER`; 429 si el issuer lo rechaza |
+| `PATCH` | `/auth/phone` | JWT | Normaliza a E.164. Mismo número: no toca nada. Número verificado por otra cuenta: 400. Si no, se lo quita a cualquier cuenta que lo tenga sin verificar, guarda, resetea `cellphoneVerifiedAt` y agota los códigos pendientes (no los borra, así la espera y el tope siguen corriendo) |
+| `POST` | `/auth/phone/send` | JWT | Máximo 10 SMS por usuario en 24 h (`PhoneCodeQuotaService`), luego la misma política que el correo; manda a `toE164Colombia(cellphone)` por `SMS_SENDER`; 429 si la cuota o el issuer lo rechazan |
 | `POST` | `/auth/phone/verify` | JWT | Valida el código y estampa `cellphoneVerifiedAt`; devuelve el usuario seguro |
 
 `GET /auth/me` expone `cellphone` (puede ser `null`) y `cellphoneVerified`.
@@ -50,8 +50,9 @@ no existe. Cuentas que nunca verifican el correo se borran a los 7 días
 lógica vive una sola vez:
 
 - `verification-code-table.ts` — interfaz `VerificationCodeTable` (leer pendiente,
-  borrar pendientes, crear, contar intento, consumir) con una implementación
-  delgada por tabla.
+  retirar pendientes, crear, contar intento, consumir) con una implementación
+  delgada por tabla. Correo borra los pendientes al retirarlos; teléfono los
+  marca con `consumedAt` y conserva la fila, que es lo que cuenta la cuota diaria.
 - `VerificationCodeIssuerService(prisma, table, ttlMinutes)` — bloquea la fila del
   usuario, aplica `decideResend` (60 s de espera, máximo 3 reenvíos), reemplaza el
   código pendiente.
@@ -91,7 +92,20 @@ fan-out loguea (en la práctica nadie llega a un match sin celular verificado).
 
 ---
 
-## 6. Cómo probar en local
+## 6. Límites contra abuso de SMS
+
+- 60 s entre códigos y 3 reenvíos por código (`decideResend`), que sobreviven a un
+  cambio de número porque `PATCH /auth/phone` agota los códigos en vez de borrarlos.
+- 10 SMS por usuario en 24 h (`DAILY_PHONE_CODE_LIMIT`).
+- `AUTH_THROTTLE` por IP en las tres rutas.
+- En producción el API no arranca sin `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` y
+  `TWILIO_MESSAGING_SERVICE_SID` o `TWILIO_FROM` (`env.validation.ts`).
+- Los celulares guardados antes de E.164 se pasan a `+57…` en la migración
+  `20260918010000_normalize_cellphones`.
+
+---
+
+## 7. Cómo probar en local
 
 ```bash
 cd backend && npm run db:seed          # estudiantes con celular verificado

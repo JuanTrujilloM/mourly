@@ -9,11 +9,18 @@ export class UserLookupService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  async isCellphoneTaken(
+  async isCellphoneVerifiedByAnother(
     cellphone: string,
-    ownerId?: string,
+    userId: string,
   ): Promise<boolean> {
-    const owner = await this.prisma.user.findUnique({ where: { cellphone } });
-    return owner !== null && owner.id !== ownerId;
+    const owner = await this.prisma.user.findFirst({
+      where: {
+        cellphone,
+        cellphoneVerifiedAt: { not: null },
+        id: { not: userId },
+      },
+      select: { id: true },
+    });
+    return owner !== null;
   }
 }

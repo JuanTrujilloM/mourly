@@ -6,7 +6,7 @@ export const emailVerificationCodeTable: VerificationCodeTable = {
       where: { userId, consumedAt: null },
       orderBy: { createdAt: 'desc' },
     }),
-  deletePending: async (db, userId) => {
+  retirePending: async (db, userId) => {
     await db.emailVerificationCode.deleteMany({
       where: { userId, consumedAt: null },
     });

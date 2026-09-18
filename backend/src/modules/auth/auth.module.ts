@@ -7,6 +7,8 @@ import { SchedulingModule } from '../scheduling/scheduling.module';
 import { SmsModule } from '../sms/sms.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { PhoneCodeQuotaService } from './phone-code-quota.service';
+import { PhoneNumberService } from './phone-number.service';
 import { PhoneVerificationController } from './phone-verification.controller';
 import { PhoneVerificationService } from './phone-verification.service';
 import { SessionService } from './session.service';
@@ -38,6 +40,8 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
   providers: [
     AuthService,
     PhoneVerificationService,
+    PhoneNumberService,
+    PhoneCodeQuotaService,
     SessionService,
     SessionCookiesService,
     SafeUserService,
