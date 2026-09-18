@@ -124,7 +124,7 @@ email to be in `ADMIN_EMAILS`.
 | Area | Endpoints |
 |---|---|
 | Public | `GET /health`, `GET /catalog` |
-| Auth | `POST /auth/register`, `/login`, `/verify`, `/resend`, `/refresh`, `/logout`, `GET /auth/me` |
+| Auth | `POST /auth/request-code`, `/verify`, `/refresh`, `/logout`, `GET /auth/me`; `PATCH /auth/phone`, `POST /auth/phone/send`, `/auth/phone/verify` |
 | Onboarding | `GET` and `POST /profile`, `PATCH /profile/availability`, `GET` and `POST /preferences` |
 | Weekly match | `GET /matches/current`, `POST /matches/current/reject`, `POST /matches/:id/report` |
 | Tokenized flow | `GET` and `POST /availability/:token`, `GET` and `POST /availability/:token/venues` |
