@@ -3,10 +3,10 @@
 // is public, so security rests on the token: high-entropy, stored only as a
 // sha256 hash (looked up by equality), single-use, and expiring.
 model AvailabilityLink {
-  id        String   @id @default(uuid())
-  matchId   String
-  userId    String
-  tokenHash String   @unique // sha256 of the opaque token — 256-bit, so a fast deterministic hash is safe and keeps lookups O(1)
+  id         String    @id @default(uuid())
+  matchId    String
+  userId     String
+  tokenHash  String    @unique // sha256 of the opaque token — 256-bit, so a fast deterministic hash is safe and keeps lookups O(1)
   // Which step the holder is on: VENUE -> AVAILABILITY. consumedAt closes the flow.
   // Nudge links are issued directly at AVAILABILITY (venues already chosen).
   step       String    @default("VENUE")
