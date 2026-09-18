@@ -1,6 +1,7 @@
 import request from 'supertest';
 import type { Server } from 'http';
 import { CELLPHONE_TAKEN_MESSAGE } from '../src/modules/auth/phone-verification.messages';
+import { MAX_ATTEMPTS } from '../src/modules/auth/verification-code.service';
 import { createTestApp, type TestApp } from './setup-app';
 
 const CELLPHONE = '+573001112233';
@@ -22,6 +23,7 @@ describe('Phone verification (e2e)', () => {
     jest.clearAllMocks();
     context.prisma.user.findUnique.mockResolvedValue(null);
     context.prisma.user.update.mockResolvedValue({ id: 'u1' });
+    context.prisma.user.findFirst.mockResolvedValue(null);
   });
 
   const server = () => context.app.getHttpServer() as Server;
@@ -49,7 +51,7 @@ describe('Phone verification (e2e)', () => {
       await updatePhone({}).expect(400);
     });
 
-    it('normalizes a local number and clears pending codes', async () => {
+    it('normalizes a local number and exhausts pending codes', async () => {
       const response = await updatePhone({ cellphone: '3001112233' }).expect(
         200,
       );
@@ -60,35 +62,29 @@ describe('Phone verification (e2e)', () => {
         data: { cellphone: CELLPHONE, cellphoneVerifiedAt: null },
       });
       expect(
-        context.prisma.phoneVerificationCode.deleteMany,
+        context.prisma.phoneVerificationCode.updateMany,
       ).toHaveBeenCalledWith({
         where: { userId: 'u1', consumedAt: null },
+        data: { attempts: MAX_ATTEMPTS },
       });
-      expect(context.prisma.$transaction).toHaveBeenCalled();
+      expect(
+        context.prisma.phoneVerificationCode.deleteMany,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('rejects a number another account verified', async () => {
+      context.prisma.user.findFirst.mockResolvedValue({ id: 'u2' });
+
+      const response = await updatePhone({ cellphone: CELLPHONE }).expect(400);
+
+      expect(response.body.message).toBe(CELLPHONE_TAKEN_MESSAGE);
+      expect(context.prisma.user.update).not.toHaveBeenCalled();
     });
 
     it('accepts a number that already carries the country code', async () => {
       const response = await updatePhone({ cellphone: CELLPHONE }).expect(200);
 
       expect(response.body).toEqual({ cellphone: CELLPHONE });
-    });
-
-    it('rejects a number another account already uses', async () => {
-      context.prisma.user.findUnique.mockResolvedValue({ id: 'u2' });
-
-      const response = await updatePhone({ cellphone: CELLPHONE }).expect(400);
-
-      expect(response.body.message).toBe(CELLPHONE_TAKEN_MESSAGE);
-      expect(context.prisma.user.findUnique).toHaveBeenCalledWith({
-        where: { cellphone: CELLPHONE },
-      });
-      expect(context.prisma.user.update).not.toHaveBeenCalled();
-    });
-
-    it('lets the owner resubmit their own number', async () => {
-      context.prisma.user.findUnique.mockResolvedValue({ id: 'u1' });
-
-      await updatePhone({ cellphone: CELLPHONE }).expect(200);
     });
   });
 });

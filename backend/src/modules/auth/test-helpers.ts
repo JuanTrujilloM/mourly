@@ -5,6 +5,7 @@ import { PhoneVerificationService } from './phone-verification.service';
 import { SafeUserService } from './safe-user.service';
 import { SessionService } from './session.service';
 import { UserLookupService } from './user-lookup.service';
+import { PhoneCodeQuotaService } from './phone-code-quota.service';
 import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationDispatcherService } from './verification-dispatcher.service';
@@ -53,14 +54,8 @@ export function setupPhoneVerification(
       findUnique: jest.fn().mockResolvedValue(user),
       update: jest.fn().mockResolvedValue({}),
     },
-    phoneVerificationCode: {
-      deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
-    },
-    $transaction: jest.fn((operations: Promise<unknown>[]) =>
-      Promise.all(operations),
-    ),
   };
-  const users = { isCellphoneTaken: jest.fn().mockResolvedValue(false) };
+  const quota = { hasRemaining: jest.fn().mockResolvedValue(true) };
   const issuer = {
     issueIfAllowed: jest.fn().mockResolvedValue('482913'),
     ttlMinutes: 10,
@@ -72,11 +67,11 @@ export function setupPhoneVerification(
   };
   const service = new PhoneVerificationService(
     prisma as unknown as PrismaService,
-    users as unknown as UserLookupService,
+    quota as unknown as PhoneCodeQuotaService,
     issuer as unknown as VerificationCodeIssuerService,
     codes as unknown as VerificationCodeService,
     sms,
     safeUsers as unknown as SafeUserService,
   );
-  return { service, prisma, users, issuer, codes, sms, safeUsers };
+  return { service, prisma, quota, issuer, codes, sms, safeUsers };
 }

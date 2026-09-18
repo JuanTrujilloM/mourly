@@ -6,7 +6,7 @@ function setup(ttlMinutes = 10) {
   const tx = { $queryRaw: jest.fn().mockResolvedValue([{ id: 'u1' }]) };
   const table = {
     findLatestPending: jest.fn().mockResolvedValue(null),
-    deletePending: jest.fn().mockResolvedValue(undefined),
+    retirePending: jest.fn().mockResolvedValue(undefined),
     create: jest.fn().mockResolvedValue(undefined),
     countAttempt: jest.fn(),
     consume: jest.fn(),
@@ -48,12 +48,12 @@ describe('VerificationCodeIssuerService', () => {
     expect($transaction).toHaveBeenCalledTimes(1);
     const [lock] = tx.$queryRaw.mock.invocationCallOrder;
     const [read] = table.findLatestPending.mock.invocationCallOrder;
-    const [drop] = table.deletePending.mock.invocationCallOrder;
+    const [drop] = table.retirePending.mock.invocationCallOrder;
     const [insert] = table.create.mock.invocationCallOrder;
     expect(lock).toBeLessThan(read);
     expect(read).toBeLessThan(drop);
     expect(drop).toBeLessThan(insert);
-    expect(table.deletePending).toHaveBeenCalledWith(tx, 'u1');
+    expect(table.retirePending).toHaveBeenCalledWith(tx, 'u1');
   });
 
   it('stamps the next resend count from the pending code', async () => {
@@ -72,7 +72,7 @@ describe('VerificationCodeIssuerService', () => {
     );
 
     expect(await service.issueIfAllowed('u1')).toBeNull();
-    expect(table.deletePending).not.toHaveBeenCalled();
+    expect(table.retirePending).not.toHaveBeenCalled();
     expect(table.create).not.toHaveBeenCalled();
   });
 

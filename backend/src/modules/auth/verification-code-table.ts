@@ -23,7 +23,7 @@ export interface VerificationCodeTable {
     db: VerificationCodeDb,
     userId: string,
   ): Promise<PendingVerificationCodeRecord | null>;
-  deletePending(db: VerificationCodeDb, userId: string): Promise<void>;
+  retirePending(db: VerificationCodeDb, userId: string): Promise<void>;
   create(db: VerificationCodeDb, code: NewVerificationCode): Promise<void>;
   countAttempt(db: VerificationCodeDb, id: string): Promise<void>;
   consume(db: VerificationCodeDb, id: string): Promise<void>;

@@ -9,7 +9,7 @@ export type VerificationResult =
   | 'too_many_attempts'
   | 'mismatch';
 
-const MAX_ATTEMPTS = 5;
+export const MAX_ATTEMPTS = 5;
 
 export class VerificationCodeService {
   constructor(

@@ -2,6 +2,7 @@ import { HttpException } from '@nestjs/common';
 import {
   ALREADY_VERIFIED_MESSAGE,
   CELLPHONE_REQUIRED_MESSAGE,
+  DAILY_LIMIT_MESSAGE,
   TOO_MANY_CODES_MESSAGE,
 } from './phone-verification.messages';
 import { setupPhoneVerification as setup } from './test-helpers';
@@ -54,6 +55,32 @@ describe('PhoneVerificationService.sendCode', () => {
     expect(failure).toBeInstanceOf(HttpException);
     expect((failure as HttpException).getStatus()).toBe(429);
     expect((failure as HttpException).message).toBe(TOO_MANY_CODES_MESSAGE);
+    expect(sms.send).not.toHaveBeenCalled();
+  });
+
+  it('normalizes a number stored before E.164 was enforced', async () => {
+    const { service, sms } = setup({
+      cellphone: '3001112233',
+      cellphoneVerifiedAt: null,
+    });
+
+    await service.sendCode('u1');
+
+    expect(jest.mocked(sms.send).mock.calls[0][0]).toBe('+573001112233');
+  });
+
+  it('answers 429 without issuing once the daily quota is spent', async () => {
+    const { service, quota, issuer, sms } = setup();
+    quota.hasRemaining.mockResolvedValue(false);
+
+    const failure = await service
+      .sendCode('u1')
+      .catch((error: HttpException) => error);
+
+    expect((failure as HttpException).getStatus()).toBe(429);
+    expect((failure as HttpException).message).toBe(DAILY_LIMIT_MESSAGE);
+    expect(quota.hasRemaining).toHaveBeenCalledWith('u1');
+    expect(issuer.issueIfAllowed).not.toHaveBeenCalled();
     expect(sms.send).not.toHaveBeenCalled();
   });
 });

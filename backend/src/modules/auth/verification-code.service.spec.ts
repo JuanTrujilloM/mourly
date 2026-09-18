@@ -5,7 +5,7 @@ import { VerificationCodeService } from './verification-code.service';
 function setup() {
   const table = {
     findLatestPending: jest.fn().mockResolvedValue(null),
-    deletePending: jest.fn(),
+    retirePending: jest.fn(),
     create: jest.fn(),
     countAttempt: jest.fn().mockResolvedValue(undefined),
     consume: jest.fn().mockResolvedValue(undefined),

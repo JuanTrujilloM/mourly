@@ -12,14 +12,14 @@ import type { Acknowledgement } from './auth.messages';
 import {
   ALREADY_VERIFIED_MESSAGE,
   CELLPHONE_REQUIRED_MESSAGE,
-  CELLPHONE_TAKEN_MESSAGE,
+  DAILY_LIMIT_MESSAGE,
   SMS_SENT_MESSAGE,
   TOO_MANY_CODES_MESSAGE,
   messageForPhoneResult,
   phoneCodeSms,
 } from './phone-verification.messages';
+import { PhoneCodeQuotaService } from './phone-code-quota.service';
 import { SafeUserService, type SafeUser } from './safe-user.service';
-import { UserLookupService } from './user-lookup.service';
 import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationCodeService } from './verification-code.service';
 import { PHONE_CODE_ISSUER, PHONE_CODE_VALIDATOR } from './verification.tokens';
@@ -28,7 +28,7 @@ import { PHONE_CODE_ISSUER, PHONE_CODE_VALIDATOR } from './verification.tokens';
 export class PhoneVerificationService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly users: UserLookupService,
+    private readonly quota: PhoneCodeQuotaService,
     @Inject(PHONE_CODE_ISSUER)
     private readonly issuer: VerificationCodeIssuerService,
     @Inject(PHONE_CODE_VALIDATOR)
@@ -37,36 +37,19 @@ export class PhoneVerificationService {
     private readonly safeUsers: SafeUserService,
   ) {}
 
-  async updateCellphone(
-    userId: string,
-    raw: string,
-  ): Promise<{ cellphone: string }> {
-    const cellphone = toE164Colombia(raw);
-    if (await this.users.isCellphoneTaken(cellphone, userId)) {
-      throw new BadRequestException(CELLPHONE_TAKEN_MESSAGE);
-    }
-    await this.prisma.$transaction([
-      this.prisma.user.update({
-        where: { id: userId },
-        data: { cellphone, cellphoneVerifiedAt: null },
-      }),
-      this.prisma.phoneVerificationCode.deleteMany({
-        where: { userId, consumedAt: null },
-      }),
-    ]);
-    return { cellphone };
-  }
-
   async sendCode(userId: string): Promise<Acknowledgement> {
     const cellphone = await this.pendingCellphoneOf(userId);
+    if (!(await this.quota.hasRemaining(userId))) {
+      throw tooManyRequests(DAILY_LIMIT_MESSAGE);
+    }
     const code = await this.issuer.issueIfAllowed(userId);
     if (!code) {
-      throw new HttpException(
-        TOO_MANY_CODES_MESSAGE,
-        HttpStatus.TOO_MANY_REQUESTS,
-      );
+      throw tooManyRequests(TOO_MANY_CODES_MESSAGE);
     }
-    await this.sms.send(cellphone, phoneCodeSms(code, this.issuer.ttlMinutes));
+    await this.sms.send(
+      toE164Colombia(cellphone),
+      phoneCodeSms(code, this.issuer.ttlMinutes),
+    );
     return { message: SMS_SENT_MESSAGE };
   }
 
@@ -96,4 +79,8 @@ export class PhoneVerificationService {
     }
     return user.cellphone;
   }
+}
+
+function tooManyRequests(message: string): HttpException {
+  return new HttpException(message, HttpStatus.TOO_MANY_REQUESTS);
 }

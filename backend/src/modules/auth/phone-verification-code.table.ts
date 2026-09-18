@@ -6,9 +6,10 @@ export const phoneVerificationCodeTable: VerificationCodeTable = {
       where: { userId, consumedAt: null },
       orderBy: { createdAt: 'desc' },
     }),
-  deletePending: async (db, userId) => {
-    await db.phoneVerificationCode.deleteMany({
+  retirePending: async (db, userId) => {
+    await db.phoneVerificationCode.updateMany({
       where: { userId, consumedAt: null },
+      data: { consumedAt: new Date() },
     });
   },
   create: async (db, code) => {

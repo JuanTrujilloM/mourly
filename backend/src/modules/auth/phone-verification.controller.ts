@@ -13,6 +13,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { PhoneCodeDto } from './dto/phone-code.dto';
 import { UpdateCellphoneDto } from './dto/update-cellphone.dto';
+import { PhoneNumberService } from './phone-number.service';
 import { PhoneVerificationService } from './phone-verification.service';
 import type { AuthenticatedUser } from './strategies/jwt.strategy';
 
@@ -20,14 +21,17 @@ import type { AuthenticatedUser } from './strategies/jwt.strategy';
 @UseGuards(JwtAuthGuard)
 @Throttle(AUTH_THROTTLE)
 export class PhoneVerificationController {
-  constructor(private readonly phones: PhoneVerificationService) {}
+  constructor(
+    private readonly numbers: PhoneNumberService,
+    private readonly phones: PhoneVerificationService,
+  ) {}
 
   @Patch()
   update(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: UpdateCellphoneDto,
   ) {
-    return this.phones.updateCellphone(user.userId, dto.cellphone);
+    return this.numbers.assign(user.userId, dto.cellphone);
   }
 
   @Post('send')
