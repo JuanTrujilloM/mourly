@@ -17,7 +17,7 @@ export function logSummary(seededMatches: boolean): void {
   if (!seededMatches) {
     console.log('To generate matches + availability links (HU-09):');
     console.log('  node dist/src/scripts/run-weekly-matching.js');
-    console.log('  (links are logged by WhatsappSenderService in dev mode)');
+    console.log('  (links are logged as [dev sms] when Twilio is not set)');
     console.log(
       'Or seed the demo matches too: SEED_MATCHES=true npm run db:seed',
     );

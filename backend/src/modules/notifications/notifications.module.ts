@@ -1,10 +1,10 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailModule } from '../mail/mail.module';
-import { WhatsappModule } from '../whatsapp/whatsapp.module';
+import { SmsModule } from '../sms/sms.module';
 import { activeChannels, emailNotificationsEnabled } from './channel-selection';
 import { EmailChannel } from './channels/email.channel';
-import { WhatsappChannel } from './channels/whatsapp.channel';
+import { SmsChannel } from './channels/sms.channel';
 import {
   NOTIFICATION_CHANNELS,
   type NotificationChannel,
@@ -17,7 +17,7 @@ const EMAIL_DISABLED_NOTICE =
 function createChannels(
   config: ConfigService,
   email: EmailChannel,
-  whatsapp: WhatsappChannel,
+  sms: SmsChannel,
 ): NotificationChannel[] {
   const emailEnabled = emailNotificationsEnabled(
     config.get<string>('EMAIL_NOTIFICATIONS_ENABLED'),
@@ -25,18 +25,18 @@ function createChannels(
   if (!emailEnabled) {
     new Logger(NotificationsModule.name).warn(EMAIL_DISABLED_NOTICE);
   }
-  return activeChannels(emailEnabled, email, [whatsapp]);
+  return activeChannels(emailEnabled, email, [sms]);
 }
 
 @Module({
-  imports: [WhatsappModule, MailModule],
+  imports: [SmsModule, MailModule],
   providers: [
     NotificationsService,
     EmailChannel,
-    WhatsappChannel,
+    SmsChannel,
     {
       provide: NOTIFICATION_CHANNELS,
-      inject: [ConfigService, EmailChannel, WhatsappChannel],
+      inject: [ConfigService, EmailChannel, SmsChannel],
       useFactory: createChannels,
     },
   ],

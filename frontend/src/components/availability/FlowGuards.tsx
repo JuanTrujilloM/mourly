@@ -8,7 +8,7 @@ export function FlowLinkError() {
   return (
     <FlowState
       title="Este enlace ya no sirve"
-      description="Expiró o ya se usó. Esperá la próxima notificación de WhatsApp."
+      description="Expiró o ya se usó. Esperá el próximo SMS."
     />
   );
 }
@@ -17,7 +17,7 @@ export function FlowStepCompleted() {
   return (
     <FlowState
       title="Listo."
-      description="Ya completaste este paso. Te avisamos por WhatsApp cuando tu match también termine, para confirmar la cita."
+      description="Ya completaste este paso. Te avisamos por SMS cuando tu match también termine, para confirmar la cita."
     />
   );
 }
