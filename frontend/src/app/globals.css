@@ -69,7 +69,8 @@
 }
 
 /* Roles semánticos: día por defecto, noche solo donde se declare
-   (revelación del match, /admin, carteles). No es prefers-color-scheme.
+   (revelación del match, /admin, carteles, la franja "Cómo funciona" de la
+   landing). No es prefers-color-scheme.
    `.dia` re-declares day inside a night surface (the reveal's sheet). */
 :root,
 .dia {
@@ -230,6 +231,32 @@ input[type="range"].brand-range::-moz-range-thumb {
   cursor: pointer;
 }
 
+/* Hero rotator */
+
+/* Three words take turns in one slot: each fades in, holds and fades out
+   inside its third of the 7.5 s cycle, so two are never visible at once.
+   Fades last 320 ms (--dur-slow). RotatingWords sets the per-word delay; a
+   fourth word needs new percentages. */
+.rotating-word {
+  animation: mourly-word 7.5s var(--ease) infinite both;
+}
+
+@keyframes mourly-word {
+  0% {
+    opacity: 0;
+  }
+  4.27% {
+    opacity: 1;
+  }
+  29.06% {
+    opacity: 1;
+  }
+  33.33%,
+  100% {
+    opacity: 0;
+  }
+}
+
 /* Splash */
 
 /* The wordmark holds still and the dot laps it (brand/logo.md: the dot is the
@@ -275,19 +302,45 @@ input[type="range"].brand-range::-moz-range-thumb {
   }
 }
 
-/* Without offset-path the dot would sit at 0,0; park it at home so the static
-   wordmark still reads as the logo. */
+/* Countdown */
+
+/* The splash's choreography (mourly-orbit) on the landing countdown. Home is
+   the full stop after the minutes (256, 84); the orbit is the block's box
+   (x 0..264, y 0..121) grown 20 on every side with 40 corners, clockwise, and
+   the curves in and out of home are the splash's scaled to this offset. The
+   cycle is 3.2 s, slower than the loader: this one stays on screen. */
+.countdown-dot {
+  transform-box: view-box;
+  offset-rotate: 0deg;
+  offset-path: path(
+    "M 256 84 C 267.2 84 284 68.6 284 84 L 284 101 C 284 123.09 266.09 141 244 141 L 20 141 C -2.09 141 -20 123.09 -20 101 L -20 20 C -20 -2.09 -2.09 -20 20 -20 L 244 -20 C 266.09 -20 284 -2.09 284 20 L 284 84 C 284 102.2 275.6 98 256 84"
+  );
+  animation: mourly-orbit 3.2s infinite both;
+}
+
+/* Without offset-path a dot would sit at 0,0; park it at home so the static
+   wordmark still reads as the logo and the countdown keeps its full stop. */
 @supports not (offset-path: path("M 0 0")) {
   .splash-dot {
     transform: translate(476.2px, -18px);
   }
+
+  .countdown-dot {
+    transform: translate(256px, 84px);
+  }
 }
 
-/* No orbit: the dot rests at home and the logo shows still. */
+/* No orbit: each dot rests at its home. */
 @media (prefers-reduced-motion: reduce) {
   .splash-dot {
     animation: none;
     offset-path: none;
     transform: translate(476.2px, -18px);
+  }
+
+  .countdown-dot {
+    animation: none;
+    offset-path: none;
+    transform: translate(256px, 84px);
   }
 }
