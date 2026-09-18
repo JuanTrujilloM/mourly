@@ -36,7 +36,7 @@ export function NextDateCountdown() {
       </div>
 
       <p className="text-ink-2 mt-5 text-sm">
-        Ahí te presentamos a alguien por WhatsApp. Mantené la búsqueda activa.
+        Ahí te presentamos a alguien por SMS. Mantené la búsqueda activa.
       </p>
     </section>
   );

@@ -1,0 +1,4 @@
+export const EMAIL_CODE_ISSUER = Symbol('EMAIL_CODE_ISSUER');
+export const EMAIL_CODE_VALIDATOR = Symbol('EMAIL_CODE_VALIDATOR');
+export const PHONE_CODE_ISSUER = Symbol('PHONE_CODE_ISSUER');
+export const PHONE_CODE_VALIDATOR = Symbol('PHONE_CODE_VALIDATOR');

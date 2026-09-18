@@ -13,6 +13,10 @@ describe('Rate limiting (e2e)', () => {
       require('./setup-app') as typeof import('./setup-app');
     context = await createTestApp({ throttle: true });
     context.prisma.user.findUnique.mockResolvedValue(null);
+    context.prisma.user.upsert.mockResolvedValue({
+      id: 'u1',
+      email: 'ana@eafit.edu.co',
+    });
   });
 
   afterAll(async () => {
@@ -23,7 +27,9 @@ describe('Rate limiting (e2e)', () => {
 
   it('caps repeated credential attempts', async () => {
     const attempt = () =>
-      request(server()).post('/auth/login').send({ email: 'ana@eafit.edu.co' });
+      request(server())
+        .post('/auth/request-code')
+        .send({ email: 'ana@eafit.edu.co' });
 
     await attempt().expect(200);
     await attempt().expect(200);
@@ -33,8 +39,8 @@ describe('Rate limiting (e2e)', () => {
   it('explains the block in Spanish instead of leaking the exception name', async () => {
     const attempt = () =>
       request(server())
-        .post('/auth/resend')
-        .send({ email: 'ana@eafit.edu.co' });
+        .post('/auth/verify')
+        .send({ email: 'ana@eafit.edu.co', code: '123456' });
 
     await attempt();
     await attempt();

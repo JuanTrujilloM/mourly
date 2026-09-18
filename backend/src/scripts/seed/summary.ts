@@ -17,7 +17,7 @@ export function logSummary(seededMatches: boolean): void {
   if (!seededMatches) {
     console.log('To generate matches + availability links (HU-09):');
     console.log('  node dist/src/scripts/run-weekly-matching.js');
-    console.log('  (links are logged by WhatsappSenderService in dev mode)');
+    console.log('  (links are logged as [dev sms] when Twilio is not set)');
     console.log(
       'Or seed the demo matches too: SEED_MATCHES=true npm run db:seed',
     );
@@ -25,7 +25,7 @@ export function logSummary(seededMatches: boolean): void {
   }
   console.log('Primary test login: valentina.rios@eafit.edu.co');
   console.log('  1) POST /auth/login { email } → code is logged to the server');
-  console.log('     console ([dev mail] ...) when SMTP is not configured.');
+  console.log('     console ([dev mail] ...) when RESEND_API_KEY is not set.');
   console.log('  2) POST /auth/verify with that code to get a session.');
   console.log('Admin view: set ADMIN_EMAILS=valentina.rios@eafit.edu.co');
   console.log('Chatbot: message from cellphone +573001000001 (Valentina).');

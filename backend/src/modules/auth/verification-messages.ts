@@ -1,7 +1,7 @@
 import type { VerificationResult } from './verification-code.service';
 
 export const INVALID_CODE_MESSAGE =
-  'El código es incorrecto o expiró. Si todavía no tenés cuenta, registrate primero.';
+  'El código es incorrecto o expiró. Pedí uno nuevo.';
 export const TOO_MANY_ATTEMPTS_MESSAGE =
   'Demasiados intentos. Pedí un código nuevo.';
 

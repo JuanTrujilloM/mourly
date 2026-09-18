@@ -9,7 +9,7 @@ const STEPS = [
   {
     title: 'El jueves te presentamos a alguien',
     description:
-      'A las 7:00 pm te escribimos por WhatsApp con una sola persona, elegida por lo que tienen en común.',
+      'A las 7:00 pm te llega un SMS con una sola persona, elegida por lo que tienen en común.',
   },
   {
     title: 'Cuadramos día, hora y lugar',

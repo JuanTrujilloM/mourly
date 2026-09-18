@@ -115,10 +115,10 @@ describe('Universities admin CRUD (e2e)', () => {
     });
   });
 
-  it('blocks registration from a domain that is not registered', async () => {
+  it('blocks a code request from a domain that is not registered', async () => {
     const response = await request(server())
-      .post('/auth/register')
-      .send({ email: 'ana@unregistered.edu.co', cellphone: '+573001112233' })
+      .post('/auth/request-code')
+      .send({ email: 'ana@unregistered.edu.co' })
       .expect(400);
 
     expect(response.body.message).toContain(UNSUPPORTED_UNIVERSITY_MESSAGE);
@@ -139,11 +139,11 @@ describe('Universities admin CRUD (e2e)', () => {
 
     it.each(LOOK_ALIKES)('rejects %s', async (domain) => {
       await request(server())
-        .post('/auth/register')
-        .send({ email: `bobo@${domain}`, cellphone: '+573001112233' })
+        .post('/auth/request-code')
+        .send({ email: `bobo@${domain}` })
         .expect(400);
 
-      expect(context.prisma.user.create).not.toHaveBeenCalled();
+      expect(context.prisma.user.upsert).not.toHaveBeenCalled();
     });
   });
 });

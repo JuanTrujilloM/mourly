@@ -9,8 +9,8 @@ export default function ProfileOnboardingPage() {
     <AuthGate>
       {(user) => (
         <OnboardingShell
-          step={1}
-          total={2}
+          step={2}
+          total={3}
           stepLabel="Perfil"
           title="Contanos de vos"
           subtitle="Esto es lo primero que va a ver tu cita."

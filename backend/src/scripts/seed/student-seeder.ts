@@ -13,6 +13,7 @@ export async function seedStudents(
         email: student.email,
         cellphone: student.cellphone,
         isVerified: true,
+        cellphoneVerifiedAt: new Date(),
       },
     });
 

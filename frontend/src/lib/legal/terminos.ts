@@ -7,9 +7,9 @@ import type { LegalDocument } from './types';
 export const TERMINOS: LegalDocument = {
   title: 'Términos y condiciones',
   intro:
-    'Estos términos regulan el uso de Mourly, en mourly.com y en su canal de WhatsApp. Al crear una cuenta usted declara que los leyó y los acepta.',
+    'Estos términos regulan el uso de Mourly, en mourly.com y en los mensajes de texto (SMS) que envía. Al crear una cuenta usted declara que los leyó y los acepta.',
   version: '1.0',
-  updatedAt: '2026-09-06',
+  updatedAt: '2026-09-17',
   sections: [
     responsibleSection(COMPANY, FOUNDERS),
     {
@@ -23,7 +23,7 @@ export const TERMINOS: LegalDocument = {
       heading: 'Requisitos para usar Mourly',
       bullets: [
         'Tener al menos 18 años. No hay excepciones.',
-        'Tener un correo institucional vigente de una universidad soportada (EAFIT, UPB, CES o EIA) y un número de celular propio con WhatsApp.',
+        'Tener un correo institucional vigente de una universidad soportada (EAFIT, UPB, CES o EIA) y un número de celular colombiano propio que reciba mensajes de texto (SMS).',
         'Mantener un solo perfil por persona.',
       ],
     },
@@ -124,7 +124,7 @@ export const TERMINOS: LegalDocument = {
       heading: 'Terminación y cambios',
       bullets: [
         'Usted puede dejar de usar Mourly y eliminar su cuenta en cualquier momento.',
-        'Mourly puede modificar estos términos. Los cambios sustanciales se informan por correo o WhatsApp antes de entrar en vigencia, con la fecha visible en este documento.',
+        'Mourly puede modificar estos términos. Los cambios sustanciales se informan por correo o SMS antes de entrar en vigencia, con la fecha visible en este documento.',
       ],
     },
     {

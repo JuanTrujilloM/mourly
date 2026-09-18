@@ -5,14 +5,11 @@
 > **HU-09** (disponibilidad), **HU-06** (lugares), **HU-08** (confirmación por
 > coincidencia) y **HU-07** (aceptar/rechazar).
 >
-> El transporte real de WhatsApp (Meta Cloud API) **no** está construido. Mientras
-> tanto, lo saliente por WhatsApp se **loguea en consola** (modo dev), igual que
-> `MailService` cuando SMTP no está configurado. Ver
-> [WhatsApp: por qué va por consola](#whatsapp-dev-mode).
->
-> Cada notificación de este flujo también sale por **correo** (con SMTP real si está
-> configurado), vía `NotificationsService`. Ver
-> [email-notifications.md](../notifications/email-notifications.md).
+> Las notificaciones de este flujo salen por **SMS** (Twilio; sin credenciales se
+> **loguean en consola**) vía `NotificationsService`. El correo solo entra con
+> `EMAIL_NOTIFICATIONS_ENABLED=true`. Ver
+> [notifications.md](../notifications/notifications.md) y
+> [SMS: por qué va por consola](#sms-dev-mode).
 
 ---
 
@@ -22,7 +19,7 @@
 Jueves 7pm (cron) → se crean los Match
         │
         ▼
-Se emite 1 link tokenizado por usuario  →  "WhatsApp" (dev: log en consola)
+Se emite 1 link tokenizado por usuario  →  SMS (dev: log en consola)
         │
         ▼   (el usuario abre el link, SIN login)
 HU-06 Lugares → HU-09 Disponibilidad        [flujo público, mismo token]
@@ -53,7 +50,7 @@ HU-07 (en paralelo, por el chatbot):
 | `matches` | Motor semanal (existente) + **invitación** (`MatchInviteService`), **confirmación** (`MatchConfirmationService`), **aceptar/rechazar** (`MatchResponseService`) |
 | `availability-link` | Ciclo de vida del token del link (`AvailabilityLinkService`): emitir, validar, avanzar de paso, consumir. sha256, uso único, expiración |
 | `availability` | Flujo público por token: calendario, guardar disponibilidad, reusar HU-06 para lugares (`AvailabilityService` + `AvailabilityController`) |
-| `whatsapp` | `WhatsappNotifierService` — envío saliente (hoy loguea en consola) |
+| `notifications` + `sms` | `NotificationsService` reparte a `SmsChannel` (Twilio, o consola sin credenciales) y, solo con flag, a `EmailChannel` |
 | `chatbot` | Cerebro entrante. Nueva herramienta `reject_match` |
 
 ---
@@ -167,14 +164,14 @@ hasta que **ambos** completaron el flujo.
 
 ---
 
-## 7. WhatsApp: por qué va por consola {#whatsapp-dev-mode}
+## 7. SMS: por qué va por consola {#sms-dev-mode}
 
-El chatbot es **solo entrante** (responde lo que le escriben; no envía nada por su
-cuenta). Las notificaciones son **salientes** (las dispara el sistema). Ambas necesitan
-el mismo transporte de WhatsApp que **aún no existe**, así que:
+Las notificaciones son **salientes** (las dispara el sistema) y van por SMS. El
+chatbot es **solo entrante** y todavía no tiene transporte (se moverá a la app web).
 
-- `WhatsappNotifierService.send()` **loguea en consola** cuando `WHATSAPP_TOKEN` está
-  vacío (modo dev). Cuando llegue el transporte, solo se cambia ese método.
+- `SmsModule` elige `ConsoleSmsSender` cuando `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`
+  o el origen (`TWILIO_MESSAGING_SERVICE_SID` / `TWILIO_FROM`) están vacíos: cada SMS
+  se **loguea en consola** como `[dev sms] to +57…: …`.
 - Las respuestas del chatbot se prueban con el REPL `chat-repl.js` (también consola).
 
 ---
@@ -184,8 +181,10 @@ el mismo transporte de WhatsApp que **aún no existe**, así que:
 ```bash
 FRONTEND_URL=http://localhost:3000     # base para armar el link del token
 AVAILABILITY_LINK_TTL_HOURS=72         # vigencia del link de disponibilidad
-WHATSAPP_TOKEN=                        # vacío = modo dev (loguea en vez de enviar)
-WHATSAPP_PHONE_NUMBER_ID=
+TWILIO_ACCOUNT_SID=                    # vacío = modo dev (loguea en vez de enviar)
+TWILIO_AUTH_TOKEN=
+TWILIO_MESSAGING_SERVICE_SID=          # o TWILIO_FROM (número en E.164)
+TWILIO_FROM=
 OPENROUTER_API_KEY=                    # requerido para el chatbot (rechazo por chat)
 ```
 
@@ -220,24 +219,24 @@ Copia **los 2 links de un mismo match** (aparecen juntos por celular en el log).
 1. Abre el link del usuario A → **primero los lugares**: elige 2 → confirmar.
 2. Pasa al calendario → elige una franja (ej. `mié 8 · 13:00`) → continuar → "¡Listo!".
 3. Repite con el link del usuario B usando 2 lugares y **la misma franja**.
-4. Al terminar B: en consola aparece `[dev whatsapp] ... ¡Coincidieron! ...`.
+4. Al terminar B: en consola aparece `[dev sms] ... coincidieron ... Cita confirmada ...`.
 5. Verifica en `npx prisma studio`: la `Date` queda `status = accepted` y el `Match`
    `status = confirmed`.
 
 ### Sin coincidencia de horario — empujón
 - Igual que arriba pero con **franjas distintas** (A: 13:00, B: 15:00). Al terminar B:
-  consola `... no coincidieron ... agrega más ...` + **un link nuevo por usuario**.
+  consola `... no cuadraron ... sumar franjas ...` + **un link nuevo por usuario**.
 - Los links nuevos abren **directo el calendario** (los lugares ya elegidos se
   conservan; el paso de lugares no se repite).
 - Vuelve a elegir franjas distintas → segundo fallo → consola
-  `... no logramos coordinar ...` y el `Match` queda `expired`.
+  `... no logramos cuadrar ...` y el `Match` queda `expired`.
 
 ### Rechazo por chatbot (HU-07)
 ```bash
 node dist/src/scripts/chat-repl.js +573001000008
 you> no me interesa este match, quiero rechazarlo
 ```
-- El **otro** usuario recibe `[dev whatsapp] ... no continuó ...`.
+- El **otro** usuario recibe `[dev sms] ... no sigue adelante ...`.
 - El `Match` queda `rejected` con `rejectedById`/`rejectedAt`, y la `Date` se borró.
 - Requiere `OPENROUTER_API_KEY`.
 

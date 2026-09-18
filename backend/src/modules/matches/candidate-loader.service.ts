@@ -17,6 +17,7 @@ export class CandidateLoaderService {
     const users = await this.prisma.user.findMany({
       where: {
         isVerified: true,
+        cellphoneVerifiedAt: { not: null },
         profile: { is: { status: SEARCHING_PROFILE_STATUS } },
         preferences: { isNot: null },
         matchesAsUserA: {

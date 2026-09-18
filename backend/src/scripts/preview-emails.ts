@@ -5,6 +5,7 @@ import { dateConfirmationEmail } from '../modules/mail/templates/date-confirmati
 import { moreAvailabilityEmail } from '../modules/mail/templates/more-availability.template';
 import { matchRejectedEmail } from '../modules/mail/templates/match-rejected.template';
 import { reschedulingFailedEmail } from '../modules/mail/templates/rescheduling-failed.template';
+import { verificationCodeEmail } from '../modules/mail/templates/verification-code.template';
 
 const partner = {
   name: 'Abby',
@@ -17,6 +18,10 @@ const partner = {
 const availabilityUrl = 'http://localhost:3000/flow/sample-token/places';
 
 const previews: Record<string, { subject: string; html: string }> = {
+  'verification-code': verificationCodeEmail({
+    code: '482913',
+    ttlMinutes: 10,
+  }),
   'match-invite': matchInviteEmail({
     recipientName: 'Jerónimo',
     partner,

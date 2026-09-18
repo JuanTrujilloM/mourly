@@ -1,3 +1,5 @@
+import { smsProductionErrors } from './sms-env.rules';
+
 const MIN_JWT_SECRET_LENGTH = 32;
 
 const PLACEHOLDER_SECRETS = new Set([
@@ -35,12 +37,16 @@ function databaseUrlErrors(url: string): string[] {
 const REQUIRED_IN_PRODUCTION = ['RESEND_API_KEY', 'GCS_BUCKET'];
 
 function productionErrors(source: Record<string, unknown>): string[] {
-  if (readString(source, 'NODE_ENV') !== 'production') {
+  const read = (key: string) => readString(source, key);
+  if (read('NODE_ENV') !== 'production') {
     return [];
   }
-  return REQUIRED_IN_PRODUCTION.filter((key) => !readString(source, key)).map(
-    (key) => `${key} is required in production.`,
-  );
+  return [
+    ...REQUIRED_IN_PRODUCTION.filter((key) => !read(key)).map(
+      (key) => `${key} is required in production.`,
+    ),
+    ...smsProductionErrors(read),
+  ];
 }
 
 export function validateEnv(

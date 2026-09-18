@@ -6,7 +6,8 @@ import { UniversitiesService } from '../universities/universities.service';
 export type SafeUser = {
   id: string;
   email: string;
-  cellphone: string;
+  cellphone: string | null;
+  cellphoneVerified: boolean;
   isVerified: boolean;
   university: string;
   onboardingCompleted: boolean;
@@ -38,6 +39,7 @@ export class SafeUserService {
       id: user.id,
       email: user.email,
       cellphone: user.cellphone,
+      cellphoneVerified: user.cellphoneVerifiedAt !== null,
       isVerified: user.isVerified,
       university: await this.universities.nameForEmail(user.email),
       onboardingCompleted: user.profile !== null && user.preferences !== null,
