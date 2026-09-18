@@ -25,6 +25,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
+  app.enableShutdownHooks();
   app.set('trust proxy', TRUSTED_PROXY_HOPS);
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(cookieParser());

@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { NotificationsService } from '../notifications/notifications.service';
 import { FeedbackWindowService } from './feedback-window.service';
 import { PendingDateRepository } from './pending-date.repository';
+import { JobClaimService } from '../scheduling/job-claim.service';
 
 function pendingDate(id: string, answeredBy: string[] = []) {
   return {
@@ -37,12 +38,14 @@ function setup(
     closeExpired: jest.fn().mockResolvedValue(0),
   };
   const notifications = { send: jest.fn().mockResolvedValue(undefined) };
+  const jobs = { claim: jest.fn().mockResolvedValue(true) };
 
   const service = new FeedbackWindowService(
     dates as unknown as PendingDateRepository,
     notifications as unknown as NotificationsService,
+    jobs as unknown as JobClaimService,
   );
-  return { service, dates, notifications };
+  return { service, dates, notifications, jobs };
 }
 
 const NOW = new Date('2026-07-10T12:00:00Z');
@@ -116,6 +119,17 @@ describe('FeedbackWindowService', () => {
   });
 
   describe('runFeedbackCycle', () => {
+    it('skips the run when another instance claimed this tick', async () => {
+      const { service, dates, jobs } = setup();
+      jobs.claim.mockResolvedValue(false);
+
+      await service.runFeedbackCycle();
+
+      expect(jobs.claim).toHaveBeenCalledWith('feedback-window');
+      expect(dates.findAwaitingRequest).not.toHaveBeenCalled();
+      expect(dates.closeExpired).not.toHaveBeenCalled();
+    });
+
     it('walks request, reminder and close in order', async () => {
       const { service, dates } = setup();
 

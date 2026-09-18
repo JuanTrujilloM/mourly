@@ -7,6 +7,8 @@ import {
   RESPONSE_TIMEOUT_CRON,
   RESPONSE_TIMEOUT_HOURS,
 } from './match-response.constants';
+import { JobClaimService } from '../scheduling/job-claim.service';
+import { SCHEDULED_JOBS } from '../scheduling/scheduled-jobs';
 
 const HOUR_IN_MS = 3600 * 1000;
 
@@ -17,10 +19,12 @@ export class MatchTimeoutService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly responses: MatchResponseService,
+    private readonly jobs: JobClaimService,
   ) {}
 
   @Cron(RESPONSE_TIMEOUT_CRON)
   async rejectStaleMatches(): Promise<void> {
+    if (!(await this.jobs.claim(SCHEDULED_JOBS.responseTimeout))) return;
     const cutoff = new Date(Date.now() - RESPONSE_TIMEOUT_HOURS * HOUR_IN_MS);
     const stale = await this.prisma.match.findMany({
       where: {

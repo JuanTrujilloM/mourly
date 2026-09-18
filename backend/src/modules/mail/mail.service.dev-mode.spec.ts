@@ -44,4 +44,11 @@ describe('MailService without Resend configured', () => {
       expect.stringContaining('Hola'),
     );
   });
+
+  it('refuses to start in production instead of logging codes', () => {
+    expect(() => setupMailService({ NODE_ENV: 'production' })).toThrow(
+      'RESEND_API_KEY is required in production',
+    );
+    expect(Logger.prototype.warn).not.toHaveBeenCalled();
+  });
 });

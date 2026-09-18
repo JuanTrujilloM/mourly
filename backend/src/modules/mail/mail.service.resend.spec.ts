@@ -12,7 +12,12 @@ const MESSAGE = { subject: 'Hola', html: '<p>Hola</p>', text: 'Hola' };
 
 describe('MailService with Resend configured', () => {
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('builds the client with the configured API key', () => {
@@ -75,5 +80,15 @@ describe('MailService with Resend configured', () => {
     await expect(service.send('ana@eafit.edu.co', MESSAGE)).rejects.toThrow(
       'invalid domain',
     );
+  });
+
+  it('gives up when Resend never answers', async () => {
+    const { service, send } = setupMailService(ENV);
+    send.mockReturnValue(new Promise(() => {}));
+
+    const sending = service.send('ana@eafit.edu.co', MESSAGE);
+    jest.advanceTimersByTime(10_000);
+
+    await expect(sending).rejects.toThrow('Resend send timed out');
   });
 });

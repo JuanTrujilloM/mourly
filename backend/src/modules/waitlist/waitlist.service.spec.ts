@@ -65,14 +65,35 @@ describe('WaitlistService', () => {
     expect(prisma.waitlistEntry.upsert).not.toHaveBeenCalled();
   });
 
-  it('lists the newest leads first', async () => {
+  it('lists the first page newest first with only the needed fields', async () => {
     const { service, prisma } = setup(false);
-    prisma.waitlistEntry.findMany.mockResolvedValue([]);
+    prisma.waitlistEntry.findMany.mockResolvedValue([{ id: 'w1' }]);
 
-    await service.findAll();
-
-    expect(prisma.waitlistEntry.findMany).toHaveBeenCalledWith({
-      orderBy: { createdAt: 'desc' },
+    await expect(service.findPage({})).resolves.toEqual({
+      items: [{ id: 'w1' }],
+      nextCursor: null,
     });
+    expect(prisma.waitlistEntry.findMany).toHaveBeenCalledWith({
+      select: expect.not.objectContaining({ updatedAt: true }),
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: 51,
+    });
+  });
+
+  it('continues after the cursor and reports the next one', async () => {
+    const { service, prisma } = setup(false);
+    prisma.waitlistEntry.findMany.mockResolvedValue([
+      { id: 'w2' },
+      { id: 'w3' },
+      { id: 'w4' },
+    ]);
+
+    await expect(service.findPage({ take: 2, cursor: 'w1' })).resolves.toEqual({
+      items: [{ id: 'w2' }, { id: 'w3' }],
+      nextCursor: 'w3',
+    });
+    expect(prisma.waitlistEntry.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ take: 3, cursor: { id: 'w1' }, skip: 1 }),
+    );
   });
 });

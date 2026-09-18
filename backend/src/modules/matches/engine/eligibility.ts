@@ -14,8 +14,8 @@ function openToEveryone(viewer: MatchCandidate): boolean {
   );
 }
 
-function attractedTo(viewer: MatchCandidate, target: MatchCandidate): boolean {
-  const interest = GENDER_TO_INTEREST[target.gender];
+export function acceptsGender(viewer: MatchCandidate, gender: string): boolean {
+  const interest = GENDER_TO_INTEREST[gender];
   if (!interest) return openToEveryone(viewer);
   return viewer.genderInterests.includes(interest);
 }
@@ -48,8 +48,8 @@ export function areMutuallyEligible(
   if (b.priorPartnerIds.has(a.userId)) return false;
 
   return (
-    attractedTo(a, b) &&
-    attractedTo(b, a) &&
+    acceptsGender(a, b.gender) &&
+    acceptsGender(b, a.gender) &&
     agesMutuallyInRange(a, b) &&
     universityConstraintMet(a, b)
   );

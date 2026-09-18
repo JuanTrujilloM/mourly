@@ -5,7 +5,7 @@ import { SafeUserService } from './safe-user.service';
 import { SessionService } from './session.service';
 import { UserLookupService } from './user-lookup.service';
 import { VerificationCodeService } from './verification-code.service';
-import { VerificationDeliveryService } from './verification-delivery.service';
+import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { NEUTRAL_MESSAGE } from './auth.messages';
 import {
   INVALID_CODE_MESSAGE,
@@ -22,9 +22,8 @@ function setup() {
     validate: jest.fn().mockResolvedValue('ok'),
     hasVerifiedEmail: jest.fn().mockResolvedValue(false),
   };
-  const delivery = {
-    sendIfAllowed: jest.fn().mockResolvedValue(undefined),
-    sendOrThrow: jest.fn().mockResolvedValue(undefined),
+  const dispatcher = {
+    dispatch: jest.fn(),
   };
   const sessions = {
     issueFor: jest.fn().mockResolvedValue({ accessToken: 'a' }),
@@ -35,22 +34,22 @@ function setup() {
   const service = new AuthService(
     prisma,
     codes as unknown as VerificationCodeService,
-    delivery as unknown as VerificationDeliveryService,
+    dispatcher as unknown as VerificationDispatcherService,
     sessions as unknown as SessionService,
     safeUsers as unknown as SafeUserService,
     users as unknown as UserLookupService,
   );
-  return { service, codes, delivery, sessions, safeUsers, users, update };
+  return { service, codes, dispatcher, sessions, safeUsers, users, update };
 }
 
 describe('AuthService', () => {
   describe('login', () => {
     it('sends a code to a known account and answers neutrally', async () => {
-      const { service, delivery } = setup();
+      const { service, dispatcher } = setup();
 
       const result = await service.login({ email: 'Ana@EAFIT.edu.co' });
 
-      expect(delivery.sendIfAllowed).toHaveBeenCalledWith(
+      expect(dispatcher.dispatch).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
@@ -58,12 +57,12 @@ describe('AuthService', () => {
     });
 
     it('answers the same message for an unknown account', async () => {
-      const { service, users, delivery } = setup();
+      const { service, users, dispatcher } = setup();
       users.findByEmail.mockResolvedValue(null);
 
       const result = await service.login({ email: 'ghost@eafit.edu.co' });
 
-      expect(delivery.sendIfAllowed).not.toHaveBeenCalled();
+      expect(dispatcher.dispatch).not.toHaveBeenCalled();
       expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     });
   });
@@ -116,11 +115,11 @@ describe('AuthService', () => {
 
   describe('resend', () => {
     it('sends a new code for an unverified account', async () => {
-      const { service, delivery } = setup();
+      const { service, dispatcher } = setup();
 
       const result = await service.resend({ email: 'ana@eafit.edu.co' });
 
-      expect(delivery.sendOrThrow).toHaveBeenCalledWith(
+      expect(dispatcher.dispatch).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
@@ -128,12 +127,12 @@ describe('AuthService', () => {
     });
 
     it('still sends for an account that verified before', async () => {
-      const { service, codes, delivery } = setup();
+      const { service, codes, dispatcher } = setup();
       codes.hasVerifiedEmail.mockResolvedValue(true);
 
       const result = await service.resend({ email: 'ana@eafit.edu.co' });
 
-      expect(delivery.sendOrThrow).toHaveBeenCalledWith(
+      expect(dispatcher.dispatch).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
@@ -141,12 +140,12 @@ describe('AuthService', () => {
     });
 
     it('stays silent for an unknown account', async () => {
-      const { service, users, delivery } = setup();
+      const { service, users, dispatcher } = setup();
       users.findByEmail.mockResolvedValue(null);
 
       const result = await service.resend({ email: 'ghost@eafit.edu.co' });
 
-      expect(delivery.sendOrThrow).not.toHaveBeenCalled();
+      expect(dispatcher.dispatch).not.toHaveBeenCalled();
       expect(result).toEqual({ message: NEUTRAL_MESSAGE });
     });
   });

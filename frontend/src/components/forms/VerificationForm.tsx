@@ -13,9 +13,9 @@ import { useVerifyCode } from '@/hooks/useVerifyCode';
 import { useResendCode } from '@/hooks/useResendCode';
 import {
   getApiErrorMessage,
-  getApiErrorStatus,
   getApiRetryAfterSeconds,
 } from '@/lib/utils/errors';
+import { hasSpentResends, recordResend } from '@/lib/utils/resend-allowance';
 import { useResendCooldown } from './useResendCooldown';
 import { ResendCodeButton } from './ResendCodeButton';
 import { MissingEmailNotice } from './MissingEmailNotice';
@@ -60,18 +60,18 @@ export function VerificationForm() {
 
   const onResend = async () => {
     setResendNotice(null);
+    if (hasSpentResends(email)) {
+      setResendLimitReached(true);
+      return;
+    }
     try {
       await resend(email);
+      recordResend(email);
       setResendNotice('Te enviamos un código nuevo.');
       startCooldown();
     } catch (error) {
-      // 403 is the spent resend allowance; every other failure stays inline.
-      if (getApiErrorStatus(error) === 403) {
-        setResendLimitReached(true);
-        return;
-      }
-      // Both the per-user cooldown and the route rate limit answer 429 with the
-      // seconds left, so the counter can pick up where the server actually is.
+      // The route rate limit answers 429 with the seconds left, so the counter
+      // can pick up where the server actually is.
       const retryAfter = getApiRetryAfterSeconds(error);
       if (retryAfter) startCooldown(retryAfter);
       setResendNotice(getApiErrorMessage(error));

@@ -1,12 +1,27 @@
-import { setupVerificationDelivery as setup } from './test-helpers';
+import { MailService } from '../mail/mail.service';
+import { VerificationCodeIssuerService } from './verification-code-issuer.service';
+import { VerificationDeliveryService } from './verification-delivery.service';
+
+function setup(issued: string | null) {
+  const issuer = { issueIfAllowed: jest.fn().mockResolvedValue(issued),
+    ttlMinutes: 10,
+  };
+  const mail = { sendVerificationCode: jest.fn().mockResolvedValue(undefined) };
+
+  const service = new VerificationDeliveryService(
+    issuer as unknown as VerificationCodeIssuerService,
+    mail as unknown as MailService,
+  );
+  return { service, issuer, mail };
+}
 
 describe('VerificationDeliveryService', () => {
-  it('issues a code and mails it with its time to live', async () => {
-    const { service, codes, mail } = setup();
+  it('mails the code the issuer granted', async () => {
+    const { service, issuer, mail } = setup('123456');
 
-    await service.send('u1', 'ana@eafit.edu.co');
+    await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
 
-    expect(codes.issueForUser).toHaveBeenCalledWith('u1');
+    expect(issuer.issueIfAllowed).toHaveBeenCalledWith('u1');
     expect(mail.sendVerificationCode).toHaveBeenCalledWith(
       'ana@eafit.edu.co',
       '123456',
@@ -14,29 +29,11 @@ describe('VerificationDeliveryService', () => {
     );
   });
 
-  describe('sendIfAllowed', () => {
-    it('sends when the cooldown has elapsed', async () => {
-      const { service, mail } = setup(0);
+  it('stays silent when the issuer refuses', async () => {
+    const { service, mail } = setup(null);
 
-      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
+    await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
 
-      expect(mail.sendVerificationCode).toHaveBeenCalled();
-    });
-
-    it('stays silent while the cooldown is active', async () => {
-      const { service, mail } = setup(30);
-
-      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
-
-      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
-    });
-
-    it('stays silent once the resend limit is spent', async () => {
-      const { service, mail } = setup(0, true);
-
-      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
-
-      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
-    });
+    expect(mail.sendVerificationCode).not.toHaveBeenCalled();
   });
 });

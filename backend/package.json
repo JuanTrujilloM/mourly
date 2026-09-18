@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1073.0",
+    "@google-cloud/storage": "^8.1.0",
     "@langchain/core": "^1.2.1",
     "@langchain/openai": "^1.5.3",
     "@nestjs/common": "^11.0.1",

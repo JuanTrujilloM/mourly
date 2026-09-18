@@ -1,0 +1,7 @@
+model ScheduledJobRun {
+  jobName      String
+  scheduledFor DateTime
+  createdAt    DateTime @default(now())
+
+  @@id([jobName, scheduledFor])
+}
