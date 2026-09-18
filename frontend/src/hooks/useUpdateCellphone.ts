@@ -6,9 +6,9 @@ export function useUpdateCellphone() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateCellphone,
-    onSuccess: ({ cellphone }) => {
+    onSuccess: ({ cellphone, cellphoneVerified }) => {
       queryClient.setQueryData<AuthUser>(['currentUser'], (user) =>
-        user ? { ...user, cellphone, cellphoneVerified: false } : user,
+        user ? { ...user, cellphone, cellphoneVerified } : user,
       );
     },
   });

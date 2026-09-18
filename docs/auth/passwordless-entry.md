@@ -92,7 +92,24 @@ fan-out loguea (en la práctica nadie llega a un match sin celular verificado).
 
 ---
 
-## 6. Límites contra abuso de SMS
+## 6. Modo sin SMS (`PHONE_SMS_VERIFICATION_ENABLED=false`)
+
+Temporal, mientras la cuenta de Twilio está en verificación.
+
+- `PATCH /auth/phone` guarda el número y estampa `cellphoneVerifiedAt` en el acto;
+  responde `{ cellphone, cellphoneVerified: true }` y el frontend sigue sin pedir código.
+- Sigue rechazando un número que otra cuenta ya verificó.
+- En producción Twilio deja de ser obligatorio, pero `EMAIL_NOTIFICATIONS_ENABLED`
+  tiene que ser `true` para que los avisos de match y cita salgan por correo.
+- La migración `20260918020000_trust_registered_cellphones` da por verificados los
+  números cargados en el registro anterior, así esas cuentas no quedan esperando un SMS.
+- Para volver al SMS: cargar `TWILIO_*`, poner la variable en `true` y reiniciar. Los
+  números ya verificados quedan verificados; para forzar a todos a confirmar por SMS:
+  `UPDATE "User" SET "cellphoneVerifiedAt" = NULL;`
+
+---
+
+## 7. Límites contra abuso de SMS
 
 - 60 s entre códigos y 3 reenvíos por código (`decideResend`), que sobreviven a un
   cambio de número porque `PATCH /auth/phone` agota los códigos en vez de borrarlos.
@@ -105,7 +122,7 @@ fan-out loguea (en la práctica nadie llega a un match sin celular verificado).
 
 ---
 
-## 7. Cómo probar en local
+## 8. Cómo probar en local
 
 ```bash
 cd backend && npm run db:seed          # estudiantes con celular verificado

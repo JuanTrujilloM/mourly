@@ -1,3 +1,5 @@
+import { smsProductionErrors } from './sms-env.rules';
+
 const MIN_JWT_SECRET_LENGTH = 32;
 
 const PLACEHOLDER_SECRETS = new Set([
@@ -34,32 +36,17 @@ function databaseUrlErrors(url: string): string[] {
 
 const REQUIRED_IN_PRODUCTION = ['RESEND_API_KEY', 'GCS_BUCKET'];
 
-const REQUIRED_TWILIO_KEYS = ['TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN'];
-const TWILIO_ORIGIN_KEYS = ['TWILIO_MESSAGING_SERVICE_SID', 'TWILIO_FROM'];
-
-function missingKeys(
-  source: Record<string, unknown>,
-  keys: string[],
-): string[] {
-  return keys.filter((key) => !readString(source, key));
-}
-
-function missingTwilioOrigin(source: Record<string, unknown>): string[] {
-  const hasOrigin = TWILIO_ORIGIN_KEYS.some((key) => readString(source, key));
-  return hasOrigin ? [] : [TWILIO_ORIGIN_KEYS.join(' or ')];
-}
-
 function productionErrors(source: Record<string, unknown>): string[] {
-  if (readString(source, 'NODE_ENV') !== 'production') {
+  const read = (key: string) => readString(source, key);
+  if (read('NODE_ENV') !== 'production') {
     return [];
   }
   return [
-    ...missingKeys(source, [
-      ...REQUIRED_IN_PRODUCTION,
-      ...REQUIRED_TWILIO_KEYS,
-    ]),
-    ...missingTwilioOrigin(source),
-  ].map((key) => `${key} is required in production.`);
+    ...REQUIRED_IN_PRODUCTION.filter((key) => !read(key)).map(
+      (key) => `${key} is required in production.`,
+    ),
+    ...smsProductionErrors(read),
+  ];
 }
 
 export function validateEnv(
