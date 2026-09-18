@@ -57,4 +57,16 @@ describe('SmsChannel', () => {
 
     expect(send.mock.calls[0][1]).toContain('Mourly:');
   });
+
+  it('rejects a recipient without a cellphone', async () => {
+    const { channel, send } = buildChannel();
+
+    await expect(
+      channel.send({
+        ...NOTIFICATION,
+        recipient: { ...NOTIFICATION.recipient, cellphone: null },
+      }),
+    ).rejects.toThrow('cellphone');
+    expect(send).not.toHaveBeenCalled();
+  });
 });

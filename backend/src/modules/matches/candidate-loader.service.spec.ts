@@ -1,44 +1,4 @@
-import { PrismaService } from '../../config/prisma.service';
-import { CandidateLoaderService } from './candidate-loader.service';
-import { MatchHistoryService } from './match-history.service';
-
-const USER = {
-  id: 'u1',
-  profile: {
-    gender: 'Femenino',
-    dateOfBirth: new Date('2003-01-01'),
-    university: 'EAFIT',
-    major: 'Derecho',
-    semester: '6',
-    height: 166,
-    biography: 'Cine y viajes',
-    hobbies: [{ hobby: { name: 'Cine' } }],
-  },
-  preferences: {
-    genderInterests: ['Hombres'],
-    minAge: 20,
-    maxAge: 28,
-    sameUniversity: false,
-    relationshipType: 'Seria',
-    heightRange: 'Indiferente',
-    energyVibe: 'Tranquila',
-  },
-};
-
-function setup(users: unknown[] = [USER]) {
-  const findMany = jest.fn().mockResolvedValue(users);
-  const prisma = { user: { findMany } } as unknown as PrismaService;
-  const history = {
-    priorPartnersByUser: jest.fn().mockResolvedValue(new Map()),
-    reliabilityByUser: jest.fn().mockResolvedValue(new Map()),
-  };
-
-  const service = new CandidateLoaderService(
-    prisma,
-    history as unknown as MatchHistoryService,
-  );
-  return { service, findMany, history };
-}
+import { CANDIDATE_ROW, setupCandidateLoader as setup } from './test-helpers';
 
 describe('CandidateLoaderService', () => {
   it('filters busy users inside the query rather than in memory', async () => {
@@ -62,6 +22,7 @@ describe('CandidateLoaderService', () => {
 
     const where = findMany.mock.calls[0][0].where as Record<string, unknown>;
     expect(where.isVerified).toBe(true);
+    expect(where.cellphoneVerifiedAt).toEqual({ not: null });
     expect(where.profile).toEqual({ is: { status: 'SEARCHING' } });
     expect(where.preferences).toEqual({ isNot: null });
   });
@@ -77,8 +38,8 @@ describe('CandidateLoaderService', () => {
 
   it('skips a row missing its profile or preferences', async () => {
     const { service } = setup([
-      { ...USER, profile: null },
-      { ...USER, id: 'u2', preferences: null },
+      { ...CANDIDATE_ROW, profile: null },
+      { ...CANDIDATE_ROW, id: 'u2', preferences: null },
     ]);
 
     expect(await service.load()).toHaveLength(0);

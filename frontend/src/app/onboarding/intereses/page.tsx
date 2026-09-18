@@ -9,8 +9,8 @@ export default function InterestsOnboardingPage() {
     <AuthGate>
       {(user) => (
         <OnboardingShell
-          step={2}
-          total={2}
+          step={3}
+          total={3}
           stepLabel="Intereses y preferencias"
           title="¿Qué buscás?"
           subtitle="Con esto elegimos a quién presentarte."

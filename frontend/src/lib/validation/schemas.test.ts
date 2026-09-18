@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loginSchema, registerSchema, verifySchema } from './auth';
+import { emailEntrySchema, contactSchema, verifySchema } from './auth';
 import { profileSchema } from './profile';
 import { preferencesSchema } from './preferences';
 import { venueSchema } from './venue';
@@ -37,10 +37,10 @@ const VALID_VENUE = {
   active: true,
 };
 
-describe('registerSchema', () => {
+describe('contactSchema', () => {
   it('accepts a well formed signup', () => {
     expect(
-      registerSchema.safeParse({
+      contactSchema.safeParse({
         email: 'ana@eafit.edu.co',
         cellphone: '+573001112233',
       }).success,
@@ -49,14 +49,14 @@ describe('registerSchema', () => {
 
   it('rejects a malformed email', () => {
     expect(
-      registerSchema.safeParse({ email: 'nope', cellphone: '+573001112233' })
+      contactSchema.safeParse({ email: 'nope', cellphone: '+573001112233' })
         .success,
     ).toBe(false);
   });
 
   it('leaves the supported-domain rule to the backend', () => {
     expect(
-      registerSchema.safeParse({
+      contactSchema.safeParse({
         email: 'ana@gmail.com',
         cellphone: '+573001112233',
       }).success,
@@ -65,7 +65,7 @@ describe('registerSchema', () => {
 
   it('rejects a non Colombian mobile', () => {
     expect(
-      registerSchema.safeParse({
+      contactSchema.safeParse({
         email: 'ana@eafit.edu.co',
         cellphone: '12345',
       }).success,
@@ -74,7 +74,7 @@ describe('registerSchema', () => {
 
   it('accepts a mobile without the country prefix', () => {
     expect(
-      registerSchema.safeParse({
+      contactSchema.safeParse({
         email: 'ana@eafit.edu.co',
         cellphone: '3001112233',
       }).success,
@@ -90,12 +90,12 @@ describe('verifySchema', () => {
   });
 });
 
-describe('loginSchema', () => {
+describe('emailEntrySchema', () => {
   it('reuses the register email rule', () => {
-    expect(loginSchema.safeParse({ email: 'ana@eafit.edu.co' }).success).toBe(
+    expect(emailEntrySchema.safeParse({ email: 'ana@eafit.edu.co' }).success).toBe(
       true,
     );
-    expect(loginSchema.safeParse({ email: 'nope' }).success).toBe(false);
+    expect(emailEntrySchema.safeParse({ email: 'nope' }).success).toBe(false);
   });
 });
 

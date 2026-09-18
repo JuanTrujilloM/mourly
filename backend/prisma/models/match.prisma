@@ -1,5 +1,5 @@
 model Match {
-  id                 String   @id @default(cuid())
+  id                 String    @id @default(cuid())
   userAId            String
   userBId            String
   compatibilityScore Float
@@ -13,12 +13,12 @@ model Match {
   // implicit (completing the availability + place flow), so it needs no column.
   rejectedById       String?
   rejectedAt         DateTime?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   // Relations
-  userA          User           @relation("MatchUserA", fields: [userAId], references: [id], onDelete: Cascade)
-  userB          User           @relation("MatchUserB", fields: [userBId], references: [id], onDelete: Cascade)
+  userA             User               @relation("MatchUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB             User               @relation("MatchUserB", fields: [userBId], references: [id], onDelete: Cascade)
   date              Date?
   venueOptions      VenueOption[]
   availabilities    Availability[]

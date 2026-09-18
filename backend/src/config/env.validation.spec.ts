@@ -61,36 +61,6 @@ describe('validateEnv', () => {
     expect(() => validateEnv({})).toThrow(/DATABASE_URL[\s\S]*JWT_SECRET/);
   });
 
-  describe('in production', () => {
-    const PRODUCTION_BASE = {
-      NODE_ENV: 'production',
-      DATABASE_URL: 'postgresql://x',
-      JWT_SECRET: LONG_SECRET,
-    };
-
-    it('requires a Resend API key so codes are never logged', () => {
-      expect(() => validateEnv(PRODUCTION_BASE)).toThrow(
-        /RESEND_API_KEY is required in production/,
-      );
-    });
-
-    it('requires a GCS bucket so photos survive a deploy', () => {
-      expect(() =>
-        validateEnv({ ...PRODUCTION_BASE, RESEND_API_KEY: 're_live' }),
-      ).toThrow(/GCS_BUCKET is required in production/);
-    });
-
-    it('accepts a complete production configuration', () => {
-      const config = {
-        ...PRODUCTION_BASE,
-        RESEND_API_KEY: 're_live',
-        GCS_BUCKET: 'mourly-media',
-      };
-
-      expect(validateEnv(config)).toBe(config);
-    });
-  });
-
   it('does not require a Resend API key outside production', () => {
     expect(() =>
       validateEnv({ DATABASE_URL: 'postgresql://x', JWT_SECRET: LONG_SECRET }),

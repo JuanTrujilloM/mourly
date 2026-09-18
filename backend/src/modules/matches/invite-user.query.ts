@@ -1,7 +1,7 @@
 export type InviteUser = {
   id: string;
   email: string;
-  cellphone: string;
+  cellphone: string | null;
   profile: {
     name: string;
     dateOfBirth: Date;
@@ -38,6 +38,6 @@ export const INVITE_USER_SELECT = {
 
 export interface InviteResult {
   userId: string;
-  cellphone: string;
+  cellphone: string | null;
   url: string;
 }

@@ -30,7 +30,7 @@ export function LandingNavbar() {
           >
             Entrar
           </Link>
-          <ButtonLink href="/register" size="sm">
+          <ButtonLink href="/login" size="sm">
             Quiero mi cita
           </ButtonLink>
         </div>

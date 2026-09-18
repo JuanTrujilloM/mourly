@@ -1,26 +1,20 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { randomInt } from 'crypto';
 import * as bcrypt from 'bcryptjs';
-import { Prisma } from '../../generated/prisma/client';
 import { PrismaService } from '../../config/prisma.service';
+import type {
+  VerificationCodeDb,
+  VerificationCodeTable,
+} from './verification-code-table';
 import { decideResend } from './verification-resend-policy';
 
 const SALT_ROUNDS = 10;
-const DEFAULT_TTL_MINUTES = 10;
 
-@Injectable()
 export class VerificationCodeIssuerService {
-  readonly ttlMinutes: number;
-
   constructor(
     private readonly prisma: PrismaService,
-    config: ConfigService,
-  ) {
-    this.ttlMinutes = Number(
-      config.get<string>('EMAIL_CODE_TTL_MINUTES') ?? DEFAULT_TTL_MINUTES,
-    );
-  }
+    private readonly table: VerificationCodeTable,
+    readonly ttlMinutes: number,
+  ) {}
 
   async issueIfAllowed(userId: string): Promise<string | null> {
     const code = randomInt(0, 1_000_000).toString().padStart(6, '0');
@@ -32,29 +26,22 @@ export class VerificationCodeIssuerService {
   }
 
   private async replacePendingCode(
-    tx: Prisma.TransactionClient,
+    tx: VerificationCodeDb,
     userId: string,
     codeHash: string,
   ): Promise<boolean> {
     await tx.$queryRaw`SELECT id FROM "User" WHERE id = ${userId} FOR UPDATE`;
-    const latest = await tx.emailVerificationCode.findFirst({
-      where: { userId, consumedAt: null },
-      orderBy: { createdAt: 'desc' },
-    });
+    const latest = await this.table.findLatestPending(tx, userId);
 
     const decision = decideResend(latest, Date.now());
     if (!decision.allowed) return false;
 
-    await tx.emailVerificationCode.deleteMany({
-      where: { userId, consumedAt: null },
-    });
-    await tx.emailVerificationCode.create({
-      data: {
-        userId,
-        codeHash,
-        resendCount: decision.resendCount,
-        expiresAt: this.computeExpiry(),
-      },
+    await this.table.retirePending(tx, userId);
+    await this.table.create(tx, {
+      userId,
+      codeHash,
+      resendCount: decision.resendCount,
+      expiresAt: this.computeExpiry(),
     });
     return true;
   }

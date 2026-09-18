@@ -2,7 +2,7 @@ import { Recipient } from '../notifications/notification';
 
 type UserWithProfile = {
   email: string;
-  cellphone: string;
+  cellphone: string | null;
   profile: { name: string } | null;
 };
 

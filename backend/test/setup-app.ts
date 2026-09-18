@@ -29,6 +29,8 @@ const MODEL_NAMES = [
   'availability',
   'availabilityLink',
   'emailVerificationCode',
+  'phoneVerificationCode',
+  'scheduledJobRun',
   'refreshToken',
   'feedback',
   'report',

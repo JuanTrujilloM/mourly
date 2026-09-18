@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationDispatcherService } from './verification-dispatcher.service';
@@ -6,19 +6,20 @@ import { SessionService, type Session } from './session.service';
 import { SafeUserService, type SafeUser } from './safe-user.service';
 import { UserLookupService } from './user-lookup.service';
 import { normalizeEmail } from './utils/normalize-email';
-import { NEUTRAL_MESSAGE, type Acknowledgement } from './auth.messages';
+import { CODE_SENT_MESSAGE, type Acknowledgement } from './auth.messages';
 import {
   INVALID_CODE_MESSAGE,
   messageForVerificationResult,
 } from './verification-messages';
+import { EMAIL_CODE_VALIDATOR } from './verification.tokens';
+import { RequestCodeDto } from './dto/request-code.dto';
 import { VerifyCodeDto } from './dto/verify-code.dto';
-import { ResendCodeDto } from './dto/resend-code.dto';
-import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
+    @Inject(EMAIL_CODE_VALIDATOR)
     private readonly codes: VerificationCodeService,
     private readonly dispatcher: VerificationDispatcherService,
     private readonly sessions: SessionService,
@@ -26,13 +27,15 @@ export class AuthService {
     private readonly users: UserLookupService,
   ) {}
 
-  async login(dto: LoginDto): Promise<Acknowledgement> {
+  async requestCode(dto: RequestCodeDto): Promise<Acknowledgement> {
     const email = normalizeEmail(dto.email);
-    const user = await this.users.findByEmail(email);
-    if (user) {
-      this.dispatcher.dispatch(user.id, email);
-    }
-    return { message: NEUTRAL_MESSAGE };
+    const user = await this.prisma.user.upsert({
+      where: { email },
+      update: {},
+      create: { email },
+    });
+    this.dispatcher.dispatch(user.id, email);
+    return { message: CODE_SENT_MESSAGE };
   }
 
   async verify(dto: VerifyCodeDto): Promise<Session> {
@@ -51,15 +54,6 @@ export class AuthService {
       data: { isVerified: true },
     });
     return this.sessions.issueFor(user.id, user.email);
-  }
-
-  async resend(dto: ResendCodeDto): Promise<Acknowledgement> {
-    const email = normalizeEmail(dto.email);
-    const user = await this.users.findByEmail(email);
-    if (user) {
-      this.dispatcher.dispatch(user.id, email);
-    }
-    return { message: NEUTRAL_MESSAGE };
   }
 
   getById(userId: string): Promise<SafeUser> {

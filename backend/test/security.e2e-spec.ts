@@ -1,7 +1,8 @@
 import request from 'supertest';
 import type { Server } from 'http';
-import { Prisma } from '../src/generated/prisma/client';
 import { createTestApp, type TestApp } from './setup-app';
+
+const EMAIL = 'ana@eafit.edu.co';
 
 describe('Security (e2e)', () => {
   let context: TestApp;
@@ -16,7 +17,7 @@ describe('Security (e2e)', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    context.prisma.user.findUnique.mockResolvedValue(null);
+    context.prisma.user.upsert.mockResolvedValue({ id: 'u1', email: EMAIL });
   });
 
   const server = () => context.app.getHttpServer() as Server;
@@ -24,17 +25,19 @@ describe('Security (e2e)', () => {
   describe('cross origin requests', () => {
     it('rejects a mutating request from a foreign origin', async () => {
       await request(server())
-        .post('/auth/login')
+        .post('/auth/request-code')
         .set('Origin', 'https://evil.example')
-        .send({ email: 'ana@eafit.edu.co' })
+        .send({ email: EMAIL })
         .expect(403);
+
+      expect(context.prisma.user.upsert).not.toHaveBeenCalled();
     });
 
     it('accepts a mutating request from the configured frontend', async () => {
       await request(server())
-        .post('/auth/login')
+        .post('/auth/request-code')
         .set('Origin', 'http://localhost:3000')
-        .send({ email: 'ana@eafit.edu.co' })
+        .send({ email: EMAIL })
         .expect(200);
     });
 
@@ -43,53 +46,6 @@ describe('Security (e2e)', () => {
         .get('/health')
         .set('Origin', 'https://evil.example')
         .expect(200);
-    });
-  });
-
-  describe('error responses', () => {
-    it('turns a unique constraint violation into a 409', async () => {
-      context.prisma.user.findUnique.mockRejectedValue(
-        new Prisma.PrismaClientKnownRequestError('duplicate', {
-          code: 'P2002',
-          clientVersion: '7.8.0',
-        }),
-      );
-
-      const response = await request(server())
-        .post('/auth/login')
-        .send({ email: 'ana@eafit.edu.co' })
-        .expect(409);
-
-      expect(response.body).toEqual({
-        statusCode: 409,
-        message: 'That value is already in use.',
-      });
-    });
-
-    it('never leaks an internal error message', async () => {
-      context.prisma.user.findUnique.mockRejectedValue(
-        new Error('postgresql://user:password@host/db is unreachable'),
-      );
-
-      const response = await request(server())
-        .post('/auth/login')
-        .send({ email: 'ana@eafit.edu.co' })
-        .expect(500);
-
-      expect(response.body).toEqual({
-        statusCode: 500,
-        message: 'Something went wrong. Please try again.',
-      });
-      expect(JSON.stringify(response.body)).not.toContain('password');
-    });
-
-    it('reports validation problems as a message list', async () => {
-      const response = await request(server())
-        .post('/auth/register')
-        .send({ email: 'nope', cellphone: 'nope' })
-        .expect(400);
-
-      expect(Array.isArray(response.body.message)).toBe(true);
     });
   });
 

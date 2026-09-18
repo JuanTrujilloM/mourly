@@ -4,7 +4,7 @@ import type { Notification } from '../notifications/notification';
 type Participant = {
   id: string;
   email: string;
-  cellphone: string;
+  cellphone: string | null;
   profile: { name: string } | null;
 };
 

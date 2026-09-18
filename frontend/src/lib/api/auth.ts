@@ -1,22 +1,11 @@
 import { apiClient } from './client';
-import type { AuthUser, RegisterPayload, VerifyPayload } from '@/types/auth';
+import type { AuthUser, VerifyPayload } from '@/types/auth';
 
-export async function register(
-  payload: RegisterPayload,
-): Promise<{ message: string }> {
+export async function requestCode(email: string): Promise<{ message: string }> {
   const { data } = await apiClient.post<{ message: string }>(
-    '/auth/register',
-    payload,
+    '/auth/request-code',
+    { email },
   );
-  return data;
-}
-
-export async function requestLoginCode(
-  email: string,
-): Promise<{ message: string }> {
-  const { data } = await apiClient.post<{ message: string }>('/auth/login', {
-    email,
-  });
   return data;
 }
 
@@ -26,13 +15,6 @@ export async function verifyCode(payload: VerifyPayload): Promise<AuthUser> {
     payload,
   );
   return data.user;
-}
-
-export async function resendCode(email: string): Promise<{ message: string }> {
-  const { data } = await apiClient.post<{ message: string }>('/auth/resend', {
-    email,
-  });
-  return data;
 }
 
 export async function fetchMe(): Promise<AuthUser> {

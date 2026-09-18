@@ -1,7 +1,7 @@
 export interface Recipient {
   name: string;
   email: string;
-  cellphone: string;
+  cellphone: string | null;
 }
 
 export interface PartnerSummary {

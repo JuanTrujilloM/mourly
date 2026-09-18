@@ -2,7 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AxiosError, AxiosHeaders } from 'axios';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { renderWithQuery, searchParams } from '@/test-utils';
+import { AUTH_USER, renderWithQuery, routerPush, searchParams } from '@/test-utils';
 import * as authApi from '@/lib/api/auth';
 import { rememberResendCooldown } from '@/lib/utils/resend-cooldown';
 import { hasSpentResends, recordResend } from '@/lib/utils/resend-allowance';
@@ -13,7 +13,7 @@ const EMAIL = 'ana@eafit.edu.co';
 vi.mock('@/lib/api/auth');
 
 const verifyCode = vi.mocked(authApi.verifyCode);
-const resendCode = vi.mocked(authApi.resendCode);
+const requestCode = vi.mocked(authApi.requestCode);
 
 function apiError(
   status: number,
@@ -69,25 +69,40 @@ describe('VerificationForm', () => {
     vi.useRealTimers();
   });
 
-  it('does not promise a code was sent, since the API answers neutrally', () => {
+  it('confirms the code went to the given email', () => {
     renderWithQuery(<VerificationForm />);
 
-    expect(screen.getByText(/es una cuenta válida/i)).toBeInTheDocument();
-    expect(screen.queryByText(/que enviamos a/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Te enviamos un código de 6 dígitos/)).toBeInTheDocument();
+    expect(screen.getByText(EMAIL)).toBeInTheDocument();
   });
 
-  it('offers registration when the code is rejected', async () => {
-    verifyCode.mockRejectedValue(new Error('nope'));
+  it('shows the API message when the code is rejected', async () => {
+    verifyCode.mockRejectedValue(apiError(400, 'El código es incorrecto o expiró.'));
 
     renderWithQuery(<VerificationForm />);
     await submitCode();
 
     await waitFor(() =>
-      expect(screen.getByRole('link', { name: 'Registrate' })).toHaveAttribute(
-        'href',
-        '/register',
-      ),
+      expect(screen.getByText('El código es incorrecto o expiró.')).toBeInTheDocument(),
     );
+  });
+
+  it('sends a fresh account to the cellphone step', async () => {
+    verifyCode.mockResolvedValue({ ...AUTH_USER, cellphoneVerified: false, onboardingCompleted: false });
+
+    renderWithQuery(<VerificationForm />);
+    await submitCode();
+
+    await waitFor(() => expect(routerPush).toHaveBeenCalledWith('/onboarding/celular'));
+  });
+
+  it('sends a complete account to the dashboard', async () => {
+    verifyCode.mockResolvedValue(AUTH_USER);
+
+    renderWithQuery(<VerificationForm />);
+    await submitCode();
+
+    await waitFor(() => expect(routerPush).toHaveBeenCalledWith('/dashboard'));
   });
 
   describe('resend cooldown', () => {
@@ -136,7 +151,7 @@ describe('VerificationForm', () => {
     });
 
     it('restarts the countdown from the seconds the API reports', async () => {
-      resendCode.mockRejectedValue(
+      requestCode.mockRejectedValue(
         apiError(429, 'Estás yendo muy rápido.', 42),
       );
 
@@ -152,7 +167,7 @@ describe('VerificationForm', () => {
 
   describe('resend limit', () => {
     it('opens the popup without asking the API once the allowance is spent', async () => {
-      resendCode.mockResolvedValue({ message: 'ok' });
+      requestCode.mockResolvedValue({ message: 'ok' });
       for (let index = 0; index < 3; index += 1) recordResend(EMAIL);
 
       await renderPastCooldown();
@@ -163,11 +178,11 @@ describe('VerificationForm', () => {
           screen.getByText('Alcanzaste el máximo de reenvíos'),
         ).toBeInTheDocument(),
       );
-      expect(resendCode).not.toHaveBeenCalled();
+      expect(requestCode).not.toHaveBeenCalled();
     });
 
     it('counts a successful resend toward the allowance', async () => {
-      resendCode.mockResolvedValue({ message: 'ok' });
+      requestCode.mockResolvedValue({ message: 'ok' });
       recordResend(EMAIL);
       recordResend(EMAIL);
 
@@ -178,7 +193,7 @@ describe('VerificationForm', () => {
     });
 
     it('confirms the send and restarts the countdown when it works', async () => {
-      resendCode.mockResolvedValue({ message: 'ok' });
+      requestCode.mockResolvedValue({ message: 'ok' });
 
       await renderPastCooldown();
       await userEvent.click(resendButton());

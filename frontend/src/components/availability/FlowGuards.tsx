@@ -1,7 +1,8 @@
+import { Splash } from '@/components/shared/Splash';
 import { FlowState } from './FlowState';
 
 export function FlowLoading({ label }: { label: string }) {
-  return <p className="text-ink-3 text-sm">{label}</p>;
+  return <Splash label={label} />;
 }
 
 export function FlowLinkError() {
