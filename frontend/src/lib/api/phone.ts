@@ -1,10 +1,13 @@
 import { apiClient } from './client';
 import type { AuthUser } from '@/types/auth';
 
-export async function updateCellphone(
-  cellphone: string,
-): Promise<{ cellphone: string }> {
-  const { data } = await apiClient.patch<{ cellphone: string }>('/auth/phone', {
+export interface SavedCellphone {
+  cellphone: string;
+  cellphoneVerified: boolean;
+}
+
+export async function updateCellphone(cellphone: string): Promise<SavedCellphone> {
+  const { data } = await apiClient.patch<SavedCellphone>('/auth/phone', {
     cellphone,
   });
   return data;

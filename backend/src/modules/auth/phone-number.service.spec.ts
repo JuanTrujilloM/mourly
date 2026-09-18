@@ -1,34 +1,11 @@
-import { PrismaService } from '../../config/prisma.service';
-import { PhoneNumberService } from './phone-number.service';
+import {
+  CELLPHONE,
+  setupPhoneNumber as setup,
+} from './phone-number.test-helpers';
 import { CELLPHONE_TAKEN_MESSAGE } from './phone-verification.messages';
-import { UserLookupService } from './user-lookup.service';
 import { MAX_ATTEMPTS } from './verification-code.service';
 
-const CELLPHONE = '+573001112233';
-
-function setup(currentCellphone: string | null = null) {
-  const prisma = {
-    user: {
-      findUnique: jest.fn().mockResolvedValue({ cellphone: currentCellphone }),
-      update: jest.fn().mockResolvedValue({}),
-      updateMany: jest.fn().mockResolvedValue({ count: 0 }),
-    },
-    phoneVerificationCode: {
-      updateMany: jest.fn().mockResolvedValue({ count: 0 }),
-    },
-    $transaction: jest.fn((operations: Promise<unknown>[]) =>
-      Promise.all(operations),
-    ),
-  };
-  const users = {
-    isCellphoneVerifiedByAnother: jest.fn().mockResolvedValue(false),
-  };
-  const service = new PhoneNumberService(
-    prisma as unknown as PrismaService,
-    users as unknown as UserLookupService,
-  );
-  return { service, prisma, users };
-}
+const CURRENT = { cellphone: CELLPHONE, cellphoneVerifiedAt: null };
 
 describe('PhoneNumberService.assign', () => {
   it('stores the number in E.164 and resets the verification', async () => {
@@ -36,6 +13,7 @@ describe('PhoneNumberService.assign', () => {
 
     expect(await service.assign('u1', '300 111 2233')).toEqual({
       cellphone: CELLPHONE,
+      cellphoneVerified: false,
     });
     expect(prisma.user.update).toHaveBeenCalledWith({
       where: { id: 'u1' },
@@ -71,10 +49,11 @@ describe('PhoneNumberService.assign', () => {
   });
 
   it('changes nothing when the number is already the current one', async () => {
-    const { service, prisma, users } = setup(CELLPHONE);
+    const { service, prisma, users } = setup({ current: CURRENT });
 
     expect(await service.assign('u1', '3001112233')).toEqual({
       cellphone: CELLPHONE,
+      cellphoneVerified: false,
     });
     expect(users.isCellphoneVerifiedByAnother).not.toHaveBeenCalled();
     expect(prisma.$transaction).not.toHaveBeenCalled();

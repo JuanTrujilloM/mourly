@@ -56,7 +56,10 @@ describe('Phone verification (e2e)', () => {
         200,
       );
 
-      expect(response.body).toEqual({ cellphone: CELLPHONE });
+      expect(response.body).toEqual({
+        cellphone: CELLPHONE,
+        cellphoneVerified: false,
+      });
       expect(context.prisma.user.update).toHaveBeenCalledWith({
         where: { id: 'u1' },
         data: { cellphone: CELLPHONE, cellphoneVerifiedAt: null },
@@ -84,7 +87,10 @@ describe('Phone verification (e2e)', () => {
     it('accepts a number that already carries the country code', async () => {
       const response = await updatePhone({ cellphone: CELLPHONE }).expect(200);
 
-      expect(response.body).toEqual({ cellphone: CELLPHONE });
+      expect(response.body).toEqual({
+        cellphone: CELLPHONE,
+        cellphoneVerified: false,
+      });
     });
   });
 });

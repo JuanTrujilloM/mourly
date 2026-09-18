@@ -33,6 +33,8 @@ export function CellphoneStep({
   const onSubmit = async ({ cellphone }: CellphoneValues) => {
     try {
       const saved = await update.mutateAsync(cellphone);
+      // Verified on save while SMS verification is off; the page gate routes onward.
+      if (saved.cellphoneVerified) return;
       await send.mutateAsync();
       rememberResendCooldown(saved.cellphone);
       onSaved();
@@ -63,7 +65,7 @@ export function CellphoneStep({
       {errors.root && <p className="text-error text-sm">{errors.root.message}</p>}
 
       <Button type="submit" className="w-full" disabled={busy}>
-        {busy ? 'Enviando...' : 'Enviar código por SMS'}
+        {busy ? 'Guardando...' : 'Continuar'}
       </Button>
     </form>
   );

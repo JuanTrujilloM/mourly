@@ -40,3 +40,31 @@ describe('validateEnv in production: Twilio', () => {
     expect(validateEnv(config)).toBe(config);
   });
 });
+
+describe('validateEnv in production: SMS verification turned off', () => {
+  const WITHOUT_TWILIO = {
+    ...withoutKey('TWILIO_ACCOUNT_SID'),
+    PHONE_SMS_VERIFICATION_ENABLED: 'false',
+  };
+
+  it('does not require Twilio while email carries the notifications', () => {
+    const config = { ...WITHOUT_TWILIO, EMAIL_NOTIFICATIONS_ENABLED: 'true' };
+
+    expect(validateEnv(config)).toBe(config);
+  });
+
+  it('refuses to run with no working notification channel', () => {
+    expect(() => validateEnv(WITHOUT_TWILIO)).toThrow(
+      'EMAIL_NOTIFICATIONS_ENABLED must be true in production while Twilio is not configured.',
+    );
+  });
+
+  it('accepts email notifications off when Twilio is configured', () => {
+    const config = {
+      ...PRODUCTION_CONFIG,
+      PHONE_SMS_VERIFICATION_ENABLED: 'false',
+    };
+
+    expect(validateEnv(config)).toBe(config);
+  });
+});
