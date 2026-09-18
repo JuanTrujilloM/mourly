@@ -2,19 +2,16 @@
 
 import type { ReactNode } from 'react';
 import { useRedirectIfAuthenticated } from '@/hooks/useRedirectIfAuthenticated';
+import { SplashOverlay } from './Splash';
 
 export function GuestGate({ children }: { children: ReactNode }) {
   const { isLoading, isSuccess } = useRedirectIfAuthenticated();
+  const ready = !isLoading && !isSuccess;
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-1 items-center justify-center py-24">
-        <p className="text-ink-3 text-sm">Cargando...</p>
-      </div>
-    );
-  }
-
-  if (isSuccess) return null;
-
-  return <>{children}</>;
+  return (
+    <>
+      <SplashOverlay active={!ready} />
+      {ready ? children : null}
+    </>
+  );
 }
