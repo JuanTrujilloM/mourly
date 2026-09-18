@@ -55,9 +55,18 @@ DATABASE_URL="postgresql://<your-mac-username>@localhost:5432/mourly"
 # Optional for local dev (leave empty if not testing these features)
 JWT_SECRET=any-random-string-for-local-dev
 JWT_EXPIRES_IN=7d
-WHATSAPP_TOKEN=
-WHATSAPP_PHONE_NUMBER_ID=
-WHATSAPP_VERIFY_TOKEN=
+# Email: leave RESEND_API_KEY empty to log codes to the console instead of sending
+RESEND_API_KEY=
+MAIL_FROM="Mourly <no-reply@mourly.com>"
+MAIL_REPLY_TO=cloud@mourly.com
+EMAIL_CODE_TTL_MINUTES=10
+# Only the verification code goes out by email unless this is true
+EMAIL_NOTIFICATIONS_ENABLED=false
+# SMS via Twilio: leave empty to log each message to the console
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_MESSAGING_SERVICE_SID=
+TWILIO_FROM=
 OPENAI_API_KEY=
 GCS_BUCKET=
 ```
@@ -192,11 +201,13 @@ executes a given tick.
 
 ### Incomplete features
 
-**WhatsApp is not wired end to end.** `WhatsappSenderService.send` logs
-instead of calling the Cloud API, and there is no inbound webhook, so
+**The chatbot has no inbound transport.** WhatsApp was dropped (Meta does
+not allow dating apps), so there is no webhook and
 `ChatbotService.handleIncomingMessage` is unreachable. The AI agent, its
-tools and its moderation all exist and are tested; only the transport is
-missing.
+tools and its moderation all exist and are tested; the plan is to surface
+it inside the web app. Outbound notifications go out by SMS through
+`SmsModule` (Twilio, console fallback in dev) and by email only when
+`EMAIL_NOTIFICATIONS_ENABLED=true`.
 
 **Reporting a match does not end it.** `POST /matches/:id/report` records
 the report for moderation but leaves the pair matched. Chaining it with

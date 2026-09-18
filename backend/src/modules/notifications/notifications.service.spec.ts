@@ -27,34 +27,34 @@ describe('NotificationsService', () => {
 
   it('fans the notification out to every channel', async () => {
     const email = channel('email');
-    const whatsapp = channel('whatsapp');
-    const service = new NotificationsService([email, whatsapp]);
+    const sms = channel('sms');
+    const service = new NotificationsService([email, sms]);
 
     await service.send(REJECTION);
 
     expect(email.send).toHaveBeenCalledWith(REJECTION);
-    expect(whatsapp.send).toHaveBeenCalledWith(REJECTION);
+    expect(sms.send).toHaveBeenCalledWith(REJECTION);
   });
 
   it('still delivers on the other channels when one fails', async () => {
     const email = channel('email');
-    const whatsapp = channel('whatsapp');
-    whatsapp.send.mockRejectedValue(new Error('whatsapp down'));
-    const service = new NotificationsService([email, whatsapp]);
+    const sms = channel('sms');
+    sms.send.mockRejectedValue(new Error('sms down'));
+    const service = new NotificationsService([email, sms]);
 
     await expect(service.send(REJECTION)).resolves.toBeUndefined();
     expect(email.send).toHaveBeenCalled();
   });
 
   it('names the failing channel and the notification kind in the log', async () => {
-    const whatsapp = channel('whatsapp');
-    whatsapp.send.mockRejectedValue(new Error('whatsapp down'));
-    const service = new NotificationsService([whatsapp]);
+    const sms = channel('sms');
+    sms.send.mockRejectedValue(new Error('sms down'));
+    const service = new NotificationsService([sms]);
 
     await service.send(REJECTION);
 
     expect(Logger.prototype.error).toHaveBeenCalledWith(
-      'whatsapp send failed for match_rejected',
+      'sms send failed for match_rejected',
       expect.any(String),
     );
   });

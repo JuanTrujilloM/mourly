@@ -3,7 +3,10 @@ import { VerificationCodeIssuerService } from './verification-code-issuer.servic
 import { VerificationDeliveryService } from './verification-delivery.service';
 
 function setup(issued: string | null) {
-  const issuer = { issueIfAllowed: jest.fn().mockResolvedValue(issued) };
+  const issuer = {
+    issueIfAllowed: jest.fn().mockResolvedValue(issued),
+    ttlMinutes: 10,
+  };
   const mail = { sendVerificationCode: jest.fn().mockResolvedValue(undefined) };
 
   const service = new VerificationDeliveryService(
@@ -23,6 +26,7 @@ describe('VerificationDeliveryService', () => {
     expect(mail.sendVerificationCode).toHaveBeenCalledWith(
       'ana@eafit.edu.co',
       '123456',
+      10,
     );
   });
 

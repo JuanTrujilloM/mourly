@@ -12,7 +12,7 @@ export class VerificationDeliveryService {
   async sendIfAllowed(userId: string, email: string): Promise<void> {
     const code = await this.issuer.issueIfAllowed(userId);
     if (code) {
-      await this.mail.sendVerificationCode(email, code);
+      await this.mail.sendVerificationCode(email, code, this.issuer.ttlMinutes);
     }
   }
 }

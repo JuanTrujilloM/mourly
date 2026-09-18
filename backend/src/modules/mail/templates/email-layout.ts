@@ -1,4 +1,9 @@
+import { CONTACT_EMAIL, CONTACT_LOCATION } from '../mail.constants';
+
 const BRAND = 'Mourly';
+const IDENTITY_LINE = `${BRAND} · ${CONTACT_LOCATION} · ${CONTACT_EMAIL}`;
+const REASON_LINE =
+  'Recibís este correo porque tenés una cuenta en Mourly o pediste crear una.';
 
 export function escapeHtml(value: string): string {
   return value
@@ -19,12 +24,17 @@ export function emailLayout(bodyHtml: string): string {
         <div style="background: #ffffff; border-radius: 0 0 12px 12px; padding: 28px 24px; color: #26262b;">
           ${bodyHtml}
         </div>
-        <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 16px;">
-          ${BRAND} · Citas reales para universitarios
+        <p style="text-align: center; color: #9ca3af; font-size: 12px; line-height: 1.6; margin-top: 16px;">
+          ${IDENTITY_LINE}<br />
+          ${REASON_LINE}
         </p>
       </div>
     </div>
   `;
+}
+
+export function emailFooterText(): string {
+  return `${IDENTITY_LINE}\n${REASON_LINE}`;
 }
 
 export function ctaButton(label: string, url: string): string {

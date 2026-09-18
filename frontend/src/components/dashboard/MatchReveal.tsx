@@ -71,7 +71,7 @@ export function MatchReveal({
           </p>
         )}
         <p className="text-ink-2 mt-3 text-sm">
-          Te escribimos por WhatsApp para cuadrar día, hora y lugar.
+          Te escribimos por SMS para cuadrar día, hora y lugar.
         </p>
         <div className="mt-5">
           <Button variant="momento" onClick={onDone}>

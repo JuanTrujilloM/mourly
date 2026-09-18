@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const TODAY = [
   'Cuentas verificadas con correo institucional de EAFIT, UPB, CES y EIA.',
   'Un motor de matching semanal que cada jueves cruza intereses, preferencias, disponibilidad y el feedback de citas anteriores para proponer una sola persona.',
-  'Coordinación de horario y lugar por WhatsApp, con reserva en un lugar aliado cerca del campus.',
+  'Coordinación de horario y lugar por SMS y la app, con reserva en un lugar aliado cerca del campus.',
   'Feedback después de cada cita: la confiabilidad de cada persona pesa en su siguiente match.',
 ];
 

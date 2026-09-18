@@ -13,7 +13,7 @@
 Se crea el Match (matcher semanal)
         │
         ▼
-Link tokenizado por usuario → WhatsApp (dev: log en consola)
+Link tokenizado por usuario → SMS (dev: log en consola)
         │   URL de entrada: /flow/:token/places
         ▼
 PASO 1 · Lugares (HU-06):  ve 3 opciones → elige exactamente 2 → avanza
@@ -126,7 +126,7 @@ node dist/src/scripts/run-weekly-matching.js   # loguea 2 links /flow/<token>/pl
 1. Abre el link de A → aparecen **primero los lugares** → elige 2 → pasa al
    calendario → elige horario → "¡Listo!".
 2. Re-abre el mismo link → pantalla de completado (no error).
-3. Repite con B usando el mismo horario → consola `[dev whatsapp] ¡Coincidieron!`
+3. Repite con B usando el mismo horario → consola `[dev sms] ... Cita confirmada`
    y en `npx prisma studio`: `Date` `accepted`, `Match` `confirmed`.
 4. **Empujón:** repite con horarios disjuntos → los links nuevos abren
    **directo el calendario** (sin paso de lugares).

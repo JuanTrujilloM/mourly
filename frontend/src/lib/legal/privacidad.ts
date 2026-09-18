@@ -9,7 +9,7 @@ export const PRIVACIDAD: LegalDocument = {
   intro:
     'Esta política explica qué datos recoge Mourly, para qué los usa, con quién los comparte y cómo puede usted ejercer sus derechos, conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013.',
   version: '1.0',
-  updatedAt: '2026-09-06',
+  updatedAt: '2026-09-17',
   sections: [
     responsibleSection(COMPANY, FOUNDERS),
     {
@@ -22,12 +22,12 @@ export const PRIVACIDAD: LegalDocument = {
     {
       heading: 'Datos que tratamos',
       bullets: [
-        'Identificación y contacto: nombre, correo institucional, número de celular (WhatsApp) y fecha de nacimiento.',
+        'Identificación y contacto: nombre, correo institucional, número de celular y fecha de nacimiento.',
         'Académicos: universidad, carrera y semestre.',
         'Perfil: género, estatura, biografía, hobbies e intereses, y las fotos que usted sube.',
         'Datos sensibles: los géneros que le interesan (que, junto con su propio género, pueden revelar su orientación sexual), el tipo de relación que busca, y la información que usted registre en un reporte sobre otra persona. Mourly no pregunta ni almacena una etiqueta de orientación sexual.',
         'Actividad: propuestas de cita, disponibilidad horaria, citas confirmadas y su feedback posterior (si ocurrió, calificación, comentarios, motivo de inasistencia y gasto aproximado).',
-        'Conversaciones con el asistente de Mourly en WhatsApp.',
+        'Conversaciones con el asistente de Mourly.',
         'Técnicos: dirección IP, dispositivo y registros de acceso.',
       ],
     },
@@ -43,7 +43,7 @@ export const PRIVACIDAD: LegalDocument = {
       bullets: [
         'Crear y administrar su cuenta, y verificar su vínculo universitario y su mayoría de edad.',
         'Generar una propuesta de cita por semana y coordinar día, hora y lugar.',
-        'Comunicarnos con usted por correo y WhatsApp sobre el servicio.',
+        'Comunicarnos con usted por correo y mensajes de texto (SMS) sobre el servicio.',
         'Atender reportes, moderar la plataforma y proteger la seguridad de las personas usuarias.',
         'Elaborar estadísticas agregadas y anonimizadas para mejorar el servicio.',
         'Cumplir obligaciones legales y atender requerimientos de autoridad competente.',
@@ -58,7 +58,7 @@ export const PRIVACIDAD: LegalDocument = {
     {
       heading: 'Con quién compartimos sus datos',
       bullets: [
-        'Encargados del tratamiento que operan por cuenta de Mourly: el proveedor de nube (Amazon Web Services) para servidores y fotos, Meta (WhatsApp) para la mensajería, el proveedor de correo transaccional y el proveedor del modelo de lenguaje que responde en el asistente de WhatsApp.',
+        'Encargados del tratamiento que operan por cuenta de Mourly: el proveedor de nube (Amazon Web Services) para servidores y fotos, Twilio Inc. para el envío de mensajes de texto (SMS), el proveedor de correo transaccional y el proveedor del modelo de lenguaje que responde en el asistente de Mourly.',
         'Lugares aliados: reciben únicamente el nombre de pila de las dos personas y la hora de la reserva.',
         'Autoridades: solo por orden de autoridad competente, con registro de cada entrega.',
         'Mourly no vende sus datos ni los comparte con fines publicitarios de terceros.',
@@ -118,7 +118,7 @@ export const PRIVACIDAD: LegalDocument = {
     {
       heading: 'Vigencia',
       paragraphs: [
-        'Esta política rige desde la fecha indicada al inicio. Los cambios sustanciales se informan por correo o WhatsApp antes de entrar en vigencia.',
+        'Esta política rige desde la fecha indicada al inicio. Los cambios sustanciales se informan por correo o SMS antes de entrar en vigencia.',
       ],
     },
   ],

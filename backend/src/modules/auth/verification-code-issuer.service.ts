@@ -11,10 +11,16 @@ const DEFAULT_TTL_MINUTES = 10;
 
 @Injectable()
 export class VerificationCodeIssuerService {
+  readonly ttlMinutes: number;
+
   constructor(
     private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
-  ) {}
+    config: ConfigService,
+  ) {
+    this.ttlMinutes = Number(
+      config.get<string>('EMAIL_CODE_TTL_MINUTES') ?? DEFAULT_TTL_MINUTES,
+    );
+  }
 
   async issueIfAllowed(userId: string): Promise<string | null> {
     const code = randomInt(0, 1_000_000).toString().padStart(6, '0');
@@ -54,9 +60,6 @@ export class VerificationCodeIssuerService {
   }
 
   private computeExpiry(): Date {
-    const ttlMinutes = Number(
-      this.config.get<string>('EMAIL_CODE_TTL_MINUTES') ?? DEFAULT_TTL_MINUTES,
-    );
-    return new Date(Date.now() + ttlMinutes * 60 * 1000);
+    return new Date(Date.now() + this.ttlMinutes * 60 * 1000);
   }
 }

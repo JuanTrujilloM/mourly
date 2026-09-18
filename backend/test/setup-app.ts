@@ -119,7 +119,6 @@ export async function createTestApp(
   process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/test';
   process.env.NODE_ENV = 'test';
   process.env.ADMIN_EMAILS = options.adminEmails ?? 'admin@eafit.edu.co';
-  process.env.SMTP_HOST = '';
 
   const prisma = buildPrismaMock();
   const builder = Test.createTestingModule({ imports: [AppModule] })
