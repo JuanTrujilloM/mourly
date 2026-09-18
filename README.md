@@ -60,6 +60,7 @@ RESEND_API_KEY=
 MAIL_FROM="Mourly <no-reply@mourly.com>"
 MAIL_REPLY_TO=cloud@mourly.com
 EMAIL_CODE_TTL_MINUTES=10
+PHONE_CODE_TTL_MINUTES=10
 # Only the verification code goes out by email unless this is true
 EMAIL_NOTIFICATIONS_ENABLED=false
 # SMS via Twilio: leave empty to log each message to the console
