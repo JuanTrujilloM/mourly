@@ -1,7 +1,7 @@
 import { MailService } from '../../mail/mail.service';
-import { WhatsappSenderService } from '../../whatsapp/whatsapp-sender.service';
+import type { SmsSender } from '../../sms/sms-sender';
 import { EmailChannel } from './email.channel';
-import { WhatsappChannel } from './whatsapp.channel';
+import { SmsChannel } from './sms.channel';
 import type { Notification } from '../notification';
 
 const NOTIFICATION: Notification = {
@@ -9,7 +9,7 @@ const NOTIFICATION: Notification = {
   recipient: {
     name: 'Ana',
     email: 'ana@eafit.edu.co',
-    cellphone: '+573001112233',
+    cellphone: '3001112233',
   },
 };
 
@@ -31,22 +31,30 @@ describe('EmailChannel', () => {
   });
 });
 
-describe('WhatsappChannel', () => {
-  it('is named whatsapp', () => {
-    const sender = { send: jest.fn() } as unknown as WhatsappSenderService;
+describe('SmsChannel', () => {
+  function buildChannel() {
+    const send = jest.fn().mockResolvedValue(undefined);
+    const sender: SmsSender = { send };
+    return { channel: new SmsChannel(sender), send };
+  }
 
-    expect(new WhatsappChannel(sender).name).toBe('whatsapp');
+  it('is named sms', () => {
+    expect(buildChannel().channel.name).toBe('sms');
   });
 
-  it('sends the rendered text to the recipient cellphone', async () => {
-    const send = jest.fn().mockResolvedValue(undefined);
-    const channel = new WhatsappChannel({
-      send,
-    } as unknown as WhatsappSenderService);
+  it('sends to the recipient number in E.164', async () => {
+    const { channel, send } = buildChannel();
 
     await channel.send(NOTIFICATION);
 
     expect(send.mock.calls[0][0]).toBe('+573001112233');
-    expect(typeof send.mock.calls[0][1]).toBe('string');
+  });
+
+  it('sends the rendered text', async () => {
+    const { channel, send } = buildChannel();
+
+    await channel.send(NOTIFICATION);
+
+    expect(send.mock.calls[0][1]).toContain('Mourly:');
   });
 });

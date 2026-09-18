@@ -49,7 +49,7 @@ export function MatchCard({ match }: { match: CurrentMatch }) {
       )}
 
       <p className="text-ink-3 mt-5 text-sm">
-        Te escribimos por WhatsApp para cuadrar día, hora y lugar.
+        Te escribimos por SMS para cuadrar día, hora y lugar.
       </p>
     </section>
   );

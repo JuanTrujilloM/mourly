@@ -7,7 +7,7 @@ export const HABEAS_DATA: LegalDocument = {
   intro:
     'En cumplimiento de la Ley 1581 de 2012 y el Decreto 1377 de 2013, le informamos cómo tratamos sus datos personales y cómo puede ejercer sus derechos.',
   version: '1.0',
-  updatedAt: '2026-09-06',
+  updatedAt: '2026-09-17',
   sections: [
     responsibleSection(COMPANY, FOUNDERS),
     {
@@ -15,7 +15,7 @@ export const HABEAS_DATA: LegalDocument = {
       bullets: [
         'Crear y administrar su cuenta, y verificar su vínculo universitario y su mayoría de edad.',
         'Generar propuestas de cita y coordinar encuentros en establecimientos aliados.',
-        'Comunicarnos con usted por correo electrónico y WhatsApp sobre el servicio.',
+        'Comunicarnos con usted por correo electrónico y mensajes de texto (SMS) sobre el servicio.',
         'Gestionar reportes, moderación y seguridad de la plataforma.',
         'Elaborar estadísticas agregadas y anonimizadas.',
         'Cumplir obligaciones legales y atender requerimientos de autoridad competente.',

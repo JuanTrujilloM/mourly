@@ -15,7 +15,7 @@ Mourly is an exclusive dating app for students at private universities in Colomb
 | Frontend | Next.js 16 + Tailwind CSS + React Query |
 | Backend | NestJS + Prisma ORM |
 | Database | PostgreSQL + pgvector (AI embeddings) |
-| WhatsApp Bot | NestJS + Meta WhatsApp Cloud API |
+| SMS Notifications | Twilio Programmable SMS behind an `SmsSender` interface (console fallback in dev) |
 | Weekly Matching | AWS Lambda + EventBridge (cron Sundays 7pm) |
 | Queues | AWS SQS |
 | Photo Storage | AWS S3 |
@@ -56,7 +56,8 @@ mourly/
 │   │   │   ├── venues/
 │   │   │   ├── feedback/
 │   │   │   ├── payments/
-│   │   │   └── whatsapp/
+│   │   │   ├── notifications/
+│   │   │   └── sms/
 │   │   ├── common/
 │   │   │   ├── guards/              # JwtAuthGuard, etc.
 │   │   │   ├── decorators/          # @CurrentUser, etc.
@@ -133,8 +134,8 @@ Fields: interests (multi-select, min 3), hobbies (min 3), relationship type, gen
 ### HU-04: AI matching algorithm
 Runs weekly. Evaluates: interests, hobbies, relationship type, gender interest (mutual), physical preferences, energy/vibe, university, semester. Generates exactly 1 match per user without repeating previous matches.
 
-### HU-05: Match notification via WhatsApp
-Sends name, age, university, major, photo, bio of the match + unique tokenized link to select availability.
+### HU-05: Match notification via SMS
+Sends an SMS with the match's name and a unique tokenized link to select venues and availability. Age, university, major, photo and bio are shown in the app.
 
 ### HU-06: Venue selection
 Suggests 3 venues aligned with shared interests and available during selected time slots. User must choose at least 2 of 3.
@@ -143,7 +144,7 @@ Suggests 3 venues aligned with shared interests and available during selected ti
 Options: Accept / Reject. 24h timeout with no response = automatic rejection. If one rejects, both move to the next weekly cycle.
 
 ### HU-08: Final confirmation
-When both accept and there is an overlap in availability and venue, the system automatically confirms and notifies via WhatsApp with: match name, venue, address, date, and time.
+When both accept and there is an overlap in availability and venue, the system automatically confirms and notifies via SMS with: match name, venue, date, and time (the address is shown in the app).
 
 ### HU-09: Time availability selection
 Calendar with the next 7 days, time slots from 12pm to 7pm in 1-hour intervals. At least 1 slot required.
@@ -159,7 +160,7 @@ Calendar with the next 7 days, time slots from 12pm to 7pm in 1-hour intervals. 
 1. Register with .edu.co email → email verification code
 2. Onboarding: personal info → interests → preferences
 3. Every Sunday 7pm → matching Lambda runs
-4. WhatsApp: match notification + availability link
+4. SMS: match notification + availability link
 5. User A and B select time slots (HU-09)
 6. System suggests 3 venues based on shared interests (HU-06)
 7. Users accept or reject match (HU-07)
@@ -175,7 +176,7 @@ Calendar with the next 7 days, time slots from 12pm to 7pm in 1-hour intervals. 
 - **Student (primary user):** registers, receives matches, confirms dates, gives feedback
 - **Match (secondary user):** the other student in the pair, identical flow
 - **AI Matching Engine:** weekly Lambda that generates matches
-- **WhatsApp Bot:** handles all communication outside the web platform
+- **SMS notifications:** every message outside the web platform (match invite link, date confirmation, feedback request)
 - **Partner Venue:** café/restaurant that pays commission per confirmed reservation
 - **System Administrator:** moderates profiles, manages university domains and venues
 
@@ -239,7 +240,7 @@ Page (app/) → Hook (hooks/) → API client (lib/api/) → Backend
 ## Code Conventions
 
 ### Naming
-- Functions: descriptive verbs → `findUserByEmail`, `generateWeeklyMatches`, `sendWhatsAppNotification`
+- Functions: descriptive verbs → `findUserByEmail`, `generateWeeklyMatches`, `sendSmsNotification`
 - Components: PascalCase → `MatchCard`, `AvailabilityCalendar`
 - Hooks: `use` prefix → `useCurrentUser`, `useMatchDetails`
 - Variables: descriptive camelCase → `compatibilityScore`, `isVerified`
@@ -312,9 +313,10 @@ MAIL_FROM="Mourly <no-reply@mourly.com>"
 MAIL_REPLY_TO=cloud@mourly.com
 EMAIL_CODE_TTL_MINUTES=10
 EMAIL_NOTIFICATIONS_ENABLED=false   # email carries only the verification code unless true
-WHATSAPP_TOKEN=...
-WHATSAPP_PHONE_NUMBER_ID=...
-WHATSAPP_VERIFY_TOKEN=...
+TWILIO_ACCOUNT_SID=...
+TWILIO_AUTH_TOKEN=...
+TWILIO_MESSAGING_SERVICE_SID=...   # or TWILIO_FROM; empty = SMS logged to the console
+TWILIO_FROM=...
 OPENAI_API_KEY=...
 AWS_REGION=us-east-1
 AWS_S3_BUCKET=mourly-media
@@ -351,7 +353,6 @@ npm run build:all        # Builds frontend and backend
 | ECR | Docker image registry |
 | RDS PostgreSQL | Main database |
 | S3 | Profile photo storage |
-| SQS | WhatsApp message queue |
 | Lambda | Weekly matching (cron Sundays 7pm Colombia) |
 | EventBridge | Triggers Lambda: `cron(0 0 ? * MON *)` |
 | Secrets Manager | Sensitive env vars in production |
