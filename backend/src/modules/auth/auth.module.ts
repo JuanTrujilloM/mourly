@@ -3,17 +3,20 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { MailModule } from '../mail/mail.module';
+import { SchedulingModule } from '../scheduling/scheduling.module';
+import { SmsModule } from '../sms/sms.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { RegistrationService } from './registration.service';
+import { PhoneVerificationController } from './phone-verification.controller';
+import { PhoneVerificationService } from './phone-verification.service';
 import { SessionService } from './session.service';
 import { SessionCookiesService } from './session-cookies.service';
 import { SafeUserService } from './safe-user.service';
+import { UnverifiedAccountCleanupService } from './unverified-account-cleanup.service';
 import { UserLookupService } from './user-lookup.service';
-import { VerificationCodeService } from './verification-code.service';
-import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationDeliveryService } from './verification-delivery.service';
 import { VerificationDispatcherService } from './verification-dispatcher.service';
+import { verificationProviders } from './verification.providers';
 import { RefreshTokenService } from './refresh-token.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-university-email.validator';
@@ -22,6 +25,8 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
   imports: [
     PassportModule,
     MailModule,
+    SmsModule,
+    SchedulingModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -29,18 +34,18 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
       }),
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, PhoneVerificationController],
   providers: [
     AuthService,
-    RegistrationService,
+    PhoneVerificationService,
     SessionService,
     SessionCookiesService,
     SafeUserService,
     UserLookupService,
-    VerificationCodeService,
-    VerificationCodeIssuerService,
+    ...verificationProviders,
     VerificationDeliveryService,
     VerificationDispatcherService,
+    UnverifiedAccountCleanupService,
     RefreshTokenService,
     JwtStrategy,
     IsSupportedUniversityEmailConstraint,

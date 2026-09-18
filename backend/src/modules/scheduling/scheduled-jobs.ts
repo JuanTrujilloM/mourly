@@ -3,6 +3,7 @@ export const SCHEDULED_JOBS = {
   matchRecycling: 'match-recycling',
   responseTimeout: 'response-timeout',
   feedbackWindow: 'feedback-window',
+  unverifiedAccountCleanup: 'unverified-account-cleanup',
 } as const;
 
 export type ScheduledJobName =
