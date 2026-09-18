@@ -229,3 +229,65 @@ input[type="range"].brand-range::-moz-range-thumb {
   border: 3px solid var(--surface);
   cursor: pointer;
 }
+
+/* Splash */
+
+/* The wordmark holds still and the dot laps it (brand/logo.md: the dot is the
+   loader). Geometry from the validated proof of concept, not re-derived: the
+   orbit is the logo's bounding box (x 3.8..494.2, y -136..28.6) grown 22.1 on
+   every side with 52.2 corners, starting and ending at the dot's home
+   (476.2, -18) on the right edge, clockwise. One lap takes 1.05 s, then the
+   dot rests 0.8 s at home before the next (1.85 s cycle). */
+.splash {
+  display: block;
+  width: min(73vw, 320px);
+  height: auto;
+}
+
+/* The circle sits at cx=0 cy=0 in the markup; offset-path places it. */
+.splash-dot {
+  transform-box: view-box;
+  offset-rotate: 0deg;
+  offset-path: path(
+    "M 476.2 -18 C 492.27 -18 516.3 -40.1 516.3 -18 L 516.3 -1.54 C 516.3 27.31 492.91 50.7 464.06 50.7 L 33.94 50.7 C 5.09 50.7 -18.3 27.31 -18.3 -1.54 L -18.3 -105.86 C -18.3 -134.71 5.09 -158.1 33.94 -158.1 L 464.06 -158.1 C 492.91 -158.1 516.3 -134.71 516.3 -105.86 L 516.3 -18 C 516.3 8.12 504.33 2.09 476.2 -18"
+  );
+  animation: mourly-orbit 1.85s infinite both;
+}
+
+@keyframes mourly-orbit {
+  0% {
+    offset-distance: 0%;
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  }
+  4% {
+    offset-distance: 3.23%;
+    animation-timing-function: linear;
+  }
+  50% {
+    offset-distance: 96.13%;
+    animation-timing-function: cubic-bezier(0, 0, 0.3, 1);
+  }
+  56.76% {
+    offset-distance: 100%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+/* Without offset-path the dot would sit at 0,0; park it at home so the static
+   wordmark still reads as the logo. */
+@supports not (offset-path: path("M 0 0")) {
+  .splash-dot {
+    transform: translate(476.2px, -18px);
+  }
+}
+
+/* No orbit: the dot rests at home and the logo shows still. */
+@media (prefers-reduced-motion: reduce) {
+  .splash-dot {
+    animation: none;
+    offset-path: none;
+    transform: translate(476.2px, -18px);
+  }
+}

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
+import { Splash } from '@/components/shared/Splash';
 import type { AuthUser } from '@/types/auth';
 
 export function AdminGate({
@@ -20,8 +21,8 @@ export function AdminGate({
 
   if (isLoading) {
     return (
-      <div className="noche bg-page flex min-h-screen items-center justify-center">
-        <p className="text-ink-3 text-sm">Cargando panel...</p>
+      <div className="noche">
+        <Splash label="Cargando panel" />
       </div>
     );
   }

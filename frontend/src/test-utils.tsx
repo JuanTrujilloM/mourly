@@ -21,6 +21,7 @@ export const AUTH_USER: AuthUser = {
   id: 'u1',
   email: 'ana@eafit.edu.co',
   cellphone: '+573001112233',
+  cellphoneVerified: true,
   isVerified: true,
   university: 'EAFIT',
   onboardingCompleted: true,

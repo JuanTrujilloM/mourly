@@ -122,8 +122,8 @@ mourly/
 
 ## User Stories
 
-### HU-01: Registration with university email
-Validate that the domain belongs to a supported private university. Send a verification code. Supported domains: eafit.edu.co, upb.edu.co, ces.edu.co, eia.edu.co, javeriana.edu.co, uniandes.edu.co, urosario.edu.co, externado.edu.co.
+### HU-01: Entry with university email
+There is no separate sign-up. The student types their institutional email, the domain is validated against the supported universities, a 6-digit code is emailed and the account is created on first contact. Accounts that never verify are purged after 7 days. Right after the email code, the student enters a Colombian cellphone and confirms it with a 6-digit SMS code; only verified cellphones enter the weekly pool. Supported domains: eafit.edu.co, upb.edu.co, ces.edu.co, eia.edu.co, javeriana.edu.co, uniandes.edu.co, urosario.edu.co, externado.edu.co.
 
 ### HU-02: Personal information
 Fields: name, date of birth (>17), gender, height, photos (1–5), biography (max 150 chars), social media (optional), university (auto-detected from email), major, semester, first thing you want your date to know about you.
@@ -157,8 +157,8 @@ Calendar with the next 7 days, time slots from 12pm to 7pm in 1-hour intervals. 
 ## Product Flow
 
 ```
-1. Register with .edu.co email → email verification code
-2. Onboarding: personal info → interests → preferences
+1. Enter with .edu.co email → email code (account created on first contact)
+2. Verify the cellphone with an SMS code → onboarding: personal info → interests → preferences
 3. Every Sunday 7pm → matching Lambda runs
 4. SMS: match notification + availability link
 5. User A and B select time slots (HU-09)
@@ -312,6 +312,7 @@ RESEND_API_KEY=...
 MAIL_FROM="Mourly <no-reply@mourly.com>"
 MAIL_REPLY_TO=cloud@mourly.com
 EMAIL_CODE_TTL_MINUTES=10
+PHONE_CODE_TTL_MINUTES=10
 EMAIL_NOTIFICATIONS_ENABLED=false   # email carries only the verification code unless true
 TWILIO_ACCOUNT_SID=...
 TWILIO_AUTH_TOKEN=...

@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { registerSchema, type RegisterValues } from '@/lib/validation/auth';
-import { useRegister } from '@/hooks/useRegister';
+import { emailEntrySchema, type EmailEntryValues } from '@/lib/validation/auth';
+import { useRequestCode } from '@/hooks/useRequestCode';
 import { getApiErrorMessage } from '@/lib/utils/errors';
 import { UNSUPPORTED_UNIVERSITY_MESSAGE } from '@/lib/constants/auth';
 import { rememberResendCooldown } from '@/lib/utils/resend-cooldown';
@@ -14,27 +15,27 @@ import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
-export function RegisterForm() {
+export function EmailEntryForm() {
   const router = useRouter();
-  const { mutateAsync, isPending } = useRegister();
-  const [lead, setLead] = useState<RegisterValues | null>(null);
+  const { mutateAsync, isPending } = useRequestCode();
+  const [lead, setLead] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<RegisterValues>({ resolver: zodResolver(registerSchema) });
+  } = useForm<EmailEntryValues>({ resolver: zodResolver(emailEntrySchema) });
 
-  const onSubmit = async (values: RegisterValues) => {
+  const onSubmit = async ({ email }: EmailEntryValues) => {
     try {
-      await mutateAsync(values);
-      rememberResendCooldown(values.email);
-      router.push(`/verify?email=${encodeURIComponent(values.email)}`);
+      await mutateAsync(email);
+      rememberResendCooldown(email);
+      router.push(`/verify?email=${encodeURIComponent(email)}`);
     } catch (error) {
       const message = getApiErrorMessage(error);
       // An unreached university is an invitation, not a dead end.
       if (message === UNSUPPORTED_UNIVERSITY_MESSAGE) {
-        setLead(values);
+        setLead(email);
         return;
       }
       setError('root', { message });
@@ -59,32 +60,33 @@ export function RegisterForm() {
           />
         </Field>
 
-        <Field
-          label="Celular"
-          htmlFor="cellphone"
-          error={errors.cellphone?.message}
-        >
-          <Input
-            id="cellphone"
-            type="tel"
-            autoComplete="tel"
-            placeholder="+57 300 123 4567"
-            hasError={!!errors.cellphone}
-            {...register('cellphone')}
-          />
-        </Field>
-
         {errors.root && (
           <p className="text-error text-sm">{errors.root.message}</p>
         )}
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending ? 'Enviando...' : 'Continuar'}
+          {isPending ? 'Enviando...' : 'Enviar código'}
         </Button>
+
+        <p className="text-ink-3 text-center text-xs">
+          Al continuar aceptás los{' '}
+          <Link href="/terminos" className="underline">
+            Términos
+          </Link>{' '}
+          y la{' '}
+          <Link href="/privacidad" className="underline">
+            Política de privacidad
+          </Link>
+          .
+        </p>
       </form>
 
       {lead && (
-        <WaitlistDialog open defaults={lead} onClose={() => setLead(null)} />
+        <WaitlistDialog
+          open
+          defaults={{ email: lead, cellphone: '' }}
+          onClose={() => setLead(null)}
+        />
       )}
     </>
   );
