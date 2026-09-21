@@ -42,6 +42,42 @@ function storedLink(overrides: Record<string, unknown> = {}) {
 }
 
 describe('AvailabilityLinkService', () => {
+  describe('issueDateLink', () => {
+    const EXPIRES_AT = new Date('2026-09-23T17:00:00Z');
+
+    it('issues a DATE link that lives until the given moment', async () => {
+      const { service, create } = setup();
+
+      await service.issueDateLink('m1', 'u1', EXPIRES_AT);
+
+      expect(create.mock.calls[0][0].data).toMatchObject({
+        matchId: 'm1',
+        userId: 'u1',
+        step: 'DATE',
+        expiresAt: EXPIRES_AT,
+      });
+    });
+
+    it('uses a 22-character token and stores only its hash', async () => {
+      const { service, create } = setup();
+
+      const token = await service.issueDateLink('m1', 'u1', EXPIRES_AT);
+
+      expect(token).toHaveLength(22);
+      expect(create.mock.calls[0][0].data.tokenHash).toBe(sha256(token));
+    });
+
+    it('replaces the flow link of the same match and user', async () => {
+      const { service, deleteMany } = setup();
+
+      await service.issueDateLink('m1', 'u1', EXPIRES_AT);
+
+      expect(deleteMany).toHaveBeenCalledWith({
+        where: { matchId: 'm1', userId: 'u1' },
+      });
+    });
+  });
+
   describe('issueForMatchUser', () => {
     it('replaces any previous link for the same match and user', async () => {
       const { service, deleteMany } = setup();

@@ -3,6 +3,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { MatchConfirmationService } from './match-confirmation.service';
 import { MatchLoaderService, type LoadedMatch } from './match-loader.service';
 import { MatchReschedulerService } from './match-rescheduler.service';
+import { DateLinkService } from './date-link.service';
 
 function slot(userId: string, day: string, timeSlot: string) {
   return { userId, date: new Date(`${day}T00:00:00Z`), timeSlot };
@@ -66,18 +67,27 @@ function setup(match: LoadedMatch | null = completedMatch()) {
   const rescheduler = {
     handleNoOverlap: jest.fn().mockResolvedValue('nudged'),
   };
+  const dateLinks = {
+    urlFor: jest
+      .fn()
+      .mockImplementation((_matchId: string, userId: string) =>
+        Promise.resolve(`https://mourly.com/cita/token-${userId}`),
+      ),
+  };
 
   const service = new MatchConfirmationService(
     prisma,
     loader as unknown as MatchLoaderService,
     notifications as unknown as NotificationsService,
     rescheduler as unknown as MatchReschedulerService,
+    dateLinks as unknown as DateLinkService,
   );
   return {
     service,
     loader,
     notifications,
     rescheduler,
+    dateLinks,
     dateCreate,
     matchUpdate,
   };
@@ -132,6 +142,34 @@ describe('MatchConfirmationService', () => {
       (call: [{ partnerName: string }]) => call[0].partnerName,
     );
     expect(names.sort()).toEqual(['Ana', 'Beto']);
+  });
+
+  it('sends each user their own link to the date page', async () => {
+    const { service, notifications, dateLinks } = setup();
+
+    await service.tryConfirm('m1');
+
+    const urls = notifications.send.mock.calls.map(
+      (call: [{ dateUrl: string | null }]) => call[0].dateUrl,
+    );
+    expect(urls.sort()).toEqual([
+      'https://mourly.com/cita/token-a',
+      'https://mourly.com/cita/token-b',
+    ]);
+    expect(dateLinks.urlFor).toHaveBeenCalledWith(
+      'm1',
+      'a',
+      new Date('2026-07-10T20:00:00Z'),
+    );
+  });
+
+  it('still announces the date when a link cannot be issued', async () => {
+    const { service, notifications, dateLinks } = setup();
+    dateLinks.urlFor.mockResolvedValue(null);
+
+    expect(await service.tryConfirm('m1')).toBe('confirmed');
+    expect(notifications.send).toHaveBeenCalledTimes(2);
+    expect(notifications.send.mock.calls[0][0].dateUrl).toBeNull();
   });
 
   it('reports already_scheduled when a concurrent confirm wins', async () => {

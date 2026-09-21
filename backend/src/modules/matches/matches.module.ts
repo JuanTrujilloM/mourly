@@ -18,6 +18,9 @@ import { MatchTimeoutService } from './match-timeout.service';
 import { WeeklyMatchingService } from './weekly-matching.service';
 import { CandidateLoaderService } from './candidate-loader.service';
 import { MatchHistoryService } from './match-history.service';
+import { DateLinkService } from './date-link.service';
+import { DateViewService } from './date-view.service';
+import { DateViewController } from './date-view.controller';
 
 @Module({
   imports: [
@@ -27,7 +30,7 @@ import { MatchHistoryService } from './match-history.service';
     NotificationsModule,
     SchedulingModule,
   ],
-  controllers: [MatchesController],
+  controllers: [MatchesController, DateViewController],
   providers: [
     MatchesService,
     VenueSelectionService,
@@ -42,6 +45,8 @@ import { MatchHistoryService } from './match-history.service';
     WeeklyMatchingService,
     CandidateLoaderService,
     MatchHistoryService,
+    DateLinkService,
+    DateViewService,
   ],
   exports: [
     MatchesService,

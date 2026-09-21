@@ -3,6 +3,7 @@ import { PrismaService } from '../../config/prisma.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MatchLoaderService, type LoadedMatch } from './match-loader.service';
 import { MatchReschedulerService } from './match-rescheduler.service';
+import { DateLinkService } from './date-link.service';
 import { nameOf, recipientOf } from './match-recipients';
 import {
   bothCompleted,
@@ -25,6 +26,7 @@ export class MatchConfirmationService {
     private readonly loader: MatchLoaderService,
     private readonly notifications: NotificationsService,
     private readonly rescheduler: MatchReschedulerService,
+    private readonly dateLinks: DateLinkService,
   ) {}
 
   async tryConfirm(matchId: string): Promise<ConfirmResult> {
@@ -83,7 +85,7 @@ export class MatchConfirmationService {
       [
         [match.userA, match.userB],
         [match.userB, match.userA],
-      ].map(([user, partner]) =>
+      ].map(async ([user, partner]) =>
         this.notifications.send({
           kind: 'date_proposal',
           recipient: recipientOf(user),
@@ -91,6 +93,11 @@ export class MatchConfirmationService {
           whenText: slot.label,
           venueName: venue.name,
           venueAddress: venue.address,
+          dateUrl: await this.dateLinks.urlFor(
+            match.id,
+            user.id,
+            slot.scheduledAt,
+          ),
         }),
       ),
     );

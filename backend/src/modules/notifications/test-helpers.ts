@@ -23,6 +23,8 @@ export const PARTNER: PartnerSummary = {
 
 export const INVITE_URL = `https://mourly.com/flow/${TOKEN}/places`;
 export const NUDGE_URL = `https://mourly.com/availability/${TOKEN}`;
+// Date links carry a 128-bit token: 22 characters.
+export const DATE_URL = `https://mourly.com/cita/${'d'.repeat(22)}`;
 
 export const ALL_NOTIFICATIONS: Notification[] = [
   {
@@ -39,6 +41,7 @@ export const ALL_NOTIFICATIONS: Notification[] = [
     whenText: 'sáb 12 sep · 15:00',
     venueName: 'Café Velvet',
     venueAddress: 'Cra 37 #8A-46',
+    dateUrl: DATE_URL,
   },
   {
     kind: 'more_availability',

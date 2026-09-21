@@ -3,7 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { createHash, randomBytes } from 'crypto';
 import { PrismaService } from '../../config/prisma.service';
 
-export type LinkStep = 'AVAILABILITY' | 'VENUE';
+// VENUE -> AVAILABILITY is the scheduling flow. DATE is the read-only link sent
+// with the confirmation: it only opens the date page and never feeds the flow.
+export type FlowStep = 'AVAILABILITY' | 'VENUE';
+export type LinkStep = FlowStep | 'DATE';
 
 export interface ValidatedLink {
   id: string;
@@ -17,6 +20,10 @@ export type LinkValidation =
   | { status: 'invalid' | 'expired' | 'consumed' };
 
 const DEFAULT_TTL_HOURS = 72;
+const FLOW_TOKEN_BYTES = 32;
+// 128 bits: still brute-force-proof, and 22 characters instead of 43 so the
+// confirmation SMS stays in one GSM-7 segment with the link in it.
+const DATE_TOKEN_BYTES = 16;
 
 @Injectable()
 export class AvailabilityLinkService {
@@ -25,12 +32,37 @@ export class AvailabilityLinkService {
     private readonly config: ConfigService,
   ) {}
 
-  async issueForMatchUser(
+  issueForMatchUser(
     matchId: string,
     userId: string,
-    step: LinkStep = 'VENUE',
+    step: FlowStep = 'VENUE',
   ): Promise<string> {
-    const token = randomBytes(32).toString('base64url');
+    return this.replaceLink(matchId, userId, {
+      step,
+      tokenBytes: FLOW_TOKEN_BYTES,
+      expiresAt: this.computeExpiry(),
+    });
+  }
+
+  // Replaces the (already consumed) flow link: one row per user per match.
+  issueDateLink(
+    matchId: string,
+    userId: string,
+    expiresAt: Date,
+  ): Promise<string> {
+    return this.replaceLink(matchId, userId, {
+      step: 'DATE',
+      tokenBytes: DATE_TOKEN_BYTES,
+      expiresAt,
+    });
+  }
+
+  private async replaceLink(
+    matchId: string,
+    userId: string,
+    link: { step: LinkStep; tokenBytes: number; expiresAt: Date },
+  ): Promise<string> {
+    const token = randomBytes(link.tokenBytes).toString('base64url');
     await this.prisma.availabilityLink.deleteMany({
       where: { matchId, userId },
     });
@@ -38,9 +70,9 @@ export class AvailabilityLinkService {
       data: {
         matchId,
         userId,
-        step,
+        step: link.step,
         tokenHash: this.hash(token),
-        expiresAt: this.computeExpiry(),
+        expiresAt: link.expiresAt,
       },
     });
     return token;
@@ -66,7 +98,7 @@ export class AvailabilityLinkService {
     };
   }
 
-  async setStep(linkId: string, step: LinkStep): Promise<void> {
+  async setStep(linkId: string, step: FlowStep): Promise<void> {
     await this.prisma.availabilityLink.update({
       where: { id: linkId },
       data: { step },
