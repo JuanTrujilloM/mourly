@@ -22,7 +22,7 @@ const REASONS = [
 
 export function WhySection() {
   return (
-    <section className="border-line border-t px-4 py-20 sm:px-6 sm:py-28">
+    <section className="px-4 py-20 sm:px-6 sm:py-28">
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
         <Reveal>
           <p className="label text-ink-3">Por qué Mourly</p>
