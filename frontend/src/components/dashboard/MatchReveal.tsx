@@ -7,7 +7,7 @@ import type { CurrentMatch, MatchPartner } from '@/types/match';
 
 // The one celebration of the week: dot grows (320 ms), name rises (320 ms),
 // the sheet slides in (420 ms). The dot fades as the sheet's momento button
-// arrives so the screen never holds two mandarina elements.
+// arrives so the screen never holds two magenta elements.
 export function MatchReveal({
   match,
   onDone,
@@ -30,11 +30,11 @@ export function MatchReveal({
       role="dialog"
       aria-modal="true"
       aria-label="Tu cita de esta semana"
-      className="noche bg-page text-ink fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden px-7 pb-64 text-center"
+      className="ambient text-ink fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden px-7 pb-64 text-center"
     >
       <span
         aria-hidden
-        className={`bg-mandarina-500 ease-brand h-[18px] w-[18px] rounded-full transition-[transform,opacity] duration-(--dur-slow) motion-reduce:transition-none ${
+        className={`bg-accent ease-brand h-[18px] w-[18px] rounded-full transition-[transform,opacity] duration-(--dur-slow) motion-reduce:transition-none ${
           go ? 'scale-150 opacity-0 delay-[720ms]' : ''
         }`}
         style={go ? { transitionDelay: '0ms, 720ms' } : undefined}
@@ -57,7 +57,7 @@ export function MatchReveal({
       </p>
 
       <div
-        className={`dia bg-page text-ink rounded-t-sheet shadow-elevated ease-brand absolute inset-x-0 bottom-0 px-6 pt-6 pb-8 text-left transition-transform delay-[720ms] duration-[420ms] motion-reduce:transition-none ${
+        className={`dia bg-page border-line text-ink rounded-t-sheet shadow-elevated ease-brand absolute border-t inset-x-0 bottom-0 px-6 pt-6 pb-8 text-left transition-transform delay-[720ms] duration-[420ms] motion-reduce:transition-none ${
           go ? 'translate-y-0' : 'translate-y-full'
         }`}
       >

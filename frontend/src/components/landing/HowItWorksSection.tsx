@@ -23,8 +23,8 @@ const STEPS = [
   },
 ];
 
-// The one night band on the landing: it breaks the run of paper sections, and
-// night is where mandarina may carry text, so the step numbers take the accent.
+// The deeper band on the landing: it breaks the run of sections on the lit
+// ground, and its step numbers take the accent.
 export function HowItWorksSection() {
   return (
     <section

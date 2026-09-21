@@ -28,7 +28,7 @@ export function Modal({
       ref={dialog}
       onClose={onClose}
       aria-label={title}
-      className="bg-surface text-ink rounded-card m-auto w-[min(28rem,calc(100vw-2rem))] p-0 backdrop:bg-black/40"
+      className="bg-surface-solid text-ink border-line rounded-card shadow-elevated m-auto w-[min(28rem,calc(100vw-2rem))] border p-0 backdrop:bg-black/60 backdrop:backdrop-blur-sm"
     >
       <div className="space-y-4 p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4">

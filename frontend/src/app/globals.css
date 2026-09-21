@@ -1,61 +1,77 @@
 @import "tailwindcss";
 
-/* Mourly design tokens v0.1 (approved 2026-09-04).
-   Source of truth: 30-professional/mourly/brand/palette.md and typography.md
-   (mirrored in brand/tokens.css). Rule: no hex outside this file. */
+/* Mourly design tokens v0.2 "Medianoche + Carné" (rebrand 2026-09).
+   Night everywhere: blue graphite ground, glass surfaces, one magenta accent,
+   credential details (mono labels, hologram, guilloche). Rule: no hex outside
+   this file. */
 @theme {
   /* Drop Tailwind's default palette and keyframes so only brand colors and
      brand motion exist as utilities (no emerald-300, no animate-pulse). */
   --color-*: initial;
   --animate-*: initial;
 
-  /* Papel */
-  --color-hueso: #F6F3EA;
-  --color-hueso-card: #FFFDF8;
-  --color-hueso-200: #E9E4D6;
-  --color-niebla: #B5C6BB;
+  /* Noche */
+  --color-medianoche-950: #080A10;
+  --color-medianoche: #0D1017;
+  --color-grafito: #161A25;
+  --color-grafito-2: #1D2230;
 
-  /* Tinta y noche */
-  --color-verde-950: #0A231A;
-  --color-verde-900: #0F2E22;
-  --color-verde-800: #163829;
-  --color-verde-700: #24513D;
-  --color-verde-500: #2F7A55;
-  --color-verde-400: #5DA77E;
-  --color-verde-200: #C9D6CC;
-  --color-verde-100: #DFE9DF;
+  /* Hielo (tinta sobre noche) */
+  --color-hielo: #EEF1F8;
+  --color-hielo-2: #B4BCCD;
+  --color-hielo-3: #8F98AC;
+  --color-blanco: #FFFFFF;
 
-  /* Momento */
-  --color-mandarina-700: #B3431A;
-  --color-mandarina-600: #C94F22;
-  --color-mandarina-500: #F26B3A;
-  --color-mandarina-400: #F98B5E;
-  --color-mandarina-100: #FDE3D8;
+  /* Magenta (el momento). 600 is the only one that carries white text (4.7:1). */
+  --color-magenta-700: #B80D4E;
+  --color-magenta-600: #E0115F;
+  --color-magenta-500: #FF2E7E;
+  --color-magenta-400: #FF6FA6;
+  --color-magenta-300: #FF9CC2;
 
-  /* Neutros y semánticos */
-  --color-gris-600: #5C6862;
-  --color-gris-500: #6E7A72;
-  --color-gris-400: #98A39C;
-  --color-error: #B3261E;
+  /* Holograma: the iridescent trio of the carné. Decoration only. */
+  --color-azul-500: #4062FF;
+  --color-azul-400: #6F8CFF;
+  --color-cian-400: #2BEBEF;
+
+  /* Retrato de relleno: the blurred figures behind the countdown and the
+     waiting carné, until real photography exists. Never shown sharp. */
+  --color-foto-luz: #9FB4FF;
+  --color-foto-fondo: #3D4863;
+  --color-foto-piel: #D2AE9A;
+  --color-foto-piel-2: #BE957C;
+  --color-foto-pelo: #1B1C26;
+  --color-foto-tela: #566079;
+  --color-foto-tela-2: #2A3042;
+  --color-oro-300: #F5E27A;
+
+  /* Semánticos */
+  --color-verde-vivo: #5BE3A0;
+  --color-error: #FF8A80;
+  --color-papel: #F4EFE6;
 
   /* Terceros: color institucional de cada universidad, solo para los sellos
-     de la franja de la landing. EAFIT y UPB salen de sus manuales de
-     identidad (RGB 0/75/133; Pantone 1795 C), CES y EIA de sus sitios.
-     EIA se oscurece desde #21B8D2 para llegar a 3:1 sobre hueso. */
-  --color-u-eafit: #004B85;
-  --color-u-upb: #D22630;
-  --color-u-ces: #1568E0;
-  --color-u-eia: #0E8FA6;
+     de la franja de la landing. Aclarados desde los manuales de identidad
+     (EAFIT #004B85, UPB #D22630, CES #1568E0, EIA #21B8D2) para llegar a 3:1
+     sobre medianoche. */
+  --color-u-eafit: #5B9BE6;
+  --color-u-upb: #FF6B73;
+  --color-u-ces: #6F9DFF;
+  --color-u-eia: #3CC6DE;
 
   /* Tipografía (variables las define next/font en layout.tsx) */
   --font-sans: var(--font-bricolage);
   --font-serif: var(--font-newsreader);
+  --font-mono: var(--font-dm-mono);
 
   /* Forma */
-  --radius-chip-inner: 4px;
-  --radius-input: 12px;
-  --radius-card: 20px;
+  --radius-chip-inner: 6px;
+  --radius-input: 16px;
+  --radius-card: 24px;
   --radius-sheet: 28px;
+
+  /* Top highlight of a glass surface; composes with shadow-* utilities. */
+  --inset-shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
   /* Movimiento */
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -68,54 +84,50 @@
   --default-transition-timing-function: var(--ease);
 }
 
-/* Roles semánticos: día por defecto, noche solo donde se declare
-   (revelación del match, /admin, carteles, la franja "Cómo funciona" de la
-   landing). No es prefers-color-scheme.
-   `.dia` re-declares day inside a night surface (the reveal's sheet). */
+/* Roles semánticos. Surfaces are glass: white at low alpha over the ground, so
+   they need no blur unless content scrolls under them (see `glass-bar`).
+   `.noche` is the deeper band (landing "Cómo funciona", /admin) and `.dia` the
+   raised sheet inside a night overlay (the reveal's sheet): both only move the
+   ground, the rest of the palette holds. */
 :root,
+.noche,
 .dia {
-  --bg: var(--color-hueso);
-  --surface: var(--color-hueso-card);
-  --surface-2: var(--color-hueso-200);
-  --ink: var(--color-verde-900);
-  --ink-2: var(--color-verde-700);
-  --ink-3: var(--color-gris-600);
-  --line: var(--color-verde-200);
-  --accent: var(--color-mandarina-500);
-  --accent-text: var(--color-mandarina-700);
-  --accent-tint: var(--color-mandarina-100);
-  --live: var(--color-verde-500);
-  --btn-bg: var(--color-verde-900);
-  --btn-bg-hover: var(--color-verde-700);
-  --btn-fg: var(--color-hueso);
-  --shadow-sheet: 0 12px 32px -16px rgba(15, 46, 34, 0.35);
+  --bg: var(--color-medianoche);
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-2: rgba(255, 255, 255, 0.11);
+  --surface-solid: var(--color-grafito);
+  --ink: var(--color-hielo);
+  --ink-2: var(--color-hielo-2);
+  --ink-3: var(--color-hielo-3);
+  --line: rgba(255, 255, 255, 0.13);
+  --accent: var(--color-magenta-500);
+  --accent-text: var(--color-magenta-400);
+  --accent-tint: rgba(255, 46, 126, 0.16);
+  --accent-line: rgba(255, 77, 148, 0.55);
+  --live: var(--color-verde-vivo);
+  --btn-bg: var(--color-magenta-600);
+  --btn-bg-hover: var(--color-magenta-700);
+  --btn-fg: var(--color-blanco);
+  --shadow-sheet: 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  --glow: 0 14px 32px -12px rgba(255, 46, 126, 0.75);
 }
 
 .noche {
-  --bg: var(--color-verde-950);
-  --surface: var(--color-verde-800);
-  --surface-2: #1D4433;
-  --ink: var(--color-hueso);
-  --ink-2: var(--color-niebla);
-  --ink-3: #8FA397;
-  --line: #2B5340;
-  --accent: var(--color-mandarina-400);
-  --accent-text: var(--color-mandarina-400);
-  --accent-tint: #3A2A22;
-  --live: var(--color-verde-400);
-  --btn-bg: var(--color-hueso);
-  --btn-bg-hover: var(--color-hueso-200);
-  --btn-fg: var(--color-verde-900);
-  --shadow-sheet: 0 12px 32px -16px rgba(0, 0, 0, 0.6);
+  --bg: var(--color-medianoche-950);
+}
+
+.dia {
+  --bg: var(--color-grafito);
 }
 
 /* Role utilities (bg-page, text-ink, border-line, ...). `inline` makes each
    utility read the role variable at the element, so a `.noche` ancestor swaps
-   the whole palette without a second set of classes. */
+   the ground without a second set of classes. */
 @theme inline {
   --color-page: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-solid: var(--surface-solid);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-ink-3: var(--ink-3);
@@ -123,11 +135,13 @@
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
   --color-accent-tint: var(--accent-tint);
+  --color-accent-line: var(--accent-line);
   --color-live: var(--live);
   --color-btn-bg: var(--btn-bg);
   --color-btn-bg-hover: var(--btn-bg-hover);
   --color-btn-fg: var(--btn-fg);
   --shadow-elevated: var(--shadow-sheet);
+  --shadow-glow: var(--glow);
   --ease-brand: var(--ease);
 }
 
@@ -169,26 +183,80 @@
   line-height: 1.22;
 }
 
-/* Etiqueta: 12 px, mayúsculas, tracking +0.1em. The only uppercase in the UI. */
+/* Etiqueta: the carné's data voice. DM Mono, uppercase, wide tracking. The
+   only uppercase in the UI. */
 @utility label {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.1em;
+  font-family: var(--font-mono), ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-/* The document is paper (día). Night is opted into per surface via .noche. */
-html,
-body {
+/* The ground with its two lights, for full-viewport overlays (splash, reveal).
+   Pages get the same lights from body::before. */
+@utility ambient {
+  background:
+    radial-gradient(60vmax 46vmax at 96% -4%, rgba(255, 46, 126, 0.26), rgba(13, 16, 23, 0) 65%),
+    radial-gradient(70vmax 56vmax at -8% 72%, rgba(64, 98, 255, 0.24), rgba(13, 16, 23, 0) 65%),
+    var(--bg);
+}
+
+/* Blur only where content scrolls underneath: nav, tab bar, sticky save bars,
+   menus. Cards stay plain glass (a blur over a smooth ground paints the same
+   and costs every frame on a mid-range phone). */
+@utility glass-bar {
+  background-color: rgba(13, 16, 23, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* The carné's laminate: an iridescent sheen and the ring of its seal. */
+@utility holo-sheen {
+  background: linear-gradient(
+    115deg,
+    rgba(255, 46, 126, 0) 8%,
+    rgba(255, 46, 126, 0.16) 30%,
+    rgba(64, 98, 255, 0.18) 50%,
+    rgba(43, 235, 239, 0.14) 66%,
+    rgba(43, 235, 239, 0) 86%
+  );
+}
+
+@utility holo-ring {
+  background: conic-gradient(
+    from 210deg,
+    var(--color-magenta-400),
+    var(--color-azul-400),
+    var(--color-cian-400),
+    var(--color-oro-300),
+    var(--color-magenta-400)
+  );
+}
+
+html {
   background-color: var(--bg);
-  color: var(--ink);
+  color-scheme: dark;
 }
 
 body {
+  color: var(--ink);
   font-family: var(--font-sans), "Helvetica Neue", Arial, sans-serif;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Fixed layer instead of background-attachment: iOS Safari scrolls the latter. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vmax 46vmax at 96% -4%, rgba(255, 46, 126, 0.26), rgba(13, 16, 23, 0) 65%),
+    radial-gradient(70vmax 56vmax at -8% 72%, rgba(64, 98, 255, 0.24), rgba(13, 16, 23, 0) 65%);
 }
 
 /* Keyboard focus on actions uses the accent, as in the brand guide. Inputs
@@ -196,7 +264,7 @@ body {
 a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--accent-text);
   outline-offset: 3px;
 }
 
@@ -215,10 +283,10 @@ input[type="range"].brand-range::-webkit-slider-thumb {
   height: 22px;
   width: 22px;
   border-radius: 9999px;
-  background: var(--ink);
-  border: 3px solid var(--surface);
+  background: var(--color-blanco);
+  border: 3px solid var(--color-magenta-600);
   cursor: pointer;
-  box-shadow: 0 0 0 1px var(--ink);
+  box-shadow: 0 0 0 4px var(--accent-tint);
 }
 
 input[type="range"].brand-range::-moz-range-thumb {
@@ -226,8 +294,8 @@ input[type="range"].brand-range::-moz-range-thumb {
   height: 22px;
   width: 22px;
   border-radius: 9999px;
-  background: var(--ink);
-  border: 3px solid var(--surface);
+  background: var(--color-blanco);
+  border: 3px solid var(--color-magenta-600);
   cursor: pointer;
 }
 
@@ -269,6 +337,7 @@ input[type="range"].brand-range::-moz-range-thumb {
   display: block;
   width: min(73vw, 320px);
   height: auto;
+  overflow: visible;
 }
 
 /* The circle sits at cx=0 cy=0 in the markup; offset-path places it. */
@@ -304,18 +373,24 @@ input[type="range"].brand-range::-moz-range-thumb {
 
 /* Countdown */
 
-/* The splash's choreography (mourly-orbit) on the landing countdown. Home is
-   the full stop after the minutes (256, 84); the orbit is the block's box
-   (x 0..264, y 0..121) grown 20 on every side with 40 corners, clockwise, and
-   the curves in and out of home are the splash's scaled to this offset. The
-   cycle is 3.2 s, slower than the loader: this one stays on screen. */
+/* The countdown is a glass card and the dot laps the card's own border. The
+   card is drawn in a 340 x 360 box (corner 32): the percentages below are that
+   corner on each axis, so the CSS border and the orbit path coincide at any
+   width. Home is the full stop after the minutes (294, 234); the curves in and
+   out of home are the splash's, scaled to the 46 units between home and the
+   right edge. 4.6 s keeps the splash's pace on a path 1.6 times longer. */
+.countdown-card {
+  aspect-ratio: 340 / 360;
+  border-radius: 9.41% / 8.89%;
+}
+
 .countdown-dot {
   transform-box: view-box;
   offset-rotate: 0deg;
   offset-path: path(
-    "M 256 84 C 267.2 84 284 68.6 284 84 L 284 101 C 284 123.09 266.09 141 244 141 L 20 141 C -2.09 141 -20 123.09 -20 101 L -20 20 C -20 -2.09 -2.09 -20 20 -20 L 244 -20 C 266.09 -20 284 -2.09 284 20 L 284 84 C 284 102.2 275.6 98 256 84"
+    "M 294 234 C 312.4 234 340 208.7 340 234 L 340 328 C 340 345.67 325.67 360 308 360 L 32 360 C 14.33 360 0 345.67 0 328 L 0 32 C 0 14.33 14.33 0 32 0 L 308 0 C 325.67 0 340 14.33 340 32 L 340 234 C 340 263.9 326.2 257 294 234"
   );
-  animation: mourly-orbit 3.2s infinite both;
+  animation: mourly-orbit 4.6s infinite both;
 }
 
 /* Without offset-path a dot would sit at 0,0; park it at home so the static
@@ -326,7 +401,7 @@ input[type="range"].brand-range::-moz-range-thumb {
   }
 
   .countdown-dot {
-    transform: translate(256px, 84px);
+    transform: translate(294px, 234px);
   }
 }
 
@@ -341,6 +416,6 @@ input[type="range"].brand-range::-moz-range-thumb {
   .countdown-dot {
     animation: none;
     offset-path: none;
-    transform: translate(256px, 84px);
+    transform: translate(294px, 234px);
   }
 }

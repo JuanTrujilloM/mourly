@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Reveal } from '@/components/shared/Reveal';
-import sello from '@/assets/brand/sello-verde.svg';
+import sello from '@/assets/brand/sello-hielo.svg';
 
 const REASONS = [
   {

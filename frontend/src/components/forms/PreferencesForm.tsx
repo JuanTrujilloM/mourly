@@ -36,7 +36,7 @@ export function PreferencesForm({
 
       {rootError && <p className="text-error text-sm">{rootError}</p>}
 
-      <div className="bg-page border-line sticky bottom-0 -mx-5 border-t px-5 py-4 sm:-mx-7 sm:px-7">
+      <div className="glass-bar border-line sticky bottom-0 -mx-5 border-t px-5 py-4 sm:-mx-7 sm:px-7">
         <div className="flex justify-end">
           <Button type="submit" className="w-full sm:w-auto" disabled={isPending}>
             {isPending ? 'Guardando...' : label}

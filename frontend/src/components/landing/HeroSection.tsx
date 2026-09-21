@@ -9,7 +9,7 @@ const WITHOUT = [
 ] as const;
 
 // The headline is the first impression: the section fills the viewport and the
-// countdown stays a quiet aside (beside it on desktop, under it on a phone).
+// countdown card sits beside it on desktop, under it on a phone.
 export function HeroSection() {
   return (
     <section className="flex min-h-svh flex-col justify-center px-4 pt-28 pb-16 sm:px-6 sm:pt-36 sm:pb-24">
@@ -19,13 +19,13 @@ export function HeroSection() {
             Una cita real por semana · Solo con carné
           </p>
 
-          <h1 className="display text-ink mt-5 text-[64px] sm:text-[104px] xl:text-[136px]">
-            Esta semana hay <span className="text-accent-text">alguien</span>{' '}
-            para vos.
+          <h1 className="display text-ink mt-5 text-[64px] sm:text-[104px] xl:text-[128px]">
+            Un parche real{' '}
+            <span className="text-accent-text">cada semana.</span>
           </h1>
 
           <p className="text-ink-2 mt-8 max-w-md text-lg">
-            Una cita real por semana. Nosotros la organizamos.
+            Esta semana hay alguien para vos. Nosotros organizamos la cita.
           </p>
           {/* 22 px keeps the longest word on the "Sin" line at 320 px wide. */}
           <p className="subheading text-ink mt-2 text-[22px] min-[360px]:text-[26px] sm:text-[30px]">
@@ -51,7 +51,7 @@ export function HeroSection() {
           </p>
         </div>
 
-        <MatchCountdown className="w-full max-w-[324px] lg:w-[380px] lg:max-w-none" />
+        <MatchCountdown className="mx-auto mt-6 w-full max-w-[340px] lg:mt-0 lg:w-[380px] lg:max-w-none" />
       </div>
     </section>
   );

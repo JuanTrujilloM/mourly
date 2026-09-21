@@ -19,7 +19,7 @@ export function VerificationCodeField({
         maxLength={6}
         placeholder="••••••"
         aria-label="Código de verificación"
-        className="text-center text-lg tracking-[0.4em] tabular-nums"
+        className="h-16 text-center font-mono text-2xl tracking-[0.5em] tabular-nums"
         hasError={Boolean(error)}
         {...registration}
       />

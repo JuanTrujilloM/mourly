@@ -53,7 +53,7 @@ export function StatusMenu({
       >
         <span
           aria-hidden
-          className={`h-2 w-2 rounded-full ${searching ? 'bg-live' : 'bg-gris-400'}`}
+          className={`h-2 w-2 rounded-full ${searching ? 'bg-live' : 'bg-ink-3'}`}
         />
         {isLoading ? 'Cargando' : searching ? 'Buscando' : 'En pausa'}
         <svg
@@ -74,7 +74,7 @@ export function StatusMenu({
         <div
           role="group"
           aria-label="Búsqueda y sesión"
-          className="border-line bg-surface rounded-input absolute top-full right-0 z-20 mt-2 w-64 border p-2"
+          className="border-line bg-surface-solid rounded-input shadow-elevated absolute top-full right-0 z-20 mt-2 w-64 border p-2"
         >
           <div className="flex items-center justify-between gap-3 px-2 py-2">
             <div>

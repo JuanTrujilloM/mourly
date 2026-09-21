@@ -4,7 +4,7 @@ import type { LegalDocument } from '@/lib/legal/types';
 
 export function LegalPage({ document }: { document: LegalDocument }) {
   return (
-    <div className="bg-page flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col">
       <LandingNavbar />
       <main className="px-4 pt-28 pb-20 sm:px-6 sm:pt-36">
         <article className="mx-auto max-w-2xl">

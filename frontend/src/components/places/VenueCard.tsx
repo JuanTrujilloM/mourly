@@ -16,8 +16,8 @@ export function VenueCard({
       onClick={onToggle}
       className={`rounded-card w-full border p-5 text-left transition ${
         selected
-          ? 'border-ink bg-verde-100'
-          : 'border-line bg-surface hover:border-ink-2'
+          ? 'border-accent-line bg-accent-tint'
+          : 'border-line bg-surface hover:border-ink-3'
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -28,7 +28,7 @@ export function VenueCard({
         <span
           aria-hidden
           className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-            selected ? 'border-ink bg-ink text-page' : 'border-line text-transparent'
+            selected ? 'border-btn-bg bg-btn-bg text-btn-fg' : 'border-line text-transparent'
           }`}
         >
           <svg

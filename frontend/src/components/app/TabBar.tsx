@@ -73,7 +73,7 @@ export function TabBar({
   return (
     <nav
       aria-label="Secciones"
-      className="border-line bg-surface shrink-0 border-t pb-[env(safe-area-inset-bottom)]"
+      className="border-line glass-bar shrink-0 border-t pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="grid grid-cols-3">
         {TABS.map((tab, index) => {
@@ -87,10 +87,16 @@ export function TabBar({
                   event.preventDefault();
                   onSelect(tab.href);
                 }}
-                className={`flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition duration-(--dur-fast) ${
-                  isActive ? 'text-ink' : 'text-ink-3 hover:text-ink-2'
+                className={`relative flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition duration-(--dur-fast) ${
+                  isActive ? 'text-accent-text' : 'text-ink-3 hover:text-ink-2'
                 }`}
               >
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="bg-accent absolute -top-2.5 left-1/2 h-5 w-11 -translate-x-1/2 rounded-full opacity-55 blur-md"
+                  />
+                )}
                 {tab.icon}
                 {tab.label}
               </a>

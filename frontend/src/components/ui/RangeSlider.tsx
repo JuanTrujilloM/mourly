@@ -30,7 +30,7 @@ export function RangeSlider({
       <div className="relative h-6">
         <div className="bg-line absolute top-1/2 h-1.5 w-full -translate-y-1/2 rounded-full" />
         <div
-          className="bg-ink absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full"
+          className="bg-accent absolute top-1/2 h-1.5 -translate-y-1/2 rounded-full"
           style={{
             left: `${toPercent(value.min)}%`,
             right: `${100 - toPercent(value.max)}%`,
