@@ -73,7 +73,7 @@ export function TabBar({
   return (
     <nav
       aria-label="Secciones"
-      className="border-line glass-bar shrink-0 border-t pb-[env(safe-area-inset-bottom)]"
+      className="border-line glass-bar shrink-0 overflow-hidden border-t pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="grid grid-cols-3">
         {TABS.map((tab, index) => {
@@ -87,16 +87,26 @@ export function TabBar({
                   event.preventDefault();
                   onSelect(tab.href);
                 }}
-                className={`relative flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition duration-(--dur-fast) ${
+                className={`relative isolate flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold transition duration-(--dur-fast) ${
                   isActive ? 'text-accent-text' : 'text-ink-3 hover:text-ink-2'
                 }`}
               >
-                {isActive && (
-                  <span
-                    aria-hidden
-                    className="bg-accent absolute -top-2.5 left-1/2 h-5 w-11 -translate-x-1/2 rounded-full opacity-55 blur-md"
-                  />
-                )}
+                {/* A lamp on the bar's top edge: a short line and the light it
+                    throws down, kept behind the icon (-z-10 inside `isolate`)
+                    and inside the bar (the nav clips it). Always mounted so a
+                    tab change fades instead of cutting. */}
+                <span
+                  aria-hidden
+                  className={`from-accent/25 absolute inset-0 -z-10 bg-radial-[70%_95%_at_50%_0%] to-transparent to-70% transition-opacity duration-(--dur-slow) ${
+                    isActive ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+                <span
+                  aria-hidden
+                  className={`bg-accent absolute top-0 left-1/2 -z-10 h-0.5 w-9 -translate-x-1/2 rounded-full transition-opacity duration-(--dur-slow) ${
+                    isActive ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
                 {tab.icon}
                 {tab.label}
               </a>
