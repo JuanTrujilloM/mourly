@@ -8,7 +8,7 @@ export function PausedCard() {
   const { mutate, isPending } = useUpdateAvailability();
 
   return (
-    <section className="bg-surface border-line rounded-card mt-8 border p-6">
+    <section className="bg-surface border-line rounded-card inset-shadow-glass mt-6 border p-6">
       <p className="label text-ink-3">Tu próxima cita</p>
       <p className="subheading text-ink mt-3 text-[22px]">Estás en pausa.</p>
       <p className="text-ink-2 mt-2 text-sm">

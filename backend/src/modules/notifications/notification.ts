@@ -27,6 +27,8 @@ export type Notification =
       whenText: string;
       venueName: string;
       venueAddress: string;
+      // null when the link could not be issued: the date still gets announced.
+      dateUrl: string | null;
     }
   | {
       kind: 'more_availability';

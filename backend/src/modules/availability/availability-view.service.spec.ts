@@ -46,6 +46,18 @@ describe('AvailabilityViewService', () => {
       });
     });
 
+    it('reports a date link as COMPLETED: the flow already ended', async () => {
+      const { viewService, links } = buildAvailabilityHarness();
+      links.validate.mockResolvedValue({
+        status: 'ok',
+        link: { id: 'link-0', matchId: 'm1', userId: 'u1', step: 'DATE' },
+      });
+
+      expect(await viewService.getAvailabilityView('t')).toEqual({
+        step: 'COMPLETED',
+      });
+    });
+
     it('reports a consumed link as COMPLETED instead of an error', async () => {
       const { viewService, links } = buildAvailabilityHarness();
       links.validate.mockResolvedValue({ status: 'consumed' });

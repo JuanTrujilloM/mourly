@@ -24,7 +24,7 @@ export function CalendarHeader({
             type="button"
             onClick={() => onToggleColumn(col)}
             className={`border-line flex flex-col items-center gap-0.5 border-b border-l py-1.5 text-center transition duration-(--dur-fast) ${
-              allSelected ? 'bg-verde-100' : 'hover:bg-surface-2'
+              allSelected ? 'bg-accent-tint' : 'hover:bg-surface-2'
             }`}
           >
             <span className="text-ink-3 text-[10px] font-medium capitalize">

@@ -1,54 +1,9 @@
 import { PrismaService } from '../../config/prisma.service';
-import { NotificationsService } from '../notifications/notifications.service';
 import { MatchConfirmationService } from './match-confirmation.service';
+import { DateAnnouncerService } from './date-announcer.service';
 import { MatchLoaderService, type LoadedMatch } from './match-loader.service';
+import { completedMatch, slot } from './match-confirmation.test-helpers';
 import { MatchReschedulerService } from './match-rescheduler.service';
-
-function slot(userId: string, day: string, timeSlot: string) {
-  return { userId, date: new Date(`${day}T00:00:00Z`), timeSlot };
-}
-
-function completedMatch(overrides: Partial<LoadedMatch> = {}): LoadedMatch {
-  return {
-    id: 'm1',
-    userAId: 'a',
-    userBId: 'b',
-    status: 'pending',
-    scheduleAttempts: 0,
-    date: null,
-    availabilities: [
-      slot('a', '2026-07-10', '15:00'),
-      slot('b', '2026-07-10', '15:00'),
-    ],
-    venueOptions: [
-      {
-        venueId: 'v1',
-        userASelected: true,
-        userBSelected: true,
-        venue: { name: 'Pergamino', address: 'Cra 37' },
-      },
-      {
-        venueId: 'v2',
-        userASelected: true,
-        userBSelected: true,
-        venue: { name: 'Velvet', address: 'Cra 33' },
-      },
-    ],
-    userA: {
-      id: 'a',
-      email: 'a@eafit.edu.co',
-      cellphone: '+1',
-      profile: { name: 'Ana' },
-    },
-    userB: {
-      id: 'b',
-      email: 'b@ces.edu.co',
-      cellphone: '+2',
-      profile: { name: 'Beto' },
-    },
-    ...overrides,
-  };
-}
 
 function setup(match: LoadedMatch | null = completedMatch()) {
   const dateCreate = jest.fn().mockResolvedValue({});
@@ -60,23 +15,20 @@ function setup(match: LoadedMatch | null = completedMatch()) {
   } as unknown as PrismaService;
 
   const loader = { loadById: jest.fn().mockResolvedValue(match) };
-  const notifications = {
-    send: jest.fn().mockResolvedValue(undefined),
-  };
+  const announcer = { announce: jest.fn().mockResolvedValue(undefined) };
   const rescheduler = {
     handleNoOverlap: jest.fn().mockResolvedValue('nudged'),
   };
-
   const service = new MatchConfirmationService(
     prisma,
     loader as unknown as MatchLoaderService,
-    notifications as unknown as NotificationsService,
     rescheduler as unknown as MatchReschedulerService,
+    announcer as unknown as DateAnnouncerService,
   );
   return {
     service,
     loader,
-    notifications,
+    announcer,
     rescheduler,
     dateCreate,
     matchUpdate,
@@ -123,15 +75,19 @@ describe('MatchConfirmationService', () => {
     });
   });
 
-  it('notifies both users with their partner name', async () => {
-    const { service, notifications } = setup();
+  it('announces the date with the slot and the venue', async () => {
+    const { service, announcer } = setup();
 
     await service.tryConfirm('m1');
 
-    const names = notifications.send.mock.calls.map(
-      (call: [{ partnerName: string }]) => call[0].partnerName,
-    );
-    expect(names.sort()).toEqual(['Ana', 'Beto']);
+    const [match, confirmedSlot, venue] = announcer.announce.mock.calls[0] as [
+      LoadedMatch,
+      { label: string },
+      { name: string },
+    ];
+    expect(match.id).toBe('m1');
+    expect(confirmedSlot.label).toContain('15:00');
+    expect(venue.name).toBe('Pergamino');
   });
 
   it('reports already_scheduled when a concurrent confirm wins', async () => {

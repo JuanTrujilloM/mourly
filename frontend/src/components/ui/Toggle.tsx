@@ -28,7 +28,7 @@ export function Toggle({
         }`}
       >
         <span
-          className={`bg-surface inline-block h-3.5 w-3.5 transform rounded-full transition duration-(--dur-fast) ${
+          className={`bg-blanco inline-block h-3.5 w-3.5 transform rounded-full transition duration-(--dur-fast) ${
             checked ? 'translate-x-4' : 'translate-x-1'
           }`}
         />

@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { ShellBackButton } from './ShellBackButton';
 
-// Paper on paper: the page is hueso and, from sm up, the app sits in a
-// hueso-card sheet with a 1 px line. No photo, no blur, no shadow.
+// The ground shows through (its lights come from body::before) and, from sm
+// up, the app sits in a glass sheet with a 1 px line.
 // `app` pins the shell to the viewport so the tabbed shell scrolls per panel
 // (flex-none: as a body flex item, flex-1 would let content override the height).
 // The page scroller carries no bottom padding: sticky bottom-0 pins to the
@@ -13,12 +13,14 @@ export function PhoneShell({
   back,
   backHref,
   center,
+  fill,
   variant = 'page',
 }: {
   children: ReactNode;
   back?: boolean;
   backHref?: string;
   center?: boolean;
+  fill?: boolean;
   variant?: 'page' | 'app';
 }) {
   const showBack = back || Boolean(backHref);
@@ -26,12 +28,12 @@ export function PhoneShell({
 
   return (
     <div
-      className={`bg-page flex w-full flex-col items-center justify-center sm:p-6 ${
+      className={`flex w-full flex-col items-center justify-center sm:p-6 ${
         app ? 'h-[100dvh] flex-none' : 'min-h-[100dvh] flex-1'
       }`}
     >
       <div
-        className={`sm:bg-surface sm:border-line sm:rounded-sheet flex w-full flex-1 flex-col overflow-hidden sm:w-[430px] sm:flex-none sm:border ${
+        className={`sm:bg-surface sm:border-line sm:rounded-sheet sm:inset-shadow-glass flex w-full flex-1 flex-col overflow-hidden sm:w-[430px] sm:flex-none sm:border ${
           app
             ? 'min-h-0 sm:h-[calc(100dvh-3rem)]'
             : 'sm:max-h-[calc(100dvh-3rem)] sm:min-h-[780px]'
@@ -48,7 +50,11 @@ export function PhoneShell({
             )}
             <div
               className={
-                center ? 'flex flex-1 flex-col justify-center' : 'flex-1'
+                center
+                  ? 'flex flex-1 flex-col justify-center'
+                  : fill
+                    ? 'flex flex-1 flex-col'
+                    : 'flex-1'
               }
             >
               {children}

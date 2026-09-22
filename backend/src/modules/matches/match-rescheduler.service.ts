@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../config/prisma.service';
-import { AvailabilityLinkService } from '../availability-link/availability-link.service';
+import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { nameOf, recipientOf } from './match-recipients';
 import type { LoadedMatch } from './match-loader.service';
@@ -19,7 +19,7 @@ export class MatchReschedulerService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
-    private readonly links: AvailabilityLinkService,
+    private readonly links: AvailabilityLinkIssuerService,
     private readonly notifications: NotificationsService,
   ) {}
 

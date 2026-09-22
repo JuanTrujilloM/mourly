@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import sello from '@/assets/brand/sello-verde.svg';
+import sello from '@/assets/brand/sello-hielo.svg';
 
 const LEGAL_LINKS = [
   { label: 'Sobre Mourly', href: '/about' },

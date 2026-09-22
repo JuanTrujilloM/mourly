@@ -71,8 +71,8 @@ export function AvailabilityCalendar({
                   }}
                   className={`border-line h-11 cursor-pointer border-l transition-colors duration-(--dur-fast) ${
                     row === 0 ? '' : 'border-t'
-                  } ${isSelected ? 'bg-verde-100' : 'hover:bg-surface-2 bg-transparent'} ${
-                    inDrag ? 'ring-ink ring-1 ring-inset' : ''
+                  } ${isSelected ? 'bg-accent-tint' : 'hover:bg-surface-2 bg-transparent'} ${
+                    inDrag ? 'ring-accent-text ring-1 ring-inset' : ''
                   }`}
                 />
               );

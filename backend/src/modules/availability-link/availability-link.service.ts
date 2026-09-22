@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { createHash, randomBytes } from 'crypto';
 import { PrismaService } from '../../config/prisma.service';
-
-export type LinkStep = 'AVAILABILITY' | 'VENUE';
+import { hashToken, type FlowStep, type LinkStep } from './link-token';
 
 export interface ValidatedLink {
   id: string;
@@ -16,39 +13,13 @@ export type LinkValidation =
   | { status: 'ok'; link: ValidatedLink }
   | { status: 'invalid' | 'expired' | 'consumed' };
 
-const DEFAULT_TTL_HOURS = 72;
-
 @Injectable()
 export class AvailabilityLinkService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
-  ) {}
-
-  async issueForMatchUser(
-    matchId: string,
-    userId: string,
-    step: LinkStep = 'VENUE',
-  ): Promise<string> {
-    const token = randomBytes(32).toString('base64url');
-    await this.prisma.availabilityLink.deleteMany({
-      where: { matchId, userId },
-    });
-    await this.prisma.availabilityLink.create({
-      data: {
-        matchId,
-        userId,
-        step,
-        tokenHash: this.hash(token),
-        expiresAt: this.computeExpiry(),
-      },
-    });
-    return token;
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
   async validate(token: string): Promise<LinkValidation> {
     const record = await this.prisma.availabilityLink.findUnique({
-      where: { tokenHash: this.hash(token) },
+      where: { tokenHash: hashToken(token) },
     });
 
     if (!record) return { status: 'invalid' };
@@ -66,7 +37,7 @@ export class AvailabilityLinkService {
     };
   }
 
-  async setStep(linkId: string, step: LinkStep): Promise<void> {
+  async setStep(linkId: string, step: FlowStep): Promise<void> {
     await this.prisma.availabilityLink.update({
       where: { id: linkId },
       data: { step },
@@ -78,20 +49,5 @@ export class AvailabilityLinkService {
       where: { id: linkId, consumedAt: null },
       data: { consumedAt: new Date() },
     });
-  }
-
-  private hash(token: string): string {
-    return createHash('sha256').update(token).digest('hex');
-  }
-
-  ttlHours(): number {
-    return Number(
-      this.config.get<string>('AVAILABILITY_LINK_TTL_HOURS') ??
-        DEFAULT_TTL_HOURS,
-    );
-  }
-
-  private computeExpiry(): Date {
-    return new Date(Date.now() + this.ttlHours() * 60 * 60 * 1000);
   }
 }

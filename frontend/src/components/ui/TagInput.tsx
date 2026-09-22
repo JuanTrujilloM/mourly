@@ -51,7 +51,7 @@ export function TagInput({
         {value.map((tag) => (
           <span
             key={tag}
-            className="bg-ink text-page flex h-7 items-center gap-1.5 rounded-full px-3 text-[13.5px] font-[550]"
+            className="border-accent-line bg-accent-tint text-magenta-300 flex h-7 items-center gap-1.5 rounded-[10px] border px-2.5 text-[13.5px] font-[550]"
           >
             {tag}
             <button
@@ -69,7 +69,7 @@ export function TagInput({
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={onKeyDown}
           placeholder={value.length ? '' : placeholder}
-          className="text-ink placeholder:text-gris-500 min-w-[8rem] flex-1 bg-transparent py-1 text-[15px] outline-none"
+          className="text-ink placeholder:text-ink-3 min-w-[8rem] flex-1 bg-transparent py-1 text-[15px] outline-none"
         />
       </div>
 
@@ -80,7 +80,7 @@ export function TagInput({
               key={suggestion}
               type="button"
               onClick={() => addTag(suggestion)}
-              className="border-line text-ink-2 hover:border-ink hover:text-ink rounded-full border px-3 py-1 text-xs transition duration-(--dur-fast)"
+              className="border-line text-ink-2 hover:border-ink-3 hover:text-ink rounded-[10px] border px-3 py-1 text-xs transition duration-(--dur-fast)"
             >
               + {suggestion}
             </button>

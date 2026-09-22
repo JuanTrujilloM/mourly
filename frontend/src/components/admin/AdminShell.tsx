@@ -72,7 +72,7 @@ export function AdminShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="border-line bg-page sticky top-0 z-10 flex items-center justify-between gap-4 border-b px-8 py-4">
+        <header className="border-line glass-bar sticky top-0 z-10 flex items-center justify-between gap-4 border-b px-8 py-4">
           <h2 className="subheading text-ink text-[22px]">
             {current?.label ?? 'Panel'}
           </h2>

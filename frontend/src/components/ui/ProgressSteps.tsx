@@ -20,7 +20,7 @@ export function ProgressSteps({
           <span
             key={index}
             className={`h-1 flex-1 rounded-full transition ${
-              index < current ? 'bg-ink' : 'bg-line'
+              index < current ? 'bg-accent' : 'bg-line'
             }`}
           />
         ))}
