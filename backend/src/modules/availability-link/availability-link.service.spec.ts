@@ -1,4 +1,3 @@
-import { ConfigService } from '@nestjs/config';
 import { createHash } from 'crypto';
 import { PrismaService } from '../../config/prisma.service';
 import { AvailabilityLinkService } from './availability-link.service';
@@ -7,22 +6,16 @@ function sha256(value: string): string {
   return createHash('sha256').update(value).digest('hex');
 }
 
-function setup(env: Record<string, string> = {}) {
-  const create = jest.fn().mockResolvedValue({ id: 'link-1' });
-  const deleteMany = jest.fn().mockResolvedValue({ count: 0 });
+function setup() {
   const findUnique = jest.fn().mockResolvedValue(null);
   const update = jest.fn().mockResolvedValue({});
   const updateMany = jest.fn().mockResolvedValue({ count: 1 });
-
   const prisma = {
-    availabilityLink: { create, deleteMany, findUnique, update, updateMany },
+    availabilityLink: { findUnique, update, updateMany },
   } as unknown as PrismaService;
-  const config = { get: (key: string) => env[key] } as unknown as ConfigService;
 
   return {
-    service: new AvailabilityLinkService(prisma, config),
-    create,
-    deleteMany,
+    service: new AvailabilityLinkService(prisma),
     findUnique,
     update,
     updateMany,
@@ -42,78 +35,6 @@ function storedLink(overrides: Record<string, unknown> = {}) {
 }
 
 describe('AvailabilityLinkService', () => {
-  describe('issueDateLink', () => {
-    const EXPIRES_AT = new Date('2026-09-23T17:00:00Z');
-
-    it('issues a DATE link that lives until the given moment', async () => {
-      const { service, create } = setup();
-
-      await service.issueDateLink('m1', 'u1', EXPIRES_AT);
-
-      expect(create.mock.calls[0][0].data).toMatchObject({
-        matchId: 'm1',
-        userId: 'u1',
-        step: 'DATE',
-        expiresAt: EXPIRES_AT,
-      });
-    });
-
-    it('uses a 22-character token and stores only its hash', async () => {
-      const { service, create } = setup();
-
-      const token = await service.issueDateLink('m1', 'u1', EXPIRES_AT);
-
-      expect(token).toHaveLength(22);
-      expect(create.mock.calls[0][0].data.tokenHash).toBe(sha256(token));
-    });
-
-    it('replaces the flow link of the same match and user', async () => {
-      const { service, deleteMany } = setup();
-
-      await service.issueDateLink('m1', 'u1', EXPIRES_AT);
-
-      expect(deleteMany).toHaveBeenCalledWith({
-        where: { matchId: 'm1', userId: 'u1' },
-      });
-    });
-  });
-
-  describe('issueForMatchUser', () => {
-    it('replaces any previous link for the same match and user', async () => {
-      const { service, deleteMany } = setup();
-
-      await service.issueForMatchUser('m1', 'u1');
-
-      expect(deleteMany).toHaveBeenCalledWith({
-        where: { matchId: 'm1', userId: 'u1' },
-      });
-    });
-
-    it('stores only the token hash', async () => {
-      const { service, create } = setup();
-
-      const token = await service.issueForMatchUser('m1', 'u1');
-
-      expect(create.mock.calls[0][0].data.tokenHash).toBe(sha256(token));
-    });
-
-    it('starts at the venue step by default', async () => {
-      const { service, create } = setup();
-
-      await service.issueForMatchUser('m1', 'u1');
-
-      expect(create.mock.calls[0][0].data.step).toBe('VENUE');
-    });
-
-    it('can be issued straight at the availability step', async () => {
-      const { service, create } = setup();
-
-      await service.issueForMatchUser('m1', 'u1', 'AVAILABILITY');
-
-      expect(create.mock.calls[0][0].data.step).toBe('AVAILABILITY');
-    });
-  });
-
   describe('validate', () => {
     it('reports an unknown token as invalid', async () => {
       const { service } = setup();
@@ -155,42 +76,6 @@ describe('AvailabilityLinkService', () => {
       expect(findUnique).toHaveBeenCalledWith({
         where: { tokenHash: sha256('t') },
       });
-    });
-  });
-
-  describe('step and consumption', () => {
-    it('advances the link to the next step', async () => {
-      const { service, update } = setup();
-
-      await service.setStep('link-1', 'AVAILABILITY');
-
-      expect(update).toHaveBeenCalledWith({
-        where: { id: 'link-1' },
-        data: { step: 'AVAILABILITY' },
-      });
-    });
-
-    it('consumes only a link that is still open', async () => {
-      const { service, updateMany } = setup();
-
-      await service.consume('link-1');
-
-      expect(updateMany).toHaveBeenCalledWith({
-        where: { id: 'link-1', consumedAt: null },
-        data: { consumedAt: expect.any(Date) as Date },
-      });
-    });
-  });
-
-  describe('ttlHours', () => {
-    it('defaults to 72 hours', () => {
-      expect(setup().service.ttlHours()).toBe(72);
-    });
-
-    it('honors the configured value', () => {
-      expect(
-        setup({ AVAILABILITY_LINK_TTL_HOURS: '24' }).service.ttlHours(),
-      ).toBe(24);
     });
   });
 });

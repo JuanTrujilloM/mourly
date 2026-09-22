@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AvailabilityLinkService } from '../availability-link/availability-link.service';
+import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
 
 const DEFAULT_FRONTEND_URL = 'http://localhost:3000';
 // The page stays open a day after the date, then the link dies with it.
@@ -13,7 +13,7 @@ export class DateLinkService {
 
   constructor(
     private readonly config: ConfigService,
-    private readonly links: AvailabilityLinkService,
+    private readonly links: AvailabilityLinkIssuerService,
   ) {}
 
   // null instead of throwing: a date that is already saved must still be

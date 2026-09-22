@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AvailabilityLinkService } from '../availability-link/availability-link.service';
+import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
 import { DateLinkService } from './date-link.service';
 
 const SCHEDULED_AT = new Date('2026-09-22T17:00:00Z');
@@ -10,7 +10,7 @@ function setup(env: Record<string, string> = {}) {
   const config = { get: (key: string) => env[key] } as unknown as ConfigService;
   const service = new DateLinkService(
     config,
-    links as unknown as AvailabilityLinkService,
+    links as unknown as AvailabilityLinkIssuerService,
   );
   return { service, links };
 }

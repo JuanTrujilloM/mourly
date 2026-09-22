@@ -18,6 +18,7 @@ import { MatchTimeoutService } from './match-timeout.service';
 import { WeeklyMatchingService } from './weekly-matching.service';
 import { CandidateLoaderService } from './candidate-loader.service';
 import { MatchHistoryService } from './match-history.service';
+import { DateAnnouncerService } from './date-announcer.service';
 import { DateLinkService } from './date-link.service';
 import { DateViewService } from './date-view.service';
 import { DateViewController } from './date-view.controller';
@@ -46,6 +47,7 @@ import { DateViewController } from './date-view.controller';
     CandidateLoaderService,
     MatchHistoryService,
     DateLinkService,
+    DateAnnouncerService,
     DateViewService,
   ],
   exports: [

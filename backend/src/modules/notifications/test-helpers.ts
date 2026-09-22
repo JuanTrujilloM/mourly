@@ -6,6 +6,9 @@ import type {
 } from './notification';
 
 const TOKEN = 't'.repeat(43);
+// Mirror of FRONTEND_URL in production: the www costs four characters that the
+// one-segment budget has to hold.
+const APP_ORIGIN = 'https://www.mourly.com';
 
 export const RECIPIENT: Recipient = {
   name: 'Ana',
@@ -21,10 +24,10 @@ export const PARTNER: PartnerSummary = {
   photoUrl: 'https://cdn/b.jpg',
 };
 
-export const INVITE_URL = `https://mourly.com/flow/${TOKEN}/places`;
-export const NUDGE_URL = `https://mourly.com/availability/${TOKEN}`;
+export const INVITE_URL = `${APP_ORIGIN}/flow/${TOKEN}/places`;
+export const NUDGE_URL = `${APP_ORIGIN}/availability/${TOKEN}`;
 // Date links carry a 128-bit token: 22 characters.
-export const DATE_URL = `https://mourly.com/cita/${'d'.repeat(22)}`;
+export const DATE_URL = `${APP_ORIGIN}/cita/${'d'.repeat(22)}`;
 
 export const ALL_NOTIFICATIONS: Notification[] = [
   {

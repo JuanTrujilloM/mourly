@@ -1,7 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../config/prisma.service';
-import { AvailabilityLinkService } from '../availability-link/availability-link.service';
+import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MatchInviteService } from './match-invite.service';
 
@@ -54,7 +54,7 @@ function setup(env: Record<string, string> = {}) {
   const service = new MatchInviteService(
     prisma,
     config,
-    links as unknown as AvailabilityLinkService,
+    links as unknown as AvailabilityLinkIssuerService,
     notifications as unknown as NotificationsService,
   );
   return { service, findUnique, findFirst, links, notifications };

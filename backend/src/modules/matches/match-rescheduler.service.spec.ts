@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../config/prisma.service';
-import { AvailabilityLinkService } from '../availability-link/availability-link.service';
+import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MatchReschedulerService } from './match-rescheduler.service';
 import type { LoadedMatch } from './match-loader.service';
@@ -44,7 +44,7 @@ function setup(env: Record<string, string> = {}) {
   const service = new MatchReschedulerService(
     prisma,
     config,
-    links as unknown as AvailabilityLinkService,
+    links as unknown as AvailabilityLinkIssuerService,
     notifications as unknown as NotificationsService,
   );
   return { service, update, links, notifications };
