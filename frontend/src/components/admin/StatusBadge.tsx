@@ -1,4 +1,4 @@
-// No mandarina in tables: states read through ink, live green and error only.
+// No magenta in tables: states read through ink, live green and error only.
 type Tone = 'pending' | 'confirmed' | 'live' | 'muted' | 'error';
 
 const tones: Record<Tone, string> = {
@@ -6,7 +6,7 @@ const tones: Record<Tone, string> = {
   confirmed: 'bg-surface-2 text-ink',
   live: 'bg-surface-2 text-live',
   muted: 'bg-surface-2 text-ink-3',
-  error: 'bg-error text-hueso',
+  error: 'bg-error text-medianoche',
 };
 
 const MATCH: Record<string, { label: string; tone: Tone }> = {

@@ -23,9 +23,14 @@ const STEPS = [
   },
 ];
 
+// The deeper band on the landing: it breaks the run of sections on the lit
+// ground, and its step numbers take the accent.
 export function HowItWorksSection() {
   return (
-    <section id="como-funciona" className="px-4 py-20 sm:px-6 sm:py-28">
+    <section
+      id="como-funciona"
+      className="noche bg-page px-4 py-20 sm:px-6 sm:py-28"
+    >
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <p className="label text-ink-3">Cómo funciona</p>
@@ -39,7 +44,7 @@ export function HowItWorksSection() {
             <li key={step.title}>
               <Reveal delay={index * 60}>
                 <div className="border-line border-t pt-6">
-                  <span className="display text-ink block text-[56px] tabular-nums">
+                  <span className="display text-accent-text block text-[56px] tabular-nums">
                     0{index + 1}
                   </span>
                   <h3 className="subheading text-ink mt-4 text-[22px]">

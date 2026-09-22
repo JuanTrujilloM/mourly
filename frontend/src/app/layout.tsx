@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Newsreader } from "next/font/google";
+import { Bricolage_Grotesque, DM_Mono, Newsreader } from "next/font/google";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
@@ -19,6 +19,13 @@ const newsreader = Newsreader({
   axes: ["opsz"],
 });
 
+// The carné's data voice: labels, codes and the machine-readable lines.
+const dmMono = DM_Mono({
+  variable: "--font-dm-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
 export const metadata: Metadata = {
   title: "Mourly — Una cita real por semana, solo con carné",
   description:
@@ -33,9 +40,9 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${bricolage.variable} ${newsreader.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${newsreader.variable} ${dmMono.variable} h-full antialiased`}
     >
-      <body className="bg-page text-ink flex min-h-full flex-col">
+      <body className="text-ink flex min-h-full flex-col">
         <Providers>{children}</Providers>
       </body>
     </html>

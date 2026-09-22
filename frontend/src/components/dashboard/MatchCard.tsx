@@ -1,4 +1,5 @@
 import type { CurrentMatch, MatchPartner } from '@/types/match';
+import { Carne } from './Carne';
 
 const STATUS: Record<string, { label: string; live: boolean }> = {
   pending: { label: 'Por confirmar', live: false },
@@ -6,49 +7,52 @@ const STATUS: Record<string, { label: string; live: boolean }> = {
   completed: { label: 'Cita hecha', live: false },
 };
 
+function Portrait({ partner }: { partner: MatchPartner }) {
+  if (partner.photoUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={partner.photoUrl} alt="" className="h-full w-full object-cover" />
+    );
+  }
+  return (
+    <div
+      aria-hidden
+      className="display text-ink-3 flex h-full w-full items-center justify-center text-[64px]"
+    >
+      {partner.name.charAt(0)}
+    </div>
+  );
+}
+
 export function MatchCard({ match }: { match: CurrentMatch }) {
   const partner = match.partner as MatchPartner;
   const status = STATUS[match.status] ?? { label: match.status, live: false };
 
   return (
-    <section className="bg-surface border-line rounded-card mt-8 border p-6">
-      <div className="flex items-center justify-between gap-3">
-        <span className="label text-ink-3">Tu cita · esta semana</span>
-        {status.live ? (
-          <span className="text-live inline-flex items-center gap-1.5 text-[12.5px] font-semibold">
-            <span aria-hidden className="bg-live h-[7px] w-[7px] rounded-full" />
+    <section className="mt-6">
+      <p className="label text-ink-3 mb-3">Tu cita · esta semana</p>
+
+      <Carne
+        data={partner}
+        photo={<Portrait partner={partner} />}
+        status={
+          <p
+            className={`label flex items-center gap-2 ${
+              status.live ? 'text-live' : 'text-accent-text'
+            }`}
+          >
+            <span
+              aria-hidden
+              className={`h-[7px] w-[7px] rounded-full ${
+                status.live ? 'bg-live' : 'bg-accent'
+              }`}
+            />
             {status.label}
-          </span>
-        ) : (
-          <span className="text-ink-3 text-[12.5px] font-semibold">
-            {status.label}
-          </span>
-        )}
-      </div>
+          </p>
+        }
+      />
 
-      {partner.photoUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={partner.photoUrl}
-          alt=""
-          className="mt-5 h-20 w-20 rounded-full object-cover"
-        />
-      )}
-
-      <p className="human text-ink mt-4 text-[30px]">
-        {partner.name}, {partner.age}
-      </p>
-      <p className="text-ink-2 mt-1 text-sm">
-        {partner.major} · {partner.university}
-      </p>
-
-      {partner.biography && (
-        <p className="human text-ink-2 mt-4 text-[18px]">
-          “{partner.biography}”
-        </p>
-      )}
-
-      <p className="text-ink-3 mt-5 text-sm">
+      <p className="bg-papel text-medianoche mt-4 inline-block -rotate-1 rounded-[3px] px-3.5 py-2.5 font-mono text-xs leading-relaxed shadow-elevated">
         Te escribimos por SMS para cuadrar día, hora y lugar.
       </p>
     </section>

@@ -49,7 +49,7 @@ export function SelectPill({ label, on }: { label: string; on: boolean }) {
   return (
     <span
       className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold ${
-        on ? 'bg-ink text-page' : 'bg-surface-2 text-ink-3'
+        on ? 'bg-accent-tint text-magenta-300' : 'bg-surface-2 text-ink-3'
       }`}
       title={on ? 'Seleccionado' : 'No seleccionado'}
     >
@@ -68,10 +68,10 @@ export function Stars({ rating }: { rating: number }) {
   );
 }
 
-// Errors in night sit on the error fill: error red as text fails on verde-950.
+// Errors sit on the error fill with dark text: the light red carries no white.
 export function ErrorNote({ children }: { children: ReactNode }) {
   return (
-    <p className="bg-error text-hueso rounded-input inline-block px-3 py-2 text-sm">
+    <p className="bg-error text-medianoche rounded-input inline-block px-3 py-2 text-sm">
       {children}
     </p>
   );

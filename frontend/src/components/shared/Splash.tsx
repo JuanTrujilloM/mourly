@@ -9,7 +9,8 @@ const FADE_FALLBACK_MS = 400;
 
 // Same outlines as the Logo, minus its circle: the dot here starts at 0,0 and
 // offset-path (globals.css, "Splash") laps it around the word back to its home
-// at 476.2,-18, so the resting frame is wordmark-verde.svg exactly. One dot.
+// at 476.2,-18, so the resting frame is the wordmark exactly. One dot. The
+// circle is 45 wide but only its inner 18 is solid: the rest is its halo.
 function SplashMark() {
   return (
     <svg
@@ -18,8 +19,21 @@ function SplashMark() {
       aria-label="mourly"
       className="splash"
     >
+      <defs>
+        <radialGradient id="splash-dot-halo">
+          <stop offset="0.4" stopColor="var(--accent)" />
+          <stop offset="0.43" stopColor="var(--accent)" stopOpacity="0.42" />
+          <stop offset="1" stopColor="var(--accent)" stopOpacity="0" />
+        </radialGradient>
+      </defs>
       <path d={WORDMARK_PATH} className="fill-ink" />
-      <circle className="splash-dot fill-accent" cx="0" cy="0" r="18" />
+      <circle
+        className="splash-dot"
+        fill="url(#splash-dot-halo)"
+        cx="0"
+        cy="0"
+        r="45"
+      />
     </svg>
   );
 }
@@ -39,7 +53,7 @@ export function Splash({
       role="status"
       aria-label={label}
       onTransitionEnd={onTransitionEnd}
-      className={`bg-page fixed inset-0 z-50 flex items-center justify-center transition-opacity ${
+      className={`ambient fixed inset-0 z-50 flex items-center justify-center transition-opacity ${
         fading ? 'opacity-0' : 'opacity-100'
       }`}
     >

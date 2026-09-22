@@ -3,6 +3,27 @@ import type { Notification } from './notification';
 
 const BRAND_PREFIX = 'Mourly:';
 
+// With the link the copy is cut to the facts so both still fit one segment;
+// "Mirala" carries no accent on purpose (á is outside GSM-7).
+function dateConfirmedMessage(
+  notification: Extract<Notification, { kind: 'date_proposal' }>,
+): string {
+  const partner = toGsmText(notification.partnerName);
+  const when = toGsmText(notification.whenText);
+  const venue = toGsmText(notification.venueName);
+
+  if (!notification.dateUrl) {
+    return (
+      `${BRAND_PREFIX} coincidieron con ${partner}. ` +
+      `Cita confirmada: ${when} en ${venue}. ¡Que la disfruten!`
+    );
+  }
+  return (
+    `${BRAND_PREFIX} cita confirmada con ${partner}: ${when} en ${venue}. ` +
+    `Mirala: ${notification.dateUrl}`
+  );
+}
+
 export function smsMessageFor(notification: Notification): string {
   switch (notification.kind) {
     case 'match_invite':
@@ -12,11 +33,7 @@ export function smsMessageFor(notification: Notification): string {
         `Escogé lugares y horarios: ${notification.availabilityUrl}`
       );
     case 'date_proposal':
-      return (
-        `${BRAND_PREFIX} coincidieron con ${toGsmText(notification.partnerName)}. ` +
-        `Cita confirmada: ${toGsmText(notification.whenText)} en ` +
-        `${toGsmText(notification.venueName)}. ¡Que la disfruten!`
-      );
+      return dateConfirmedMessage(notification);
     case 'more_availability':
       return (
         `${BRAND_PREFIX} tus horarios no cuadraron con ` +

@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
-import { NotificationsService } from '../notifications/notifications.service';
 import { MatchLoaderService, type LoadedMatch } from './match-loader.service';
 import { MatchReschedulerService } from './match-rescheduler.service';
-import { nameOf, recipientOf } from './match-recipients';
+import { DateAnnouncerService } from './date-announcer.service';
 import {
   bothCompleted,
   commonVenueId,
@@ -23,8 +22,8 @@ export class MatchConfirmationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly loader: MatchLoaderService,
-    private readonly notifications: NotificationsService,
     private readonly rescheduler: MatchReschedulerService,
+    private readonly announcer: DateAnnouncerService,
   ) {}
 
   async tryConfirm(matchId: string): Promise<ConfirmResult> {
@@ -70,29 +69,7 @@ export class MatchConfirmationService {
       return 'already_scheduled';
     }
 
-    await this.announce(match, slot, venueById(match, venueId));
+    await this.announcer.announce(match, slot, venueById(match, venueId));
     return 'confirmed';
-  }
-
-  private announce(
-    match: LoadedMatch,
-    slot: CommonSlot,
-    venue: { name: string; address: string },
-  ): Promise<unknown> {
-    return Promise.all(
-      [
-        [match.userA, match.userB],
-        [match.userB, match.userA],
-      ].map(([user, partner]) =>
-        this.notifications.send({
-          kind: 'date_proposal',
-          recipient: recipientOf(user),
-          partnerName: nameOf(partner),
-          whenText: slot.label,
-          venueName: venue.name,
-          venueAddress: venue.address,
-        }),
-      ),
-    );
   }
 }

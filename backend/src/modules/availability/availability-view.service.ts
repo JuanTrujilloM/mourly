@@ -16,7 +16,8 @@ export class AvailabilityViewService {
 
   async getAvailabilityView(token: string) {
     const link = await this.resolver.resolveForView(token);
-    if (!link) {
+    // A DATE link means the flow already ended in a confirmed date.
+    if (!link || link.step === 'DATE') {
       return { step: 'COMPLETED' as const };
     }
     if (link.step === 'VENUE') {

@@ -1,6 +1,7 @@
 import { smsMessageFor } from './sms-messages';
 import {
   ALL_NOTIFICATIONS,
+  DATE_URL,
   INVITE_URL,
   NUDGE_URL,
   PARTNER,
@@ -55,6 +56,33 @@ describe('smsMessageFor', () => {
     expect(message).toContain('Sofia Gomez');
     expect(message).toContain('sab 12 sep - 15:00');
     expect(message).toContain('Café Velvet');
+  });
+
+  it('keeps the date link verbatim', () => {
+    expect(smsMessageFor(notificationOf('date_proposal'))).toContain(DATE_URL);
+  });
+
+  it('still fits the confirmation with a long name and venue', () => {
+    const message = smsMessageFor({
+      ...notificationOf('date_proposal'),
+      partnerName: 'Mateo Jaramillo',
+      whenText: 'mar 22 sep · 12:00',
+      venueName: 'Crepes & Waffles Las Vegas',
+    });
+
+    expect(message.length).toBeLessThanOrEqual(SINGLE_SEGMENT);
+    expect(message).toMatch(GSM7_ALPHABET);
+  });
+
+  it('announces the date without a link when none could be issued', () => {
+    const message = smsMessageFor({
+      ...notificationOf('date_proposal'),
+      dateUrl: null,
+    });
+
+    expect(message).toContain('Cita confirmada: sab 12 sep - 15:00');
+    expect(message).not.toContain('http');
+    expect(message.length).toBeLessThanOrEqual(SINGLE_SEGMENT);
   });
 
   it('still fits the invite with a long name', () => {

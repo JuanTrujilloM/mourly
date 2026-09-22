@@ -9,6 +9,8 @@ model AvailabilityLink {
   tokenHash  String    @unique // sha256 of the opaque token — 256-bit, so a fast deterministic hash is safe and keeps lookups O(1)
   // Which step the holder is on: VENUE -> AVAILABILITY. consumedAt closes the flow.
   // Nudge links are issued directly at AVAILABILITY (venues already chosen).
+  // DATE is the read-only link sent with the confirmation (128-bit token, lives
+  // until a day after the date): it opens the date page and nothing else.
   step       String    @default("VENUE")
   expiresAt  DateTime
   consumedAt DateTime? // set when availability submission finishes; a consumed link reads as "already used"

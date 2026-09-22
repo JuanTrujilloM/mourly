@@ -18,7 +18,7 @@ export function LandingNavbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b transition ${
-        scrolled ? 'bg-page border-line' : 'border-transparent'
+        scrolled ? 'glass-bar border-line' : 'border-transparent'
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
