@@ -9,8 +9,10 @@ type PartnerProfile = {
   photos: { url: string; isPrimary: boolean }[];
 } | null;
 
+export const UNKNOWN_PARTNER_NAME = 'tu match';
+
 const UNKNOWN_PARTNER: PartnerSummary = {
-  name: 'tu match',
+  name: UNKNOWN_PARTNER_NAME,
   age: null,
   university: null,
   major: null,

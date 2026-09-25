@@ -1,4 +1,6 @@
+import { firstName } from '../../common/utils/first-name';
 import { toGsmText } from './gsm-text';
+import { UNKNOWN_PARTNER_NAME } from './partner-summary';
 import type { Notification } from './notification';
 
 const BRAND_PREFIX = 'Mourly:';
@@ -24,14 +26,30 @@ function dateConfirmedMessage(
   );
 }
 
+// The link opens the partner's profile, so the SMS only has to make them
+// someone: first name and university, never the surname. "Conocé" keeps its
+// accent: é is inside GSM-7.
+function matchInviteMessage(
+  notification: Extract<Notification, { kind: 'match_invite' }>,
+): string {
+  const { partner } = notification;
+  const name =
+    partner.name === UNKNOWN_PARTNER_NAME
+      ? partner.name
+      : toGsmText(firstName(partner.name));
+  const from = partner.university
+    ? `, de ${toGsmText(partner.university)}`
+    : '';
+  return (
+    `${BRAND_PREFIX} esta semana hay alguien para vos. ` +
+    `Conocé a ${name}${from}: ${notification.availabilityUrl}`
+  );
+}
+
 export function smsMessageFor(notification: Notification): string {
   switch (notification.kind) {
     case 'match_invite':
-      return (
-        `${BRAND_PREFIX} tenés match esta semana con ` +
-        `${toGsmText(notification.partner.name)}. ` +
-        `Escogé lugares y horarios: ${notification.availabilityUrl}`
-      );
+      return matchInviteMessage(notification);
     case 'date_proposal':
       return dateConfirmedMessage(notification);
     case 'more_availability':

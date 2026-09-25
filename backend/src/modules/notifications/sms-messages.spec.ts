@@ -1,3 +1,4 @@
+import { UNKNOWN_PARTNER_NAME } from './partner-summary';
 import { smsMessageFor } from './sms-messages';
 import {
   ALL_NOTIFICATIONS,
@@ -85,13 +86,45 @@ describe('smsMessageFor', () => {
     expect(message.length).toBeLessThanOrEqual(SINGLE_SEGMENT);
   });
 
-  it('still fits the invite with a long name', () => {
+  it('invites to meet the partner by first name and university', () => {
+    const message = smsMessageFor(notificationOf('match_invite'));
+
+    expect(message).toBe(
+      `Mourly: esta semana hay alguien para vos. Conocé a Sofia, de CES: ${INVITE_URL}`,
+    );
+  });
+
+  it('leaves the university out when it is unknown', () => {
     const message = smsMessageFor({
       ...notificationOf('match_invite'),
-      partner: { ...PARTNER, name: 'Maria Alejandra' },
+      partner: { ...PARTNER, university: null },
+    });
+
+    expect(message).toContain(`Conocé a Sofia: ${INVITE_URL}`);
+  });
+
+  it('keeps "tu match" whole when the partner has no profile', () => {
+    const message = smsMessageFor({
+      ...notificationOf('match_invite'),
+      partner: { ...PARTNER, name: UNKNOWN_PARTNER_NAME, university: null },
+    });
+
+    expect(message).toContain(`Conocé a tu match: ${INVITE_URL}`);
+  });
+
+  it('still fits the invite with a long first name and university', () => {
+    const message = smsMessageFor({
+      ...notificationOf('match_invite'),
+      partner: {
+        ...PARTNER,
+        name: 'Maximiliano Andrés Restrepo',
+        university: 'Javeriana de Cali',
+      },
     });
 
     expect(message.length).toBeLessThanOrEqual(SINGLE_SEGMENT);
+    expect(message).toMatch(GSM7_ALPHABET);
+    expect(message).not.toContain('Restrepo');
   });
 
   it('still fits the reminder with a long name and venue', () => {
