@@ -31,3 +31,9 @@ export function formatDateTime(value: string | Date): string {
     minute: '2-digit',
   }).format(new Date(value));
 }
+
+// "7" -> "7.º sem."; a value that is not a plain number is shown as stored.
+export function formatSemester(semester: string): string {
+  const value = semester.trim();
+  return /^\d+$/.test(value) ? `${value}.º sem.` : semester;
+}

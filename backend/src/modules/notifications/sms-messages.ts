@@ -1,7 +1,15 @@
+import { firstName } from '../../common/utils/first-name';
 import { toGsmText } from './gsm-text';
+import { UNKNOWN_PARTNER_NAME } from './partner-summary';
 import type { Notification } from './notification';
 
 const BRAND_PREFIX = 'Mourly:';
+const SINGLE_SEGMENT = 160;
+
+// Before a plan is confirmed the partner is named by first name only.
+function partnerFirstName(name: string): string {
+  return name === UNKNOWN_PARTNER_NAME ? name : toGsmText(firstName(name));
+}
 
 // With the link the copy is cut to the facts so both still fit one segment;
 // "Mirala" carries no accent on purpose (á is outside GSM-7).
@@ -24,20 +32,37 @@ function dateConfirmedMessage(
   );
 }
 
+// The link opens the partner's profile, so the SMS only has to make them
+// someone: first name and university, never the surname. "Conocé" keeps its
+// accent: é is inside GSM-7.
+function matchInviteMessage(
+  notification: Extract<Notification, { kind: 'match_invite' }>,
+): string {
+  const { partner } = notification;
+  const invite = (from: string) =>
+    `${BRAND_PREFIX} esta semana hay alguien para vos. ` +
+    `Conocé a ${partnerFirstName(partner.name)}${from}: ` +
+    notification.availabilityUrl;
+  // The university is the first thing to give up: a long name plus the
+  // "Universidad verificada" fallback would split the SMS in two.
+  const withUniversity = partner.university
+    ? invite(`, de ${toGsmText(partner.university)}`)
+    : null;
+  return withUniversity && withUniversity.length <= SINGLE_SEGMENT
+    ? withUniversity
+    : invite('');
+}
+
 export function smsMessageFor(notification: Notification): string {
   switch (notification.kind) {
     case 'match_invite':
-      return (
-        `${BRAND_PREFIX} tenés match esta semana con ` +
-        `${toGsmText(notification.partner.name)}. ` +
-        `Escogé lugares y horarios: ${notification.availabilityUrl}`
-      );
+      return matchInviteMessage(notification);
     case 'date_proposal':
       return dateConfirmedMessage(notification);
     case 'more_availability':
       return (
         `${BRAND_PREFIX} tus horarios no cuadraron con ` +
-        `${toGsmText(notification.partnerName)}. ` +
+        `${partnerFirstName(notification.partnerName)}. ` +
         `Podés sumar franjas: ${notification.availabilityUrl}`
       );
     case 'feedback_request':

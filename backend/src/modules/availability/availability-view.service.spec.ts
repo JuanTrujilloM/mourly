@@ -26,6 +26,23 @@ describe('AvailabilityViewService', () => {
       expect(view.partnerName).toBe('Beto');
     });
 
+    it('names the partner by first name only', async () => {
+      const { viewService, links, findUnique } = buildAvailabilityHarness();
+      links.validate.mockResolvedValue(OK_AVAILABILITY);
+      findUnique.mockResolvedValue({
+        userAId: 'u1',
+        userBId: 'u2',
+        createdAt: new Date('2026-07-09T19:00:00'),
+        userA: { profile: { name: 'Ana' } },
+        userB: { profile: { name: 'Beto Pérez Gómez' } },
+      });
+
+      const view = await viewService.getAvailabilityView('t');
+
+      if (view.step !== 'AVAILABILITY') throw new Error('expected calendar');
+      expect(view.partnerName).toBe('Beto');
+    });
+
     it('starts the window the day after the match was created', async () => {
       const { viewService, links } = buildAvailabilityHarness();
       links.validate.mockResolvedValue(OK_AVAILABILITY);

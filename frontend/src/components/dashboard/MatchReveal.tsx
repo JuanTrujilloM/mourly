@@ -29,7 +29,7 @@ export function MatchReveal({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Tu cita de esta semana"
+      aria-label="Tu plan de esta semana"
       className="ambient text-ink fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden px-7 pb-64 text-center"
     >
       <span
@@ -61,7 +61,7 @@ export function MatchReveal({
           go ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
-        <p className="label text-ink-3">Tu cita · esta semana</p>
+        <p className="label text-ink-3">Tu plan · esta semana</p>
         <p className="subheading text-ink mt-2 text-[22px]">
           {partner.major} · {partner.university}
         </p>

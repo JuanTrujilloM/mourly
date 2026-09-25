@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, DM_Mono, Newsreader } from "next/font/google";
+import { Bricolage_Grotesque, Bungee, DM_Mono, Newsreader } from "next/font/google";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
@@ -26,6 +26,13 @@ const dmMono = DM_Mono({
   weight: ["400", "500"],
 });
 
+// Painted-sign lettering, only on the match profile's name tag and sign.
+const bungee = Bungee({
+  variable: "--font-bungee",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "Mourly — Una cita real por semana, solo con carné",
   description:
@@ -40,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${bricolage.variable} ${newsreader.variable} ${dmMono.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${newsreader.variable} ${dmMono.variable} ${bungee.variable} h-full antialiased`}
     >
       <body className="text-ink flex min-h-full flex-col">
         <Providers>{children}</Providers>

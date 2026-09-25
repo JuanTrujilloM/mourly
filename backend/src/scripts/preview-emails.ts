@@ -15,7 +15,7 @@ const partner = {
   photoUrl: 'https://picsum.photos/seed/mourly/520/420',
 };
 
-const availabilityUrl = 'http://localhost:3000/flow/sample-token/places';
+const availabilityUrl = 'http://localhost:3000/flow/sample-token';
 
 const previews: Record<string, { subject: string; html: string }> = {
   'verification-code': verificationCodeEmail({

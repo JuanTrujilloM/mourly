@@ -69,7 +69,7 @@ export class MatchInviteService {
     partner: InviteUser,
   ): Promise<InviteResult> {
     const token = await this.links.issueForMatchUser(matchId, user.id);
-    const url = `${this.frontendUrl()}/flow/${token}/places`;
+    const url = `${this.frontendUrl()}/flow/${token}`;
 
     await this.notifications.send({
       kind: 'match_invite',

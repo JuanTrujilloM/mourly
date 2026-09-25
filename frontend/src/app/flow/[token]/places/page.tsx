@@ -35,7 +35,7 @@ function PlacesContent({ token }: { token: string }) {
     if (data?.step === 'AVAILABILITY') router.replace(`/availability/${token}`);
   }, [data?.step, token, router]);
 
-  if (isLoading) return <FlowLoading label="Buscando lugares para tu cita..." />;
+  if (isLoading) return <FlowLoading label="Buscando lugares para el plan..." />;
   if (isError) return <FlowLinkError />;
   if (data?.step === 'COMPLETED') return <FlowStepCompleted />;
   if (!data || data.step === 'AVAILABILITY') return null;
@@ -58,12 +58,10 @@ function PlacesPicker({
       <div className="mb-6 flex flex-col items-center gap-5 text-center">
         <Logo />
         <div>
-          <h1 className="heading text-ink text-4xl">Elegí los lugares</h1>
+          <h1 className="heading text-ink text-4xl">¿Dónde les queda bien?</h1>
           <p className="text-ink-2 mt-2 text-sm">
-            {data.partnerName
-              ? `Opciones que van con lo que a vos y a ${data.partnerName} les gusta.`
-              : 'Opciones que van con sus intereses.'}{' '}
-            Elegí {data.minSelection} de {data.venues.length}.
+            Lugares que van con lo que les gusta a los dos. Elegí{' '}
+            {data.minSelection} de {data.venues.length}.
           </p>
         </div>
       </div>
