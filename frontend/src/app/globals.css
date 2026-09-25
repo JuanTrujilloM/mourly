@@ -50,6 +50,12 @@
   --color-error: #FF8A80;
   --color-papel: #F4EFE6;
 
+  /* Feria: the fairground colors of the Rótulo board. They live on the match
+     profile screen only, the way the hologram lives on the carné. */
+  --color-rotulo-amarillo: #FFC531;
+  --color-rotulo-crema: #FFF1D6;
+  --color-rotulo-tinta: #1B1420;
+
   /* Terceros: color institucional de cada universidad, solo para los sellos
      de la franja de la landing. Aclarados desde los manuales de identidad
      (EAFIT #004B85, UPB #D22630, CES #1568E0, EIA #21B8D2) para llegar a 3:1
@@ -63,6 +69,7 @@
   --font-sans: var(--font-bricolage);
   --font-serif: var(--font-newsreader);
   --font-mono: var(--font-dm-mono);
+  --font-rotulo: var(--font-bungee);
 
   /* Forma */
   --radius-chip-inner: 6px;
@@ -221,6 +228,25 @@
   isolation: isolate;
   -webkit-mask-image: linear-gradient(#000, #000);
   mask-image: linear-gradient(#000, #000);
+}
+
+/* The profile screen's fairground stripe: amarillo, magenta, azul. */
+@utility feria-stripe {
+  height: 7px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-rotulo-amarillo) 0 16px,
+    var(--color-magenta-500) 16px 32px,
+    var(--color-azul-500) 32px 48px
+  );
+}
+
+/* Painted-sign lettering: the name tag and the common-ground sign only. */
+@utility rotulo {
+  font-family: var(--font-rotulo), "Arial Black", sans-serif;
+  text-transform: uppercase;
+  line-height: 1.15;
 }
 
 /* The carné's laminate: an iridescent sheen and the ring of its seal. */
