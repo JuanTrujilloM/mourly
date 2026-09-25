@@ -31,7 +31,7 @@ export function LandingNavbar() {
             Entrar
           </Link>
           <ButtonLink href="/login" size="sm">
-            Quiero mi cita
+            Crear mi perfil
           </ButtonLink>
         </div>
       </nav>
