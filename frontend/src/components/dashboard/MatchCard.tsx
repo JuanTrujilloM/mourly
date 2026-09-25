@@ -3,8 +3,8 @@ import { Carne } from './Carne';
 
 const STATUS: Record<string, { label: string; live: boolean }> = {
   pending: { label: 'Por confirmar', live: false },
-  confirmed: { label: 'Cita confirmada', live: true },
-  completed: { label: 'Cita hecha', live: false },
+  confirmed: { label: 'Plan confirmado', live: true },
+  completed: { label: 'Plan hecho', live: false },
 };
 
 function Portrait({ partner }: { partner: MatchPartner }) {
@@ -30,7 +30,7 @@ export function MatchCard({ match }: { match: CurrentMatch }) {
 
   return (
     <section className="mt-6">
-      <p className="label text-ink-3 mb-3">Tu cita · esta semana</p>
+      <p className="label text-ink-3 mb-3">Tu plan · esta semana</p>
 
       <Carne
         data={partner}

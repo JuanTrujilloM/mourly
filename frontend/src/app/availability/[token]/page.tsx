@@ -13,6 +13,7 @@ import {
 } from '@/components/availability/FlowGuards';
 import { useAvailabilityView } from '@/hooks/useAvailabilityFlow';
 import type { AvailabilityView } from '@/types/availability';
+import { firstName } from '@/lib/utils/first-name';
 import { useSlotSubmission } from './useSlotSubmission';
 
 export default function AvailabilityPage() {
@@ -63,9 +64,9 @@ function SlotPicker({
           <h1 className="heading text-ink text-4xl">¿Cuándo podés?</h1>
           <p className="text-ink-2 mt-2 text-sm">
             {data.partnerName
-              ? `Marcá tus horarios libres para tu cita con ${data.partnerName}.`
-              : 'Marcá tus horarios libres para tu cita.'}{' '}
-            Cada horario dura una hora, de 12:00 pm a 7:00 pm.
+              ? `Marcá cuándo podés verte con ${firstName(data.partnerName)}.`
+              : 'Marcá cuándo podés.'}{' '}
+            Es una hora, entre 12:00 pm y 7:00 pm.
           </p>
         </div>
       </div>

@@ -1,11 +1,10 @@
 import { Logo } from '@/components/shared/Logo';
 import { ButtonLink } from '@/components/ui/Button';
 import { dateBoardFor } from '@/lib/utils/date-board';
+import { firstName } from '@/lib/utils/first-name';
 import type { DateView } from '@/types/date-view';
 import { DepartureBoard } from './DepartureBoard';
 import { LinesDiagram } from './LinesDiagram';
-
-const firstName = (name: string) => name.trim().split(/\s+/)[0];
 
 const lineOf = (university: string | null) =>
   university ? `Línea ${university}` : 'Tu línea';
@@ -43,12 +42,12 @@ export function DateStation({ view }: { view: DateView }) {
         <Logo />
         <span className="border-line bg-surface text-live inline-flex h-8 items-center gap-2 rounded-full border px-3 text-[12.5px] font-semibold">
           <span aria-hidden className="bg-live h-[7px] w-[7px] rounded-full" />
-          Cita confirmada
+          Plan confirmado
         </span>
       </div>
 
       <h1 className="heading text-ink mt-2 text-[34px]">
-        Tu cita con {firstName(partner.name)}
+        Tu plan con {firstName(partner.name)}
       </h1>
 
       <DepartureBoard
