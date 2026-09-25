@@ -4,6 +4,7 @@ import type {
   SlotSelection,
   TokenVenuesView,
 } from '@/types/availability';
+import type { FlowProfileView } from '@/types/flow-profile';
 
 
 export async function fetchAvailabilityView(
@@ -42,6 +43,15 @@ export async function selectTokenVenues(
   const { data } = await apiClient.post<{ step: 'AVAILABILITY' }>(
     `/availability/${token}/venues`,
     { venueIds },
+  );
+  return data;
+}
+
+export async function fetchFlowProfile(
+  token: string,
+): Promise<FlowProfileView> {
+  const { data } = await apiClient.get<FlowProfileView>(
+    `/availability/${token}/profile`,
   );
   return data;
 }
