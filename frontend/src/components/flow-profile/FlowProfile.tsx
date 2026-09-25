@@ -1,14 +1,12 @@
 import { Logo } from '@/components/shared/Logo';
 import { ButtonLink } from '@/components/ui/Button';
-import { dateBoardFor } from '@/lib/utils/date-board';
 import { formatSemester } from '@/lib/utils/format';
 import type { OpenFlowProfile } from '@/types/flow-profile';
 import { CommonGroundSign } from './CommonGroundSign';
 import { PhotoCarousel } from './PhotoCarousel';
 
 // The screen behind the match SMS: who the person is, before any place or
-// hour. It says "plan", never "cita". The button is the only way forward;
-// not tapping it is also an answer, and the line under it says so.
+// hour. It says "plan", never "cita"; the button is the only way forward.
 export function FlowProfile({
   token,
   view,
@@ -16,9 +14,8 @@ export function FlowProfile({
   token: string;
   view: OpenFlowProfile;
 }) {
-  const { partner, sharedHobbies, step } = view;
+  const { partner, sharedHobbies, otherHobbies, step } = view;
   const next = step === 'VENUE' ? `/flow/${token}/places` : `/availability/${token}`;
-  const closes = dateBoardFor(view.closesAt);
 
   return (
     <div className="flex flex-col gap-4">
@@ -56,17 +53,19 @@ export function FlowProfile({
         <p className="human text-ink text-[19px]">“{partner.biography}”</p>
       )}
 
+      {otherHobbies.length > 0 && (
+        <p className="text-ink-2 text-sm">
+          <span className="rotulo text-rotulo-amarillo mr-1.5 text-[11px] tracking-[0.04em]">
+            También
+          </span>
+          <span>{otherHobbies.join(' · ')}</span>
+        </p>
+      )}
+
       <div className="glass-bar border-line sticky bottom-0 -mx-5 mt-2 border-t px-5 py-4 sm:-mx-7 sm:px-7">
         <ButtonLink href={next} className="w-full">
           Cuadrar el plan
         </ButtonLink>
-        <p className="text-ink-3 mt-2.5 text-center text-[12.5px]">
-          {step === 'VENUE'
-            ? 'Después elegís lugar y hora.'
-            : 'Después marcás la hora.'}{' '}
-          {/* The hour already ends in "p. m.", which closes the sentence. */}
-          Si no hacés nada, se cierra solo el {closes.day} a las {closes.time}
-        </p>
       </div>
     </div>
   );

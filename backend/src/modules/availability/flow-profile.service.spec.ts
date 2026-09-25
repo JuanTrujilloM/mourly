@@ -99,13 +99,30 @@ describe('FlowProfileService', () => {
     expect(view.partner.photos).toEqual([]);
   });
 
-  it('closes 48 hours after the match was created', async () => {
+  it("lists the partner's other hobbies apart from the shared ones", async () => {
     const { service } = build(okLink('VENUE'));
 
     const view = await service.getProfileView('t');
 
     if (view.step === 'COMPLETED') throw new Error('expected a profile');
-    expect(view.closesAt).toBe('2026-09-26T00:00:00.000Z');
+    expect(view.otherHobbies).toEqual(['Senderismo', 'Cine']);
+  });
+
+  it("lists user A's other hobbies to user B", async () => {
+    const { service } = build(okLink('VENUE', 'u2'));
+
+    const view = await service.getProfileView('t');
+
+    if (view.step === 'COMPLETED') throw new Error('expected a profile');
+    expect(view.otherHobbies).toEqual(['Música en vivo']);
+  });
+
+  it('does not send a closing time', async () => {
+    const { service } = build(okLink('VENUE'));
+
+    const view = await service.getProfileView('t');
+
+    expect(view).not.toHaveProperty('closesAt');
   });
 
   it('keeps the AVAILABILITY step so the page skips places', async () => {

@@ -13,7 +13,7 @@ export interface OpenFlowProfile {
   step: 'VENUE' | 'AVAILABILITY';
   partner: FlowPartner;
   sharedHobbies: string[];
-  closesAt: string;
+  otherHobbies: string[];
 }
 
 export type FlowProfileView = OpenFlowProfile | { step: 'COMPLETED' };

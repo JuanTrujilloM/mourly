@@ -15,8 +15,7 @@ const VIEW: OpenFlowProfile = {
     photos: ['https://cdn/a.jpg', 'https://cdn/b.jpg'],
   },
   sharedHobbies: ['Teatro'],
-  // 26 sept, 7:00 p. m. in Colombia.
-  closesAt: '2026-09-27T00:00:00.000Z',
+  otherHobbies: ['Senderismo', 'Cine'],
 };
 
 describe('FlowProfile', () => {
@@ -40,7 +39,6 @@ describe('FlowProfile', () => {
       'href',
       '/flow/tok/places',
     );
-    expect(screen.getByText(/Después elegís lugar y hora\./)).toBeInTheDocument();
   });
 
   it('sends a link that already has places straight to the hours', () => {
@@ -50,23 +48,26 @@ describe('FlowProfile', () => {
       'href',
       '/availability/tok',
     );
-    expect(screen.getByText(/Después marcás la hora\./)).toBeInTheDocument();
   });
 
-  it('says when the match closes on its own', () => {
+  it("lists the partner's other hobbies under También", () => {
     render(<FlowProfile token="tok" view={VIEW} />);
 
-    expect(
-      screen.getByText(/Si no hacés nada, se cierra solo el sáb 26 sept a las 7:00 p\. m\./),
-    ).toBeInTheDocument();
+    expect(screen.getByText('También')).toBeInTheDocument();
+    expect(screen.getByText('Senderismo · Cine')).toBeInTheDocument();
   });
 
-  it('ends the closing line with a single period after the hour', () => {
+  it('leaves También out when every hobby is shared', () => {
+    render(<FlowProfile token="tok" view={{ ...VIEW, otherHobbies: [] }} />);
+
+    expect(screen.queryByText('También')).toBeNull();
+  });
+
+  it('adds no line under the button', () => {
     render(<FlowProfile token="tok" view={VIEW} />);
 
-    const line = screen.getByText(/se cierra solo/);
-    expect(line.textContent).toMatch(/7:00 p\. m\.$/);
-    expect(line.textContent).not.toMatch(/\.\.$/);
+    expect(screen.queryByText(/Después/)).toBeNull();
+    expect(screen.queryByText(/se cierra solo/)).toBeNull();
   });
 
   it('leaves the bio out when it is empty', () => {

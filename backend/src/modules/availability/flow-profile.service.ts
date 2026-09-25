@@ -2,12 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { ageFrom } from '../../common/utils/age';
 import { firstName } from '../../common/utils/first-name';
-import { RESPONSE_TIMEOUT_HOURS } from '../matches/match-response.constants';
-import { sharedHobbyNames } from '../matches/shared-hobbies';
+import { otherHobbyNames, sharedHobbyNames } from '../matches/shared-hobbies';
 import { AvailabilityLinkResolver } from './availability-link-resolver.service';
 
 const INVALID_MESSAGE = 'Este enlace no es válido.';
-const HOUR_IN_MS = 3_600_000;
 
 const PROFILE_SELECTION = {
   select: {
@@ -45,7 +43,7 @@ export type FlowProfileView =
       step: 'VENUE' | 'AVAILABILITY';
       partner: FlowPartner;
       sharedHobbies: string[];
-      closesAt: string;
+      otherHobbies: string[];
     };
 
 // The screen behind the match SMS, before places and hours. Same fields the
@@ -68,7 +66,6 @@ export class FlowProfileService {
       where: { id: link.matchId },
       select: {
         userAId: true,
-        createdAt: true,
         userA: PROFILE_SELECTION,
         userB: PROFILE_SELECTION,
       },
@@ -94,10 +91,7 @@ export class FlowProfileService {
         photos: primaryFirst(profile.photos),
       },
       sharedHobbies: sharedHobbyNames(viewer ?? null, other ?? null),
-      // Mirror of MatchTimeoutService: a match with no date closes itself then.
-      closesAt: new Date(
-        match.createdAt.getTime() + RESPONSE_TIMEOUT_HOURS * HOUR_IN_MS,
-      ).toISOString(),
+      otherHobbies: otherHobbyNames(viewer ?? null, other ?? null),
     };
   }
 }
