@@ -212,6 +212,17 @@
   -webkit-backdrop-filter: blur(20px);
 }
 
+/* Safari does not clip a filtered child (blur) to a parent's rounded corners
+   with overflow: hidden alone; the child's square edges show past the curve.
+   A mask flattens the parent into one layer that the radius does clip. The
+   gradient is opaque everywhere, so nothing else is masked. */
+@utility clip-rounded {
+  overflow: hidden;
+  isolation: isolate;
+  -webkit-mask-image: linear-gradient(#000, #000);
+  mask-image: linear-gradient(#000, #000);
+}
+
 /* The carné's laminate: an iridescent sheen and the ring of its seal. */
 @utility holo-sheen {
   background: linear-gradient(
