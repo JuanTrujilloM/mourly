@@ -44,6 +44,27 @@ describe('smsMessageFor', () => {
     expect(smsMessageFor(notificationOf('match_invite'))).toContain(INVITE_URL);
   });
 
+  it('names the partner by first name in the nudge', () => {
+    const message = smsMessageFor(notificationOf('more_availability'));
+
+    expect(message).toContain('no cuadraron con Sofia.');
+    expect(message).not.toContain('Gomez');
+  });
+
+  it('drops the university when it would push the invite past one segment', () => {
+    const message = smsMessageFor({
+      ...notificationOf('match_invite'),
+      partner: {
+        ...PARTNER,
+        name: 'Maximiliano Andrés',
+        university: 'Universidad verificada',
+      },
+    });
+
+    expect(message.length).toBeLessThanOrEqual(SINGLE_SEGMENT);
+    expect(message).toContain(`Conocé a Maximiliano: ${INVITE_URL}`);
+  });
+
   it('keeps the nudge link verbatim', () => {
     expect(smsMessageFor(notificationOf('more_availability'))).toContain(
       NUDGE_URL,

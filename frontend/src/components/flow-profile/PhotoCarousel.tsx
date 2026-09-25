@@ -34,10 +34,15 @@ export function PhotoCarousel({ photos, name }: { photos: string[]; name: string
         if (event.key === 'ArrowRight') show(index + 1);
         if (event.key === 'ArrowLeft') show(index - 1);
       }}
+      // A press on an arrow is a tap, not the start of a swipe.
       onPointerDown={(event) => {
-        if (!(event.target as HTMLElement).closest('button')) {
-          swipeStart.current = event.clientX;
-        }
+        swipeStart.current = (event.target as HTMLElement).closest('button')
+          ? null
+          : event.clientX;
+      }}
+      // A scroll that starts on the photo ends here, not in pointerup.
+      onPointerCancel={() => {
+        swipeStart.current = null;
       }}
       onPointerUp={(event) => {
         if (swipeStart.current === null) return;
@@ -47,7 +52,9 @@ export function PhotoCarousel({ photos, name }: { photos: string[]; name: string
           show(index + (distance < 0 ? 1 : -1));
         }
       }}
-      className="bg-grafito clip-rounded relative aspect-[4/5] touch-pan-y rounded-[17px] select-none"
+      // clip-rounded masks anything outside the box and an inset shadow paints
+      // under the photos, so the focus ring rides on ::after, above them.
+      className="bg-grafito clip-rounded focus-visible:after:ring-accent relative aspect-[4/5] touch-pan-y rounded-[17px] select-none focus-visible:outline-none focus-visible:after:pointer-events-none focus-visible:after:absolute focus-visible:after:inset-0 focus-visible:after:z-10 focus-visible:after:rounded-[inherit] focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:content-['']"
     >
       <div
         data-track
@@ -110,10 +117,11 @@ function ArrowButton({
   return (
     <button
       type="button"
-      onClick={onClick}
-      disabled={disabled}
+      // aria-disabled, not disabled: a disabled button would drop focus to <body>.
+      onClick={disabled ? undefined : onClick}
+      aria-disabled={disabled}
       aria-label={direction === 'prev' ? 'Foto anterior' : 'Foto siguiente'}
-      className={`bg-medianoche/45 border-blanco/20 text-blanco absolute top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border backdrop-blur-md transition disabled:opacity-30 ${
+      className={`bg-medianoche/45 border-blanco/20 text-blanco absolute top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border backdrop-blur-md transition aria-disabled:cursor-default aria-disabled:opacity-30 ${
         direction === 'prev' ? 'left-2.5' : 'right-2.5'
       }`}
     >

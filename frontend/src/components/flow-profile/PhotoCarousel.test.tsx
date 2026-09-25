@@ -11,8 +11,14 @@ describe('PhotoCarousel', () => {
   it('starts on the first photo with only the next arrow enabled', () => {
     render(<PhotoCarousel photos={PHOTOS} name="Miguel" />);
 
-    expect(screen.getByRole('button', { name: 'Foto anterior' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Foto siguiente' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Foto anterior' })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+    expect(screen.getByRole('button', { name: 'Foto siguiente' })).toHaveAttribute(
+      'aria-disabled',
+      'false',
+    );
   });
 
   it('moves forward and back with the arrows', () => {
@@ -32,7 +38,44 @@ describe('PhotoCarousel', () => {
     fireEvent.click(next);
     fireEvent.click(next);
 
-    expect(next).toBeDisabled();
+    expect(next).toHaveAttribute('aria-disabled', 'true');
+    expect(trackOf(container).style.transform).toBe('translateX(-200%)');
+  });
+
+  // A disabled button drops focus to <body>; aria-disabled keeps it in place.
+  it('keeps the arrow focusable when it reaches the last photo', () => {
+    render(<PhotoCarousel photos={PHOTOS} name="Miguel" />);
+    const next = screen.getByRole('button', { name: 'Foto siguiente' });
+
+    fireEvent.click(next);
+    fireEvent.click(next);
+
+    expect(next).not.toBeDisabled();
+  });
+
+  // An inset shadow paints under the photos; the ring rides on ::after instead.
+  it('draws its focus ring on a layer above the photos', () => {
+    render(<PhotoCarousel photos={PHOTOS} name="Miguel" />);
+
+    expect(screen.getByRole('group').className).toContain(
+      'focus-visible:after:ring-inset',
+    );
+  });
+
+  // A scroll that starts on the photo ends in pointercancel; its start must
+  // not turn the next arrow tap into a backwards swipe.
+  it('forgets a cancelled swipe before the next arrow tap', () => {
+    const { container } = render(<PhotoCarousel photos={PHOTOS} name="Miguel" />);
+    const group = screen.getByRole('group');
+    const next = screen.getByRole('button', { name: 'Foto siguiente' });
+    fireEvent.click(next);
+
+    fireEvent.pointerDown(group, { clientX: 50 });
+    fireEvent.pointerCancel(group);
+    fireEvent.pointerDown(next, { clientX: 350 });
+    fireEvent.pointerUp(next, { clientX: 350 });
+    fireEvent.click(next);
+
     expect(trackOf(container).style.transform).toBe('translateX(-200%)');
   });
 
