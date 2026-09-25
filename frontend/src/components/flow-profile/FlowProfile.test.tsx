@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { REVEAL_MS } from '@/hooks/useRevealSteps';
 import type { OpenFlowProfile } from '@/types/flow-profile';
 import { FlowProfile } from './FlowProfile';
 
@@ -85,5 +86,54 @@ describe('FlowProfile', () => {
     render(<FlowProfile token="tok" view={VIEW} />);
 
     expect(screen.queryByText(/cita/i)).toBeNull();
+  });
+
+  describe('reveal', () => {
+    const TOTAL = Object.values(REVEAL_MS).reduce((sum, ms) => sum + ms, 0);
+    const stepOf = (container: HTMLElement) =>
+      container.querySelector('[data-reveal-step]')?.getAttribute('data-reveal-step');
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('shows the profile at once without the reveal', () => {
+      const { container } = render(<FlowProfile token="tok" view={VIEW} />);
+
+      expect(stepOf(container)).toBe('done');
+      expect(container.querySelector('[data-reveal-dot]')).toBeNull();
+    });
+
+    it('opens on the dot and keeps the button out of reach', () => {
+      vi.useFakeTimers();
+      const { container } = render(<FlowProfile token="tok" view={VIEW} reveal />);
+
+      expect(stepOf(container)).toBe('dot');
+      expect(container.querySelector('[data-reveal-dot]')).not.toBeNull();
+      expect(
+        screen.getByRole('link', { name: 'Cuadrar el plan', hidden: true }).closest('[inert]'),
+      ).not.toBeNull();
+    });
+
+    it('ends with the full profile after 1.45 s', () => {
+      vi.useFakeTimers();
+      const { container } = render(<FlowProfile token="tok" view={VIEW} reveal />);
+
+      act(() => vi.advanceTimersByTime(TOTAL));
+
+      expect(stepOf(container)).toBe('done');
+      expect(
+        screen.getByRole('link', { name: 'Cuadrar el plan' }).closest('[inert]'),
+      ).toBeNull();
+    });
+
+    it('skips to the full profile on a tap', () => {
+      vi.useFakeTimers();
+      const { container } = render(<FlowProfile token="tok" view={VIEW} reveal />);
+
+      fireEvent.pointerDown(container.querySelector('[data-reveal-step]') as HTMLElement);
+
+      expect(stepOf(container)).toBe('done');
+    });
   });
 });

@@ -113,4 +113,24 @@ describe('PhotoCarousel', () => {
     expect(container.querySelector('svg')).not.toBeNull();
     expect(screen.queryByRole('button')).toBeNull();
   });
+
+  it('blurs the photos and hides the controls while revealing', () => {
+    const { container } = render(
+      <PhotoCarousel photos={PHOTOS} name="Miguel" blurred controlsHidden />,
+    );
+
+    expect(container.querySelector('[data-blurred="true"]')).not.toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Foto siguiente', hidden: true }).closest('[inert]'),
+    ).not.toBeNull();
+  });
+
+  it('is sharp with live controls by default', () => {
+    const { container } = render(<PhotoCarousel photos={PHOTOS} name="Miguel" />);
+
+    expect(container.querySelector('[data-blurred="true"]')).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Foto siguiente' }).closest('[inert]'),
+    ).toBeNull();
+  });
 });
