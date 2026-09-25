@@ -64,7 +64,8 @@ export function FlowProfile({
           {step === 'VENUE'
             ? 'Después elegís lugar y hora.'
             : 'Después marcás la hora.'}{' '}
-          Si no hacés nada, se cierra solo el {closes.day} a las {closes.time}.
+          {/* The hour already ends in "p. m.", which closes the sentence. */}
+          Si no hacés nada, se cierra solo el {closes.day} a las {closes.time}
         </p>
       </div>
     </div>

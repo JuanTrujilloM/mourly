@@ -61,6 +61,14 @@ describe('FlowProfile', () => {
     ).toBeInTheDocument();
   });
 
+  it('ends the closing line with a single period after the hour', () => {
+    render(<FlowProfile token="tok" view={VIEW} />);
+
+    const line = screen.getByText(/se cierra solo/);
+    expect(line.textContent).toMatch(/7:00 p\. m\.$/);
+    expect(line.textContent).not.toMatch(/\.\.$/);
+  });
+
   it('leaves the bio out when it is empty', () => {
     render(
       <FlowProfile
