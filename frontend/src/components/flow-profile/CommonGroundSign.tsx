@@ -1,7 +1,7 @@
-// The Rótulo's yellow arrow sign, pointing at what both people like. Only the
-// overlap ever reaches this screen (backend shared-hobbies.ts); a hobby the
-// viewer does not have stays private. The body spans 16–84 % of the height and
-// the last 44 px are the arrowhead; the dashed lines sit inside the body.
+// The Rótulo's yellow arrow sign, pointing at what both people like: the
+// overlap only (backend shared-hobbies.ts). The partner's other hobbies are
+// listed apart, under "También", in FlowProfile. The body spans 16–84 % of the
+// height and the last 44 px are the arrowhead; the dashed lines sit inside the body.
 const ARROW_SHAPE =
   '[clip-path:polygon(0_16%,calc(100%-44px)_16%,calc(100%-44px)_0,100%_50%,calc(100%-44px)_100%,calc(100%-44px)_84%,0_84%)]';
 
