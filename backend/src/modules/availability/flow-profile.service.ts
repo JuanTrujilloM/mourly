@@ -1,41 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
-import { ageFrom } from '../../common/utils/age';
-import { firstName } from '../../common/utils/first-name';
+import { isActiveStatus } from '../matches/match-scheduling';
 import { otherHobbyNames, sharedHobbyNames } from '../matches/shared-hobbies';
 import { AvailabilityLinkResolver } from './availability-link-resolver.service';
+import {
+  FLOW_PARTNER_SELECTION,
+  FlowPartner,
+  toFlowPartner,
+} from './flow-partner.mapper';
 
 const INVALID_MESSAGE = 'Este enlace no es válido.';
-
-const PROFILE_SELECTION = {
-  select: {
-    profile: {
-      select: {
-        name: true,
-        dateOfBirth: true,
-        university: true,
-        major: true,
-        semester: true,
-        biography: true,
-        photos: {
-          select: { url: true, isPrimary: true },
-          orderBy: { createdAt: 'asc' as const },
-        },
-        hobbies: { select: { hobby: { select: { name: true } } } },
-      },
-    },
-  },
-};
-
-export interface FlowPartner {
-  firstName: string;
-  age: number;
-  university: string;
-  major: string;
-  semester: string;
-  biography: string;
-  photos: string[];
-}
+const CLOSED_MESSAGE = 'Este enlace ya expiró.';
 
 export type FlowProfileView =
   | { step: 'COMPLETED' }
@@ -66,39 +41,31 @@ export class FlowProfileService {
       where: { id: link.matchId },
       select: {
         userAId: true,
-        userA: PROFILE_SELECTION,
-        userB: PROFILE_SELECTION,
+        status: true,
+        userA: FLOW_PARTNER_SELECTION,
+        userB: FLOW_PARTNER_SELECTION,
       },
     });
+    if (!match) {
+      throw new NotFoundException(INVALID_MESSAGE);
+    }
+    if (!isActiveStatus(match.status)) {
+      throw new GoneException(CLOSED_MESSAGE);
+    }
+
     const [viewer, other] =
-      match?.userAId === link.userId
+      match.userAId === link.userId
         ? [match.userA, match.userB]
-        : [match?.userB, match?.userA];
-    const profile = other?.profile;
-    if (!match || !profile) {
+        : [match.userB, match.userA];
+    if (!other.profile) {
       throw new NotFoundException(INVALID_MESSAGE);
     }
 
     return {
       step: link.step,
-      partner: {
-        firstName: firstName(profile.name),
-        age: ageFrom(profile.dateOfBirth),
-        university: profile.university,
-        major: profile.major,
-        semester: profile.semester,
-        biography: profile.biography,
-        photos: primaryFirst(profile.photos),
-      },
-      sharedHobbies: sharedHobbyNames(viewer ?? null, other ?? null),
-      otherHobbies: otherHobbyNames(viewer ?? null, other ?? null),
+      partner: toFlowPartner(other.profile),
+      sharedHobbies: sharedHobbyNames(viewer, other),
+      otherHobbies: otherHobbyNames(viewer, other),
     };
   }
-}
-
-function primaryFirst(photos: { url: string; isPrimary: boolean }[]): string[] {
-  return [
-    ...photos.filter((photo) => photo.isPrimary),
-    ...photos.filter((photo) => !photo.isPrimary),
-  ].map((photo) => photo.url);
 }

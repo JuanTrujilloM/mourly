@@ -50,4 +50,12 @@ export class AvailabilityLinkService {
       data: { consumedAt: new Date() },
     });
   }
+
+  revokeForMatch(matchId: string) {
+    const now = new Date();
+    return this.prisma.availabilityLink.updateMany({
+      where: { matchId, consumedAt: null, expiresAt: { gt: now } },
+      data: { expiresAt: now },
+    });
+  }
 }

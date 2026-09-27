@@ -38,6 +38,7 @@ function userWith(
 
 const MATCH = {
   userAId: 'u1',
+  status: 'pending',
   createdAt: CREATED_AT,
   userA: userWith('Felipe Cardona', ['Teatro', 'Música en vivo']),
   userB: userWith(
@@ -154,6 +155,32 @@ describe('FlowProfileService', () => {
 
   it('maps an unknown link to 404', async () => {
     const { service } = build({ status: 'invalid' });
+
+    await expect(service.getProfileView('t')).rejects.toThrow(
+      NotFoundException,
+    );
+  });
+
+  it.each(['rejected', 'expired'])(
+    'closes the profile of a %s match with 410 Gone',
+    async (status) => {
+      const { service } = build(okLink('VENUE'), { ...MATCH, status });
+
+      await expect(service.getProfileView('t')).rejects.toThrow(GoneException);
+    },
+  );
+
+  it('still shows the profile of a confirmed match', async () => {
+    const { service } = build(okLink('AVAILABILITY'), {
+      ...MATCH,
+      status: 'confirmed',
+    });
+
+    expect((await service.getProfileView('t')).step).toBe('AVAILABILITY');
+  });
+
+  it('maps a missing match to 404', async () => {
+    const { service } = build(okLink('VENUE'), null);
 
     await expect(service.getProfileView('t')).rejects.toThrow(
       NotFoundException,

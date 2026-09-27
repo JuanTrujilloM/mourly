@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
+import { AvailabilityLinkService } from '../availability-link/availability-link.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { activeMatchWhere } from './active-match.query';
 import { recipientOf } from './match-recipients';
@@ -12,6 +13,7 @@ export class MatchResponseService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly links: AvailabilityLinkService,
   ) {}
 
   async reject(userId: string): Promise<RejectResult> {
@@ -42,6 +44,7 @@ export class MatchResponseService {
           rejectedAt: new Date(),
         },
       }),
+      this.links.revokeForMatch(matchId),
     ]);
   }
 

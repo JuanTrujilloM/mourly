@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../config/prisma.service';
 import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
+import { AvailabilityLinkService } from '../availability-link/availability-link.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MatchReschedulerService } from './match-rescheduler.service';
 import type { LoadedMatch } from './match-loader.service';
@@ -32,10 +33,16 @@ function buildMatch(scheduleAttempts = 0): LoadedMatch {
 
 function setup(env: Record<string, string> = {}) {
   const update = jest.fn().mockResolvedValue({});
-  const prisma = { match: { update } } as unknown as PrismaService;
+  const prisma = {
+    match: { update },
+    $transaction: (operations: Promise<unknown>[]) => Promise.all(operations),
+  } as unknown as PrismaService;
   const config = { get: (key: string) => env[key] } as unknown as ConfigService;
   const links = {
     issueForMatchUser: jest.fn().mockResolvedValue('new-token'),
+  };
+  const linkState = {
+    revokeForMatch: jest.fn().mockResolvedValue({ count: 2 }),
   };
   const notifications = {
     send: jest.fn().mockResolvedValue(undefined),
@@ -45,9 +52,10 @@ function setup(env: Record<string, string> = {}) {
     prisma,
     config,
     links as unknown as AvailabilityLinkIssuerService,
+    linkState as unknown as AvailabilityLinkService,
     notifications as unknown as NotificationsService,
   );
-  return { service, update, links, notifications };
+  return { service, update, links, linkState, notifications };
 }
 
 describe('MatchReschedulerService', () => {
@@ -129,6 +137,30 @@ describe('MatchReschedulerService', () => {
         data: { status: 'expired' },
       });
       expect(notifications.send).toHaveBeenCalledTimes(2);
+    });
+
+    it('revokes the match links so the flow cannot be reopened', async () => {
+      const { service, linkState } = setup();
+
+      await service.recycle(buildMatch());
+
+      expect(linkState.revokeForMatch).toHaveBeenCalledWith('m1');
+    });
+
+    it('revokes the links when the attempt cap recycles the match', async () => {
+      const { service, linkState } = setup();
+
+      await service.handleNoOverlap(buildMatch(1));
+
+      expect(linkState.revokeForMatch).toHaveBeenCalledWith('m1');
+    });
+
+    it('keeps the links alive while it only nudges', async () => {
+      const { service, linkState } = setup();
+
+      await service.handleNoOverlap(buildMatch(0));
+
+      expect(linkState.revokeForMatch).not.toHaveBeenCalled();
     });
   });
 });

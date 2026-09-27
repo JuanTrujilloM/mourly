@@ -1,4 +1,5 @@
 import { PrismaService } from '../../config/prisma.service';
+import { AvailabilityLinkService } from '../availability-link/availability-link.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { MatchResponseService } from './match-response.service';
 
@@ -22,14 +23,19 @@ function setup(match: unknown = { id: 'm1', userAId: 'u1', userBId: 'u2' }) {
   const notifications = {
     send: jest.fn().mockResolvedValue(undefined),
   };
+  const links = {
+    revokeForMatch: jest.fn().mockResolvedValue({ count: 2 }),
+  };
 
   const service = new MatchResponseService(
     prisma,
     notifications as unknown as NotificationsService,
+    links as unknown as AvailabilityLinkService,
   );
   return {
     service,
     notifications,
+    links,
     matchUpdate,
     dateDeleteMany,
     userFindUnique,
@@ -59,6 +65,22 @@ describe('MatchResponseService', () => {
     await service.reject('u1');
 
     expect(dateDeleteMany).toHaveBeenCalledWith({ where: { matchId: 'm1' } });
+  });
+
+  it("revokes the match links so neither side can reopen the partner's profile", async () => {
+    const { service, links } = setup();
+
+    await service.reject('u1');
+
+    expect(links.revokeForMatch).toHaveBeenCalledWith('m1');
+  });
+
+  it('revokes the links when the match times out', async () => {
+    const { service, links } = setup();
+
+    await service.terminate('m1', null);
+
+    expect(links.revokeForMatch).toHaveBeenCalledWith('m1');
   });
 
   it('notifies the other user, not the one who rejected', async () => {
