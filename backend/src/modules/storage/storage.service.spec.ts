@@ -52,7 +52,7 @@ describe('StorageService', () => {
   it('returns the url the store produced', async () => {
     const { service } = setup();
 
-    expect(await service.uploadImage(fileWith('image/webp'))).toBe(
+    expect(await service.uploadImage(fileWith('image/png'))).toBe(
       'https://cdn/profiles/x.jpg',
     );
   });

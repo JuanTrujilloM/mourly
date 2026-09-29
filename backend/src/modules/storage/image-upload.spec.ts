@@ -21,23 +21,19 @@ function runFilter(mimetype: string) {
 }
 
 describe('image upload rules', () => {
-  it('allows exactly jpeg, png and webp', () => {
-    expect(ALLOWED_IMAGE_MIME_TYPES).toEqual([
-      'image/jpeg',
-      'image/png',
-      'image/webp',
-    ]);
+  it('allows exactly jpeg and png', () => {
+    expect(ALLOWED_IMAGE_MIME_TYPES).toEqual(['image/jpeg', 'image/png']);
   });
 
   it('recognizes an allowed mime type', () => {
     expect(isAllowedImageMimeType('image/png')).toBe(true);
     expect(isAllowedImageMimeType('image/svg+xml')).toBe(false);
+    expect(isAllowedImageMimeType('image/webp')).toBe(false);
   });
 
   it('maps each allowed mime type to a safe extension', () => {
     expect(imageExtensionFor('image/jpeg')).toBe('.jpg');
     expect(imageExtensionFor('image/png')).toBe('.png');
-    expect(imageExtensionFor('image/webp')).toBe('.webp');
   });
 
   it('refuses to produce an extension for a disallowed type', () => {
