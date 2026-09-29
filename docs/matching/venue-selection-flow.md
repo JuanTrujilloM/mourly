@@ -14,7 +14,7 @@ Se crea el Match (matcher semanal)
         │
         ▼
 Link tokenizado por usuario → SMS (dev: log en consola)
-        │   URL de entrada: /flow/:token/places
+        │   URL de entrada: /flow/:token (perfil) → /flow/:token/places
         ▼
 PASO 1 · Lugares (HU-06):  ve 3 opciones → elige exactamente 2 → avanza
         │   (el link pasa de VENUE a AVAILABILITY)
@@ -97,7 +97,7 @@ garantía se rompe; por eso el set es compartido por diseño.
 | `POST` | `/availability/:token` | Guarda horarios, **consume el link** y dispara `tryConfirm` (HU-08) |
 
 Frontend (fuera de `AuthGate`):
-- `app/flow/[token]/places/page.tsx` — **página de entrada** del flujo.
+- `app/flow/[token]/places/page.tsx` — paso de lugares; la entrada del link es el perfil (`app/flow/[token]/page.tsx`).
 - `app/availability/[token]/page.tsx` — paso final; muestra "¡Listo!" al terminar.
 
 Un link consumido que se re-abre muestra una pantalla amable de "ya completaste
@@ -120,7 +120,7 @@ dependen del link). Al re-enviar horarios, `tryConfirm` corre de nuevo.
 cd backend
 npm run db:seed
 npm run build
-node dist/src/scripts/run-weekly-matching.js   # loguea 2 links /flow/<token>/places
+node dist/src/scripts/run-weekly-matching.js   # loguea 2 links /flow/<token>
 ```
 
 1. Abre el link de A → aparecen **primero los lugares** → elige 2 → pasa al

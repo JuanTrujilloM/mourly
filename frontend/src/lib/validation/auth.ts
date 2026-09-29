@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { toLocalCellphone } from '@/lib/utils/cellphone';
 
-const COLOMBIAN_MOBILE = /^(\+?57)?3\d{9}$/;
+const COLOMBIAN_MOBILE = /^3\d{9}$/;
 
 export const emailEntrySchema = z.object({
   email: z.email('Ingresá un correo institucional válido.'),
@@ -9,8 +10,8 @@ export const emailEntrySchema = z.object({
 export const cellphoneSchema = z.object({
   cellphone: z
     .string()
-    .trim()
-    .regex(COLOMBIAN_MOBILE, 'Ingresá un celular colombiano válido.'),
+    .transform(toLocalCellphone)
+    .pipe(z.string().regex(COLOMBIAN_MOBILE, 'Ingresá un celular colombiano válido.')),
 });
 
 export const contactSchema = emailEntrySchema.extend(cellphoneSchema.shape);

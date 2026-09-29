@@ -126,6 +126,14 @@ describe('ProfileService', () => {
     expect(upsert.mock.calls[0][0].create.dateOfBirth).toBeInstanceOf(Date);
   });
 
+  it('never lets an edit change the birth date', async () => {
+    const { service, upsert } = setup();
+
+    await service.save('u1', 'ana@eafit.edu.co', DTO, []);
+
+    expect(upsert.mock.calls[0][0].update).not.toHaveProperty('dateOfBirth');
+  });
+
   it('reads the saved profile with its photos', async () => {
     const { service, profileFindUnique } = setup();
 

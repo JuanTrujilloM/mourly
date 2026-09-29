@@ -116,7 +116,7 @@ export function Carne({
         </header>
 
         <div className="flex gap-4">
-          <div className="border-line bg-surface-2 h-[170px] w-[132px] shrink-0 overflow-hidden rounded-xl border">
+          <div className="border-line bg-surface-2 clip-rounded h-[170px] w-[132px] shrink-0 rounded-xl border">
             {photo}
           </div>
           <dl className="flex min-w-0 flex-col gap-2.5">

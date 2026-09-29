@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import type { ProfileValues } from '@/lib/validation/profile';
 import { useCatalog } from '@/hooks/useCatalog';
+import { ALLOWED_PHOTO_TYPES } from '@/lib/constants/profile';
 import { buildPhotoListActions } from './photo-list-actions';
 import { PhotoTile } from './PhotoTile';
 import { Card } from '@/components/ui/Card';
@@ -19,7 +20,7 @@ export function PhotosCard({ form }: { form: UseFormReturn<ProfileValues> }) {
   return (
     <Card
       title="Tus fotos"
-      description={`Agregá de 1 a ${maxPhotos} fotos, sin filtros. La primera es la principal.`}
+      description={`Agregá de 1 a ${maxPhotos} fotos, JPG o PNG de hasta 5 MB, sin filtros. La primera es la principal.`}
     >
       <Controller
         control={form.control}
@@ -30,7 +31,10 @@ export function PhotosCard({ form }: { form: UseFormReturn<ProfileValues> }) {
           const { addFiles, removeAt, reorder } = buildPhotoListActions(
             photos,
             maxPhotos,
-            field.onChange,
+            (next) => {
+              field.onChange(next);
+              void form.trigger('photos');
+            },
           );
 
           return (
@@ -67,7 +71,7 @@ export function PhotosCard({ form }: { form: UseFormReturn<ProfileValues> }) {
               <input
                 ref={inputRef}
                 type="file"
-                accept="image/*"
+                accept={ALLOWED_PHOTO_TYPES.join(',')}
                 multiple
                 hidden
                 onChange={addFiles}

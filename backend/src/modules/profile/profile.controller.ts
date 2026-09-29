@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../auth/strategies/jwt.strategy';
 import { imageUploadOptions } from '../storage/image-upload.options';
+import { ImageSignaturePipe } from '../storage/image-signature.pipe';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateAvailabilityDto } from './dto/update-availability.dto';
@@ -33,7 +34,7 @@ export class ProfileController {
   create(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: CreateProfileDto,
-    @UploadedFiles() photos: Express.Multer.File[],
+    @UploadedFiles(ImageSignaturePipe) photos: Express.Multer.File[],
   ) {
     return this.profileService.save(user.userId, user.email, dto, photos);
   }

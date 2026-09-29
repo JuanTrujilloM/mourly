@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../config/prisma.service';
 import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
+import { AvailabilityLinkService } from '../availability-link/availability-link.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { nameOf, recipientOf } from './match-recipients';
 import type { LoadedMatch } from './match-loader.service';
@@ -20,6 +21,7 @@ export class MatchReschedulerService {
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
     private readonly links: AvailabilityLinkIssuerService,
+    private readonly linkState: AvailabilityLinkService,
     private readonly notifications: NotificationsService,
   ) {}
 
@@ -48,10 +50,13 @@ export class MatchReschedulerService {
   }
 
   async recycle(match: LoadedMatch): Promise<ConfirmResult> {
-    await this.prisma.match.update({
-      where: { id: match.id },
-      data: { status: EXPIRED_MATCH_STATUS },
-    });
+    await this.prisma.$transaction([
+      this.prisma.match.update({
+        where: { id: match.id },
+        data: { status: EXPIRED_MATCH_STATUS },
+      }),
+      this.linkState.revokeForMatch(match.id),
+    ]);
     await Promise.all([
       this.notifications.send({
         kind: 'rescheduling_failed',

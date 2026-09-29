@@ -4,6 +4,7 @@ import { PUBLIC_LINK_THROTTLE } from '../../common/constants/throttle';
 import { SelectVenuesDto } from '../matches/dto/select-venues.dto';
 import { AvailabilityService } from './availability.service';
 import { AvailabilityViewService } from './availability-view.service';
+import { FlowProfileService } from './flow-profile.service';
 import { SubmitAvailabilityDto } from './dto/submit-availability.dto';
 
 @Controller('availability')
@@ -12,11 +13,17 @@ export class AvailabilityController {
   constructor(
     private readonly availabilityService: AvailabilityService,
     private readonly viewService: AvailabilityViewService,
+    private readonly profileService: FlowProfileService,
   ) {}
 
   @Get(':token')
   getAvailability(@Param('token') token: string) {
     return this.viewService.getAvailabilityView(token);
+  }
+
+  @Get(':token/profile')
+  getProfile(@Param('token') token: string) {
+    return this.profileService.getProfileView(token);
   }
 
   @Post(':token')

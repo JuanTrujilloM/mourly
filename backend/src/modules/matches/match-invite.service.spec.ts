@@ -85,12 +85,12 @@ describe('MatchInviteService', () => {
     expect(notifications.send).toHaveBeenCalledTimes(2);
   });
 
-  it('points each link at the places-first flow url', async () => {
+  it('points each link at the profile-first flow url', async () => {
     const { service } = setup({ FRONTEND_URL: 'https://app.test' });
 
     const results = await service.inviteForMatch('m1');
 
-    expect(results[0].url).toBe('https://app.test/flow/token-1/places');
+    expect(results[0].url).toBe('https://app.test/flow/token-1');
   });
 
   it('falls back to localhost without configuration', async () => {

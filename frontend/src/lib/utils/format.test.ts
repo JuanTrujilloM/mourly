@@ -4,6 +4,7 @@ import {
   formatCalendarDate,
   formatDate,
   formatDateTime,
+  formatSemester,
 } from './format';
 
 describe('formatCOP', () => {
@@ -45,5 +46,15 @@ describe('formatDateTime', () => {
 
     expect(formatted).toMatch(/10/);
     expect(formatted).toMatch(/:/);
+  });
+});
+
+describe('formatSemester', () => {
+  it('turns a semester number into an ordinal', () => {
+    expect(formatSemester('7')).toBe('7.º sem.');
+  });
+
+  it('shows anything that is not a plain number as stored', () => {
+    expect(formatSemester('Egresado')).toBe('Egresado');
   });
 });

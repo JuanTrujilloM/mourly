@@ -41,7 +41,7 @@ export function MatchCountdown({ className = '' }: { className?: string }) {
       aria-label={spoken}
       className={`countdown-card border-line shadow-elevated relative border ${className}`}
     >
-      <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
+      <div className="clip-rounded absolute inset-0 rounded-[inherit]">
         <BlurredFigures couple className="absolute -inset-8 h-[calc(100%+4rem)] w-[calc(100%+4rem)]" />
         <div className="from-medianoche/25 to-medianoche/80 absolute inset-0 bg-linear-to-b" />
       </div>
@@ -77,7 +77,7 @@ export function MatchCountdown({ className = '' }: { className?: string }) {
         ))}
 
         <text x="28" y="326" className="subheading fill-ink text-[20px]">
-          Se revela el jueves.
+          El jueves ves quién es.
         </text>
 
         <circle className="countdown-dot fill-accent" cx="0" cy="0" r="8" />

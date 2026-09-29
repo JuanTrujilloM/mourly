@@ -27,7 +27,7 @@ export function ProfileForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-6" noValidate>
-      <PersonalInfoCard form={form} />
+      <PersonalInfoCard form={form} birthDateLocked={edit} />
       <PhotosCard form={form} />
       <AcademicInfoCard form={form} university={university} />
       <AboutYouCard form={form} />

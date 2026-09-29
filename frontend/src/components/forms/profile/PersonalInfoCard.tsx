@@ -10,8 +10,10 @@ import { Select } from '@/components/ui/Select';
 
 export function PersonalInfoCard({
   form,
+  birthDateLocked = false,
 }: {
   form: UseFormReturn<ProfileValues>;
+  birthDateLocked?: boolean;
 }) {
   const { genders } = useCatalog();
   const { register, formState } = form;
@@ -34,12 +36,21 @@ export function PersonalInfoCard({
           htmlFor="dateOfBirth"
           error={errors.dateOfBirth?.message}
         >
+          {/* readOnly, not disabled: react-hook-form drops disabled values on submit. */}
           <Input
             id="dateOfBirth"
             type="date"
+            readOnly={birthDateLocked}
+            aria-describedby={birthDateLocked ? 'dateOfBirth-locked' : undefined}
+            className="read-only:bg-surface-2 read-only:text-ink-2 read-only:cursor-not-allowed"
             hasError={!!errors.dateOfBirth}
             {...register('dateOfBirth')}
           />
+          {birthDateLocked && (
+            <p id="dateOfBirth-locked" className="text-ink-3 text-xs">
+              No se puede cambiar después del registro.
+            </p>
+          )}
         </Field>
 
         <Field label="Género" htmlFor="gender" error={errors.gender?.message}>

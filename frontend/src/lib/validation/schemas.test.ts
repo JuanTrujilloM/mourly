@@ -110,6 +110,38 @@ describe('profileSchema', () => {
     ).toBe(false);
   });
 
+  it('accepts jpg and png uploads', () => {
+    const photos = ['image/jpeg', 'image/png'].map((type, index) => ({
+      id: String(index),
+      url: 'blob:x',
+      file: new File(['x'], 'photo', { type }),
+    }));
+
+    expect(profileSchema.safeParse({ ...VALID_PROFILE, photos }).success).toBe(
+      true,
+    );
+  });
+
+  it('rejects an upload that is not jpg or png', () => {
+    const file = new File(['x'], 'photo.webp', { type: 'image/webp' });
+    const photos = [{ id: 'n', url: 'blob:n', file }];
+
+    expect(profileSchema.safeParse({ ...VALID_PROFILE, photos }).success).toBe(
+      false,
+    );
+  });
+
+  it('rejects an upload over 5 MB', () => {
+    const file = new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'big.png', {
+      type: 'image/png',
+    });
+    const photos = [{ id: 'n', url: 'blob:n', file }];
+
+    expect(profileSchema.safeParse({ ...VALID_PROFILE, photos }).success).toBe(
+      false,
+    );
+  });
+
   it('rejects an out of range height', () => {
     expect(
       profileSchema.safeParse({ ...VALID_PROFILE, height: 90 }).success,

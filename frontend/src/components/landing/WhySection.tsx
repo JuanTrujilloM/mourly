@@ -9,14 +9,14 @@ const REASONS = [
       'Cada jueves nuestro sistema cruza lo que tienen en común, lo que buscan, cuándo pueden y cómo les fue en citas anteriores, y te propone una sola persona. Sin likes, sin deslizar.',
   },
   {
-    title: 'Cita real, lugar real',
+    title: 'Del perfil a la mesa',
     description:
-      'No se queda en el chat. Reservamos mesa en un lugar aliado cerca del campus.',
+      'Nosotros reservamos en un lugar cerca de tu U. Vos solo llegás.',
   },
   {
-    title: 'Solo con carné',
+    title: 'Gente real, de tu U',
     description:
-      'Cada cuenta se valida con correo institucional. Parche cerrado, gente real.',
+      'Cada cuenta se valida con correo institucional. Nada de perfiles falsos.',
   },
 ];
 
@@ -30,7 +30,8 @@ export function WhySection() {
             No es otra app de citas.
           </h2>
           <p className="text-ink-2 mt-4 max-w-md text-lg">
-            Somos la que de verdad te lleva a la cita.
+            ¿Nunca usaste una app de citas? Mejor. Acá no hay nada que
+            deslizar: es un café con alguien de tu U.
           </p>
           <Image
             src={sello}

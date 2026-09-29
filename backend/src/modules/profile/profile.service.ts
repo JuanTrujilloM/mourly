@@ -57,9 +57,8 @@ export class ProfileService {
     dto: CreateProfileDto,
     photoUrls: string[],
   ) {
-    const data = {
+    const editable = {
       name: dto.name,
-      dateOfBirth: new Date(dto.dateOfBirth),
       gender: dto.gender,
       height: dto.height,
       biography: dto.biography,
@@ -71,8 +70,8 @@ export class ProfileService {
     return this.prisma.$transaction(async (tx) => {
       const profile = await tx.profile.upsert({
         where: { userId },
-        create: { userId, ...data },
-        update: data,
+        create: { userId, dateOfBirth: new Date(dto.dateOfBirth), ...editable },
+        update: editable,
       });
 
       await tx.photo.deleteMany({ where: { profileId: profile.id } });

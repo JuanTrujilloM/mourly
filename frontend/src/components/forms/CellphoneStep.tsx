@@ -7,8 +7,9 @@ import { useUpdateCellphone } from '@/hooks/useUpdateCellphone';
 import { useSendPhoneCode } from '@/hooks/useSendPhoneCode';
 import { getApiErrorMessage } from '@/lib/utils/errors';
 import { rememberResendCooldown } from '@/lib/utils/resend-cooldown';
+import { toLocalCellphone } from '@/lib/utils/cellphone';
 import { Field } from '@/components/ui/Field';
-import { Input } from '@/components/ui/Input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { Button } from '@/components/ui/Button';
 
 export function CellphoneStep({
@@ -27,7 +28,7 @@ export function CellphoneStep({
     formState: { errors },
   } = useForm<CellphoneValues>({
     resolver: zodResolver(cellphoneSchema),
-    defaultValues: { cellphone: current ?? '' },
+    defaultValues: { cellphone: toLocalCellphone(current ?? '') },
   });
 
   const onSubmit = async ({ cellphone }: CellphoneValues) => {
@@ -52,11 +53,8 @@ export function CellphoneStep({
       </p>
 
       <Field label="Celular" htmlFor="cellphone" error={errors.cellphone?.message}>
-        <Input
+        <PhoneInput
           id="cellphone"
-          type="tel"
-          autoComplete="tel"
-          placeholder="300 123 4567"
           hasError={!!errors.cellphone}
           {...register('cellphone')}
         />

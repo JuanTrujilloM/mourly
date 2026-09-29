@@ -18,7 +18,7 @@ export function FlowStepCompleted() {
   return (
     <FlowState
       title="Listo."
-      description="Ya completaste este paso. Te avisamos por SMS cuando tu match también termine, para confirmar la cita."
+      description="Ya completaste este paso. Te avisamos por SMS cuando tu match también termine, para confirmar el plan."
     />
   );
 }

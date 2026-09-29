@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   fetchAvailabilityView,
+  fetchFlowProfile,
   fetchTokenVenues,
   selectTokenVenues,
   submitAvailability,
@@ -45,5 +46,13 @@ export function useSelectTokenVenues(token: string) {
   return useMutation({
     mutationFn: (venueIds: string[]) => selectTokenVenues(token, venueIds),
     onSuccess: invalidate,
+  });
+}
+
+export function useFlowProfile(token: string) {
+  return useQuery({
+    queryKey: ['flowProfile', token],
+    queryFn: () => fetchFlowProfile(token),
+    retry: false,
   });
 }

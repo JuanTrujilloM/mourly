@@ -97,21 +97,29 @@ rejectedAt       DateTime?         // HU-07: cuándo (analítica, AC6)
 ## 4. Flujo público por token (HU-09 + HU-06)
 
 Rutas **públicas** (sin `JwtAuthGuard`) — el token en la URL es la credencial.
-La URL de entrada del link es `/flow/:token/places` (lugares primero):
+La URL de entrada del link es `/flow/:token` (perfil primero, después lugares):
 
 | Método | Ruta | Qué hace |
 |---|---|---|
+| `GET`  | `/availability/:token/profile` | **Paso 0.** Perfil del match: primer nombre, edad, U, carrera, semestre, bio, fotos (la principal primero), hobbies en común (`sharedHobbies`) y el resto de sus hobbies (`otherHobbies`). Consumido o `DATE` → `COMPLETED`; match rechazado o expirado → `410`. No cambia el paso del link |
 | `GET`  | `/availability/:token/venues` | **Paso 1.** Sugerencias de lugares (reusa `MatchesService`). Si el paso ya es `AVAILABILITY`, señaliza redirigir a horarios; consumido → `COMPLETED` |
 | `POST` | `/availability/:token/venues` | Guarda la selección (exactamente 2 de 3), avanza el link a `AVAILABILITY` |
 | `GET`  | `/availability/:token` | **Paso 2.** Valida y devuelve el calendario (7 días, slots 12pm–7pm). Si el paso es `VENUE`, señaliza volver a lugares; consumido → `COMPLETED` |
 | `POST` | `/availability/:token` | Valida (≥1 slot, dentro de la ventana), guarda `Availability`, **consume el link**, dispara `tryConfirm` |
 
 Frontend (fuera de `AuthGate`):
-- `app/flow/[token]/places/page.tsx` — **entrada del flujo**: selección de lugares (reusa `VenueCard`).
+- `app/flow/[token]/page.tsx` — **entrada del flujo**: perfil con carrusel de fotos → "Cuadrar el plan" (a lugares, o a horarios si el link ya está en `AVAILABILITY`).
+- `app/flow/[token]/places/page.tsx` — paso 1: selección de lugares (reusa `VenueCard`).
 - `app/availability/[token]/page.tsx` — paso final: calendario + pantalla "¡Listo!" / estados de error.
 
 Re-abrir un link consumido muestra una pantalla amable de completado (los `GET`
 devuelven `{ step: 'COMPLETED' }`); los `POST` responden 410.
+
+Cerrar un match expira en el acto todos sus links
+(`AvailabilityLinkService.revokeForMatch`, en la misma transacción que cambia el
+estado): al rechazarlo o vencer las 48 h sin respuesta (`terminate`) y al
+reciclarlo por no cruzar horarios (`recycle`). Reabrirlos da 410 y el perfil de
+la otra persona deja de verse.
 
 **Regla "2 de 3"**: cada usuario elige **exactamente 2** de las 3 opciones. Dos
 subconjuntos de 2 en un set de 3 siempre se cruzan → siempre hay un lugar en común

@@ -6,6 +6,7 @@ import { AvailabilityService } from './availability.service';
 import { AvailabilityViewService } from './availability-view.service';
 import { AvailabilityLinkResolver } from './availability-link-resolver.service';
 import { MatchContextService } from './match-context.service';
+import { FlowProfileService } from './flow-profile.service';
 
 @Module({
   imports: [MatchesModule, AvailabilityLinkModule],
@@ -15,6 +16,7 @@ import { MatchContextService } from './match-context.service';
     AvailabilityViewService,
     AvailabilityLinkResolver,
     MatchContextService,
+    FlowProfileService,
   ],
 })
 export class AvailabilityModule {}

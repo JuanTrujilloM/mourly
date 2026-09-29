@@ -24,7 +24,7 @@ export const PARTNER: PartnerSummary = {
   photoUrl: 'https://cdn/b.jpg',
 };
 
-export const INVITE_URL = `${APP_ORIGIN}/flow/${TOKEN}/places`;
+export const INVITE_URL = `${APP_ORIGIN}/flow/${TOKEN}`;
 export const NUDGE_URL = `${APP_ORIGIN}/availability/${TOKEN}`;
 // Date links carry a 128-bit token: 22 characters.
 export const DATE_URL = `${APP_ORIGIN}/cita/${'d'.repeat(22)}`;

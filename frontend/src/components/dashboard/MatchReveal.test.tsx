@@ -24,7 +24,7 @@ describe('MatchReveal', () => {
       </div>,
     );
 
-    const dialog = screen.getByRole('dialog', { name: 'Tu cita de esta semana' });
+    const dialog = screen.getByRole('dialog', { name: 'Tu plan de esta semana' });
     expect(container.contains(dialog)).toBe(false);
     expect(dialog.parentElement).toBe(document.body);
   });

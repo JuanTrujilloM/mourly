@@ -57,7 +57,7 @@ internacional (Colombia no soporta sender ID alfanumérico).
 
 | `kind` | Disparador | Texto |
 |---|---|---|
-| `match_invite` | Cron semanal / `inviteUser` | `Mourly: tenés match esta semana con {nombre}. Escogé lugares y horarios: {url}` |
+| `match_invite` | Cron semanal / `inviteUser` | `Mourly: esta semana hay alguien para vos. Conocé a {primer nombre}, de {U}: {url}` (el link abre el perfil) |
 | `date_proposal` | Cruce de horario + lugar (la cita ya quedó confirmada) | `Mourly: coincidieron con {nombre}. Cita confirmada: {cuándo} en {lugar}. ¡Que la disfruten!` |
 | `more_availability` | Sin cruce, primer intento | `Mourly: tus horarios no cuadraron con {nombre}. Podés sumar franjas: {url}` |
 | `feedback_request` | 24h después de la cita | `Mourly: ¿te encontraste con {nombre} en {lugar}? Contanos qué tal estuvo.` |
@@ -126,7 +126,7 @@ Los celulares se guardan como los escribió la persona (`3001234567` o
 ### Modo dev (sin Twilio)
 Con `TWILIO_ACCOUNT_SID` vacío, cada envío aparece en consola:
 ```
-[dev sms] to +573001112233: Mourly: tenés match esta semana con Sofia Gomez. Escogé lugares y horarios: http://localhost:3000/flow/…/places (Twilio not configured)
+[dev sms] to +573001112233: Mourly: esta semana hay alguien para vos. Conocé a Sofia, de CES: http://localhost:3000/flow/… (Twilio not configured)
 ```
 Dispara los flujos como en
 [availability-scheduling-flow.md §10](../matching/availability-scheduling-flow.md):

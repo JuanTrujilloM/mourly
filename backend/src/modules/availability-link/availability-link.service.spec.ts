@@ -78,4 +78,31 @@ describe('AvailabilityLinkService', () => {
       });
     });
   });
+
+  describe('revokeForMatch', () => {
+    it("expires every live link of the match, both users' and every step", async () => {
+      const { service, updateMany } = setup();
+
+      await service.revokeForMatch('m1');
+
+      const { where, data } = updateMany.mock.calls[0][0];
+      expect(where).toEqual({
+        matchId: 'm1',
+        consumedAt: null,
+        expiresAt: { gt: data.expiresAt },
+      });
+      expect(data.expiresAt.getTime()).toBeLessThanOrEqual(Date.now());
+    });
+
+    it('leaves a revoked link reading as expired', async () => {
+      const { service, updateMany, findUnique } = setup();
+      await service.revokeForMatch('m1');
+      const { expiresAt } = updateMany.mock.calls[0][0].data;
+      findUnique.mockResolvedValue(
+        storedLink({ expiresAt: new Date(expiresAt.getTime() - 1) }),
+      );
+
+      expect(await service.validate('t')).toEqual({ status: 'expired' });
+    });
+  });
 });

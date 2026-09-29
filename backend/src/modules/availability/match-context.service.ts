@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
+import { firstName } from '../../common/utils/first-name';
 
 export type MatchContext = {
   partnerName: string | null;
@@ -24,7 +25,8 @@ export class MatchContextService {
 
     const partner = match.userAId === userId ? match.userB : match.userA;
     return {
-      partnerName: partner.profile?.name ?? null,
+      // Only the first name leaves the backend before a plan is confirmed.
+      partnerName: partner.profile ? firstName(partner.profile.name) : null,
       anchor: match.createdAt,
     };
   }
