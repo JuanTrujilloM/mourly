@@ -9,6 +9,7 @@ import { getApiErrorMessage } from '@/lib/utils/errors';
 import { Modal } from '@/components/ui/Modal';
 import { Field } from '@/components/ui/Field';
 import { Input } from '@/components/ui/Input';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 import { Button } from '@/components/ui/Button';
 
 const TITLE = 'Todavía no llegamos a tu universidad';
@@ -97,10 +98,8 @@ export function WaitlistDialog({
               htmlFor="waitlist-cellphone"
               error={errors.cellphone?.message}
             >
-              <Input
+              <PhoneInput
                 id="waitlist-cellphone"
-                type="tel"
-                autoComplete="tel"
                 hasError={!!errors.cellphone}
                 {...register('cellphone')}
               />
