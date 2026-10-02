@@ -1,4 +1,5 @@
 import { PrismaService } from '../../config/prisma.service';
+import { setupPhotoUrlService } from '../storage/storage.test-helpers';
 import { MatchesService } from './matches.service';
 
 const PROFILE = {
@@ -7,13 +8,17 @@ const PROFILE = {
   university: 'CES',
   major: 'Medicina',
   biography: 'Corro maratones',
-  photos: [{ url: 'https://cdn/b.jpg', isPrimary: true }],
+  photos: [
+    { key: 'profiles/a.jpg', isPrimary: false },
+    { key: 'profiles/b.jpg', isPrimary: true },
+  ],
 };
 
 function setup(match: unknown) {
   const findFirst = jest.fn().mockResolvedValue(match);
   const prisma = { match: { findFirst } } as unknown as PrismaService;
-  return { service: new MatchesService(prisma), findFirst };
+  const { photoUrls } = setupPhotoUrlService();
+  return { service: new MatchesService(prisma, photoUrls), findFirst };
 }
 
 describe('MatchesService', () => {
@@ -37,6 +42,9 @@ describe('MatchesService', () => {
 
     expect(current).toMatchObject({ id: 'm1', status: 'pending' });
     expect(current?.partner?.name).toBe('Beto');
+    expect(current?.partner?.photoUrl).toBe(
+      'https://signed/page/profiles/b.jpg',
+    );
   });
 
   it('returns the other user as the partner when the caller is userB', async () => {

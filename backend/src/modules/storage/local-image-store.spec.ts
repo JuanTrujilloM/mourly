@@ -43,7 +43,7 @@ describe('LocalImageStore', () => {
   it('builds a url on the default backend host', async () => {
     const store = buildStore();
 
-    expect(await store.save('profiles/a.jpg', FILE)).toBe(
+    expect(await store.urlFor('profiles/a.jpg')).toBe(
       'http://localhost:3001/uploads/profiles/a.jpg',
     );
   });
@@ -51,26 +51,18 @@ describe('LocalImageStore', () => {
   it('honors a configured public url without a trailing slash', async () => {
     const store = buildStore({ BACKEND_PUBLIC_URL: 'https://api.test/' });
 
-    expect(await store.save('profiles/a.jpg', FILE)).toBe(
+    expect(await store.urlFor('profiles/a.jpg')).toBe(
       'https://api.test/uploads/profiles/a.jpg',
     );
   });
 
-  it('removes the file behind a local url', async () => {
+  it('removes the file behind a key', async () => {
     const store = buildStore();
 
-    await store.remove('http://localhost:3001/uploads/profiles/a.jpg');
+    await store.remove('profiles/a.jpg');
 
     expect(unlinkMock).toHaveBeenCalledWith(
       join(process.cwd(), 'uploads', 'profiles', 'a.jpg'),
     );
-  });
-
-  it('ignores a url that does not belong to local storage', async () => {
-    const store = buildStore();
-
-    await store.remove('https://storage.googleapis.com/mourly-media/a.jpg');
-
-    expect(unlinkMock).not.toHaveBeenCalled();
   });
 });

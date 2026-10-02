@@ -5,8 +5,9 @@ import { AvailabilityLinkIssuerService } from '../availability-link/availability
 import { NotificationsService } from '../notifications/notifications.service';
 import { buildPartnerSummary } from '../notifications/partner-summary';
 import { recipientOf } from './match-recipients';
+import { PhotoUrlService } from '../storage/photo-url.service';
 import {
-  INVITE_USER_SELECT,
+  MATCH_WITH_USERS_SELECT,
   type InviteResult,
   type InviteUser,
   type MatchWithUsers,
@@ -25,6 +26,7 @@ export class MatchInviteService {
     private readonly config: ConfigService,
     private readonly links: AvailabilityLinkIssuerService,
     private readonly notifications: NotificationsService,
+    private readonly photoUrls: PhotoUrlService,
   ) {}
 
   async inviteForPairs(pairs: MatchPair[]): Promise<void> {
@@ -70,11 +72,15 @@ export class MatchInviteService {
   ): Promise<InviteResult> {
     const token = await this.links.issueForMatchUser(matchId, user.id);
     const url = `${this.frontendUrl()}/flow/${token}`;
+    const photoUrl = await this.photoUrls.primaryUrl(
+      partner.profile?.photos,
+      'email',
+    );
 
     await this.notifications.send({
       kind: 'match_invite',
       recipient: recipientOf(user),
-      partner: buildPartnerSummary(partner.profile),
+      partner: buildPartnerSummary(partner.profile, photoUrl),
       availabilityUrl: url,
       expiresInDays: Math.ceil(this.links.ttlHours() / HOURS_PER_DAY),
     });
@@ -84,13 +90,7 @@ export class MatchInviteService {
   private loadMatch(matchId: string): Promise<MatchWithUsers | null> {
     return this.prisma.match.findUnique({
       where: { id: matchId },
-      select: {
-        id: true,
-        userAId: true,
-        userBId: true,
-        userA: INVITE_USER_SELECT,
-        userB: INVITE_USER_SELECT,
-      },
+      select: MATCH_WITH_USERS_SELECT,
     });
   }
 

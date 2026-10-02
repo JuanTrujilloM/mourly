@@ -5,11 +5,9 @@ const PROFILE = {
   dateOfBirth: new Date('2002-01-01'),
   university: 'CES',
   major: 'Medicina',
-  photos: [
-    { url: 'https://cdn/a.jpg', isPrimary: false },
-    { url: 'https://cdn/b.jpg', isPrimary: true },
-  ],
 };
+
+const PHOTO_URL = 'https://signed/b.jpg';
 
 describe('buildPartnerSummary', () => {
   beforeEach(() => {
@@ -21,7 +19,7 @@ describe('buildPartnerSummary', () => {
   });
 
   it('falls back to a placeholder when there is no profile', () => {
-    expect(buildPartnerSummary(null)).toEqual({
+    expect(buildPartnerSummary(null, PHOTO_URL)).toEqual({
       name: 'tu match',
       age: null,
       university: null,
@@ -30,23 +28,15 @@ describe('buildPartnerSummary', () => {
     });
   });
 
-  it('prefers the primary photo', () => {
-    expect(buildPartnerSummary(PROFILE).photoUrl).toBe('https://cdn/b.jpg');
+  it('carries the photo url it was given', () => {
+    expect(buildPartnerSummary(PROFILE, PHOTO_URL).photoUrl).toBe(PHOTO_URL);
   });
 
-  it('falls back to the first photo when none is primary', () => {
-    const photos = [{ url: 'https://cdn/a.jpg', isPrimary: false }];
-
-    expect(buildPartnerSummary({ ...PROFILE, photos }).photoUrl).toBe(
-      'https://cdn/a.jpg',
-    );
-  });
-
-  it('reports a null photo when there are none', () => {
-    expect(buildPartnerSummary({ ...PROFILE, photos: [] }).photoUrl).toBeNull();
+  it('reports a null photo when there is none', () => {
+    expect(buildPartnerSummary(PROFILE, null).photoUrl).toBeNull();
   });
 
   it('derives the age in UTC so the server timezone cannot shift it', () => {
-    expect(buildPartnerSummary(PROFILE).age).toBe(24);
+    expect(buildPartnerSummary(PROFILE, null).age).toBe(24);
   });
 });

@@ -18,7 +18,6 @@ type DetailUser = {
     major: string;
     semester: string;
     status: string;
-    photos: { url: string; isPrimary: boolean }[];
     hobbies: { hobby: { name: string } }[];
   } | null;
   preferences: {
@@ -47,10 +46,8 @@ function mapPreferences(preferences: DetailUser['preferences']) {
   };
 }
 
-export function mapUserDetail(user: DetailUser) {
+export function mapUserDetail(user: DetailUser, photoUrls: string[]) {
   const profile = user.profile;
-  const photos = profile?.photos ?? [];
-  const primary = photos.find((photo) => photo.isPrimary) ?? photos[0];
 
   return {
     id: user.id,
@@ -65,8 +62,8 @@ export function mapUserDetail(user: DetailUser) {
     major: profile?.major ?? null,
     semester: profile?.semester ?? null,
     status: profile?.status ?? null,
-    primaryPhoto: primary?.url ?? null,
-    photos: photos.map((photo) => photo.url),
+    primaryPhoto: photoUrls[0] ?? null,
+    photos: photoUrls,
     hobbies: profile?.hobbies.map((entry) => entry.hobby.name) ?? [],
     preferences: mapPreferences(user.preferences),
   };

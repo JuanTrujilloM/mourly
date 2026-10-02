@@ -4,6 +4,7 @@ import {
   AvailabilityLinkService,
   type LinkValidation,
 } from '../availability-link/availability-link.service';
+import { setupPhotoUrlService } from '../storage/storage.test-helpers';
 import { DateViewService } from './date-view.service';
 
 const OK_DATE: LinkValidation = {
@@ -19,7 +20,7 @@ function user(name: string, university: string, hobbies: string[]) {
       university,
       major: 'Diseño',
       biography: 'Café y montaña',
-      photos: [{ url: `https://cdn/${name}.jpg`, isPrimary: true }],
+      photos: [{ key: `profiles/${name}.jpg`, isPrimary: true }],
       hobbies: hobbies.map((hobby) => ({ hobby: { name: hobby } })),
     },
   };
@@ -49,6 +50,7 @@ function setup(
   const service = new DateViewService(
     prisma,
     links as unknown as AvailabilityLinkService,
+    setupPhotoUrlService().photoUrls,
   );
   return { service };
 }
@@ -62,6 +64,7 @@ describe('DateViewService', () => {
     expect(view.viewer).toEqual({ name: 'Ana', university: 'EAFIT' });
     expect(view.partner.name).toBe('Beto');
     expect(view.partner.university).toBe('UPB');
+    expect(view.partner.photoUrl).toBe('https://signed/page/profiles/Beto.jpg');
     expect(view.venue).toEqual({ name: 'Pergamino', address: 'Cra 37 #8A-37' });
     expect(view.scheduledAt).toBe('2026-09-22T17:00:00.000Z');
   });

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
+import { PhotoUrlService } from '../storage/photo-url.service';
 import { UniversitiesService } from '../universities/universities.service';
 import { ProfilePhotosService } from './profile-photos.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -10,6 +11,7 @@ export class ProfileService {
     private readonly prisma: PrismaService,
     private readonly photos: ProfilePhotosService,
     private readonly universities: UniversitiesService,
+    private readonly photoUrls: PhotoUrlService,
   ) {}
 
   async save(
@@ -22,40 +24,44 @@ export class ProfileService {
       where: { userId },
       include: { photos: true },
     });
-    const ownedUrls = new Set(existing?.photos.map((photo) => photo.url) ?? []);
+    const ownedKeys = new Map(
+      existing?.photos.map((photo) => [photo.id, photo.key]) ?? [],
+    );
 
-    const photoUrls = await this.photos.resolveUrls(
+    const photoKeys = await this.photos.resolveKeys(
       dto.photoManifest,
       files,
-      ownedUrls,
+      ownedKeys,
     );
     const university = await this.universities.nameForEmail(email);
-    const saved = await this.persist(userId, university, dto, photoUrls);
-    await this.photos.removeUnused(ownedUrls, photoUrls);
+    const saved = await this.persist(userId, university, dto, photoKeys);
+    await this.photos.removeUnused([...ownedKeys.values()], photoKeys);
 
-    return saved;
+    return this.photoUrls.withSignedPhotos(saved);
   }
 
-  getByUserId(userId: string) {
-    return this.prisma.profile.findUnique({
+  async getByUserId(userId: string) {
+    const profile = await this.prisma.profile.findUnique({
       where: { userId },
       include: { photos: true },
     });
+    return profile && this.photoUrls.withSignedPhotos(profile);
   }
 
-  setAvailability(userId: string, status: string) {
-    return this.prisma.profile.update({
+  async setAvailability(userId: string, status: string) {
+    const profile = await this.prisma.profile.update({
       where: { userId },
       data: { status },
       include: { photos: true },
     });
+    return this.photoUrls.withSignedPhotos(profile);
   }
 
   private persist(
     userId: string,
     university: string,
     dto: CreateProfileDto,
-    photoUrls: string[],
+    photoKeys: string[],
   ) {
     const editable = {
       name: dto.name,
@@ -76,9 +82,9 @@ export class ProfileService {
 
       await tx.photo.deleteMany({ where: { profileId: profile.id } });
       await tx.photo.createMany({
-        data: photoUrls.map((url, index) => ({
+        data: photoKeys.map((key, index) => ({
           profileId: profile.id,
-          url,
+          key,
           isPrimary: index === 0,
         })),
       });

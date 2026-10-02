@@ -12,7 +12,7 @@ export const FLOW_PARTNER_SELECTION = {
         semester: true,
         biography: true,
         photos: {
-          select: { url: true, isPrimary: true },
+          select: { key: true, isPrimary: true },
           orderBy: { createdAt: 'asc' as const },
         },
         hobbies: { select: { hobby: { select: { name: true } } } },
@@ -21,8 +21,6 @@ export const FLOW_PARTNER_SELECTION = {
   },
 };
 
-type Photo = { url: string; isPrimary: boolean };
-
 type FlowPartnerProfile = {
   name: string;
   dateOfBirth: Date;
@@ -30,7 +28,6 @@ type FlowPartnerProfile = {
   major: string;
   semester: string;
   biography: string;
-  photos: Photo[];
 };
 
 export interface FlowPartner {
@@ -43,7 +40,10 @@ export interface FlowPartner {
   photos: string[];
 }
 
-export function toFlowPartner(profile: FlowPartnerProfile): FlowPartner {
+export function toFlowPartner(
+  profile: FlowPartnerProfile,
+  photoUrls: string[],
+): FlowPartner {
   return {
     firstName: firstName(profile.name),
     age: ageFrom(profile.dateOfBirth),
@@ -51,13 +51,6 @@ export function toFlowPartner(profile: FlowPartnerProfile): FlowPartner {
     major: profile.major,
     semester: profile.semester,
     biography: profile.biography,
-    photos: primaryFirst(profile.photos),
+    photos: photoUrls,
   };
-}
-
-function primaryFirst(photos: Photo[]): string[] {
-  return [
-    ...photos.filter((photo) => photo.isPrimary),
-    ...photos.filter((photo) => !photo.isPrimary),
-  ].map((photo) => photo.url);
 }

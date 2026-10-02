@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../../config/prisma.service';
 import { AvailabilityLinkIssuerService } from '../availability-link/availability-link-issuer.service';
 import { NotificationsService } from '../notifications/notifications.service';
+import { setupPhotoUrlService } from '../storage/storage.test-helpers';
 import { MatchInviteService } from './match-invite.service';
 
 const MATCH = {
@@ -18,7 +19,7 @@ const MATCH = {
       dateOfBirth: new Date('2003-01-01'),
       university: 'EAFIT',
       major: 'Derecho',
-      photos: [{ url: 'https://cdn/a.jpg', isPrimary: true }],
+      photos: [{ key: 'profiles/a.jpg', isPrimary: true }],
     },
   },
   userB: {
@@ -56,6 +57,7 @@ function setup(env: Record<string, string> = {}) {
     config,
     links as unknown as AvailabilityLinkIssuerService,
     notifications as unknown as NotificationsService,
+    setupPhotoUrlService().photoUrls,
   );
   return { service, findUnique, findFirst, links, notifications };
 }
@@ -83,6 +85,18 @@ describe('MatchInviteService', () => {
 
     expect(results).toHaveLength(2);
     expect(notifications.send).toHaveBeenCalledTimes(2);
+  });
+
+  it('signs the partner photo for the email lifetime', async () => {
+    const { service, notifications } = setup();
+
+    await service.inviteForMatch('m1');
+
+    const [toAna, toBeto] = notifications.send.mock.calls.map(
+      ([notification]) => notification as { partner: { photoUrl: unknown } },
+    );
+    expect(toAna.partner.photoUrl).toBeNull();
+    expect(toBeto.partner.photoUrl).toBe('https://signed/email/profiles/a.jpg');
   });
 
   it('points each link at the profile-first flow url', async () => {
