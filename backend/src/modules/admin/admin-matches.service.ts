@@ -1,11 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { partnerSummary } from './admin.mappers';
-import { PROFILE_DETAIL_INCLUDE } from './admin-user-detail.mapper';
-import { toMatchDetail } from './match-detail.mapper';
+import { MATCH_NOT_FOUND_MESSAGE } from './admin-messages';
 
 const CANCELED_STATUS = 'canceled';
-const MATCH_NOT_FOUND_MESSAGE = 'Match not found.';
 
 @Injectable()
 export class AdminMatchesService {
@@ -38,28 +36,6 @@ export class AdminMatchesService {
     }));
   }
 
-  async getMatchDetail(matchId: string) {
-    const match = await this.prisma.match.findUnique({
-      where: { id: matchId },
-      include: {
-        userA: {
-          include: { profile: PROFILE_DETAIL_INCLUDE, preferences: true },
-        },
-        userB: {
-          include: { profile: PROFILE_DETAIL_INCLUDE, preferences: true },
-        },
-        date: { include: { venue: true } },
-        venueOptions: { include: { venue: true } },
-        availabilities: true,
-      },
-    });
-    if (!match) {
-      throw new NotFoundException(MATCH_NOT_FOUND_MESSAGE);
-    }
-
-    return toMatchDetail(match, await this.feedbackFor(match.date?.id));
-  }
-
   async cancelMatch(matchId: string) {
     const match = await this.prisma.match.findUnique({
       where: { id: matchId },
@@ -73,25 +49,5 @@ export class AdminMatchesService {
       data: { status: CANCELED_STATUS },
     });
     return { id: matchId, status: CANCELED_STATUS };
-  }
-
-  private async feedbackFor(dateId?: string) {
-    if (!dateId) {
-      return [];
-    }
-
-    const feedback = await this.prisma.feedback.findMany({
-      where: { dateId },
-      include: { user: { include: { profile: true } } },
-    });
-
-    return feedback.map((entry) => ({
-      userName: entry.user.profile?.name ?? entry.user.email,
-      occurred: entry.occurred,
-      rating: entry.rating,
-      comments: entry.comments,
-      noShowReason: entry.noShowReason,
-      amountSpent: entry.amountSpent,
-    }));
   }
 }

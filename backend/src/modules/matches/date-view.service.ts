@@ -1,6 +1,7 @@
 import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { AvailabilityLinkService } from '../availability-link/availability-link.service';
+import { PhotoUrlService } from '../storage/photo-url.service';
 import { toPartnerSummary } from './partner.mapper';
 import { sharedHobbyNames } from './shared-hobbies';
 
@@ -17,7 +18,7 @@ const PROFILE_SELECTION = {
         university: true,
         major: true,
         biography: true,
-        photos: { select: { url: true, isPrimary: true } },
+        photos: { select: { key: true, isPrimary: true } },
         hobbies: { select: { hobby: { select: { name: true } } } },
       },
     },
@@ -43,6 +44,7 @@ export class DateViewService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly links: AvailabilityLinkService,
+    private readonly photoUrls: PhotoUrlService,
   ) {}
 
   async getView(token: string) {
@@ -56,7 +58,11 @@ export class DateViewService {
       match?.userAId === link.userId
         ? [match.userA, match.userB]
         : [match?.userB, match?.userA];
-    const partner = toPartnerSummary(other ?? null);
+    const photoUrl = await this.photoUrls.primaryUrl(
+      other?.profile?.photos,
+      'page',
+    );
+    const partner = toPartnerSummary(other ?? null, photoUrl);
     if (!match?.date || !partner) {
       throw new GoneException(NO_DATE_MESSAGE);
     }

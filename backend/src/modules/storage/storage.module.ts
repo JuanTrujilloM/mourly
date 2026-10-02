@@ -4,6 +4,7 @@ import { IMAGE_STORE, type ImageStore } from './image-store';
 import { LocalImageStore } from './local-image-store';
 import { GcsImageStore } from './gcs-image-store';
 import { StorageService } from './storage.service';
+import { PhotoUrlService } from './photo-url.service';
 
 export function createImageStore(config: ConfigService): ImageStore {
   const bucket = config.get<string>('GCS_BUCKET');
@@ -22,12 +23,13 @@ export function createImageStore(config: ConfigService): ImageStore {
 @Module({
   providers: [
     StorageService,
+    PhotoUrlService,
     {
       provide: IMAGE_STORE,
       inject: [ConfigService],
       useFactory: createImageStore,
     },
   ],
-  exports: [StorageService],
+  exports: [StorageService, PhotoUrlService],
 })
 export class StorageModule {}

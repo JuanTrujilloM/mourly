@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AdminGuard } from '../../common/guards/admin.guard';
 import { AdminUsersService } from './admin-users.service';
 import { AdminMatchesService } from './admin-matches.service';
+import { AdminMatchDetailService } from './admin-match-detail.service';
 import { AdminModerationService } from './admin-moderation.service';
 import { AdminStatsService } from './admin-stats.service';
 import { AdminOperationsService } from './admin-operations.service';
@@ -24,6 +25,7 @@ export class AdminController {
   constructor(
     private readonly users: AdminUsersService,
     private readonly matches: AdminMatchesService,
+    private readonly matchDetail: AdminMatchDetailService,
     private readonly moderation: AdminModerationService,
     private readonly stats: AdminStatsService,
     private readonly operations: AdminOperationsService,
@@ -51,7 +53,7 @@ export class AdminController {
 
   @Get('matches/:id')
   getMatch(@Param('id') id: string) {
-    return this.matches.getMatchDetail(id);
+    return this.matchDetail.getMatchDetail(id);
   }
 
   @Patch('matches/:id/cancel')

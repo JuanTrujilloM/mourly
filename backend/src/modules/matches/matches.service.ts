@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
+import { PhotoUrlService } from '../storage/photo-url.service';
 import { activeMatchWhere } from './active-match.query';
 import { toPartnerSummary } from './partner.mapper';
 
 @Injectable()
 export class MatchesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly photoUrls: PhotoUrlService,
+  ) {}
 
   async getCurrentMatch(userId: string) {
     const match = await this.prisma.match.findFirst({
@@ -21,10 +25,14 @@ export class MatchesService {
     }
 
     const partner = match.userAId === userId ? match.userB : match.userA;
+    const photoUrl = await this.photoUrls.primaryUrl(
+      partner.profile?.photos,
+      'page',
+    );
     return {
       id: match.id,
       status: match.status,
-      partner: toPartnerSummary(partner),
+      partner: toPartnerSummary(partner, photoUrl),
     };
   }
 }

@@ -1,7 +1,7 @@
 model Photo {
   id        String   @id @default(cuid())
   profileId String
-  url       String
+  key       String
   isPrimary Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

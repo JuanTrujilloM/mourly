@@ -1,25 +1,5 @@
 import { Logger } from '@nestjs/common';
-import { StorageService } from './storage.service';
-import type { ImageStore } from './image-store';
-
-function fileWith(
-  mimetype: string,
-  originalname = 'photo',
-): Express.Multer.File {
-  return {
-    mimetype,
-    originalname,
-    buffer: Buffer.from('data'),
-  } as Express.Multer.File;
-}
-
-function setup() {
-  const store = {
-    save: jest.fn().mockResolvedValue('https://cdn/profiles/x.jpg'),
-    remove: jest.fn().mockResolvedValue(undefined),
-  } satisfies ImageStore;
-  return { service: new StorageService(store), store };
-}
+import { fileWith, setupStorageService as setup } from './storage.test-helpers';
 
 describe('StorageService', () => {
   beforeEach(() => {
@@ -49,12 +29,12 @@ describe('StorageService', () => {
     expect(key).toMatch(/^profiles\/[0-9a-f-]{36}\.jpg$/);
   });
 
-  it('returns the url the store produced', async () => {
-    const { service } = setup();
+  it('returns the key it stored', async () => {
+    const { service, store } = setup();
 
-    expect(await service.uploadImage(fileWith('image/png'))).toBe(
-      'https://cdn/profiles/x.jpg',
-    );
+    const key = await service.uploadImage(fileWith('image/png'));
+
+    expect(key).toBe(store.save.mock.calls[0][0]);
   });
 
   it('refuses a mime type outside the allowlist', async () => {
@@ -65,12 +45,20 @@ describe('StorageService', () => {
     );
   });
 
-  it('deletes through the store', async () => {
+  it('deletes a key through the store', async () => {
     const { service, store } = setup();
 
-    await service.deleteImage('https://cdn/profiles/x.jpg');
+    await service.deleteImage('profiles/x.jpg');
 
-    expect(store.remove).toHaveBeenCalledWith('https://cdn/profiles/x.jpg');
+    expect(store.remove).toHaveBeenCalledWith('profiles/x.jpg');
+  });
+
+  it('leaves external images alone on delete', async () => {
+    const { service, store } = setup();
+
+    await service.deleteImage('https://randomuser.me/x.jpg');
+
+    expect(store.remove).not.toHaveBeenCalled();
   });
 
   it('never lets a failed delete bubble up', async () => {
@@ -78,7 +66,7 @@ describe('StorageService', () => {
     store.remove.mockRejectedValue(new Error('gone'));
 
     await expect(
-      service.deleteImage('https://cdn/profiles/x.jpg'),
+      service.deleteImage('profiles/x.jpg'),
     ).resolves.toBeUndefined();
     expect(Logger.prototype.warn).toHaveBeenCalled();
   });

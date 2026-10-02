@@ -8,25 +8,25 @@ const KEEP_PREFIX = 'keep:';
 export class ProfilePhotosService {
   constructor(private readonly storage: StorageService) {}
 
-  async resolveUrls(
+  async resolveKeys(
     manifestJson: string | undefined,
     files: Express.Multer.File[],
-    ownedUrls: Set<string>,
+    ownedKeys: Map<string, string>,
   ): Promise<string[]> {
     const manifest = this.parseManifest(manifestJson);
-    const urls =
+    const keys =
       manifest.length === 0
         ? await this.uploadAll(files)
-        : await this.applyManifest(manifest, files, ownedUrls);
+        : await this.applyManifest(manifest, files, ownedKeys);
 
-    this.assertCount(urls);
-    return urls;
+    this.assertCount(keys);
+    return keys;
   }
 
-  async removeUnused(ownedUrls: Set<string>, kept: string[]): Promise<void> {
+  async removeUnused(ownedKeys: string[], kept: string[]): Promise<void> {
     const keptSet = new Set(kept);
-    const removed = [...ownedUrls].filter((url) => !keptSet.has(url));
-    await Promise.all(removed.map((url) => this.storage.deleteImage(url)));
+    const removed = ownedKeys.filter((key) => !keptSet.has(key));
+    await Promise.all(removed.map((key) => this.storage.deleteImage(key)));
   }
 
   private uploadAll(files: Express.Multer.File[]): Promise<string[]> {
@@ -38,9 +38,9 @@ export class ProfilePhotosService {
   private async applyManifest(
     manifest: string[],
     files: Express.Multer.File[],
-    ownedUrls: Set<string>,
+    ownedKeys: Map<string, string>,
   ): Promise<string[]> {
-    const urls: string[] = [];
+    const keys: string[] = [];
     let fileIndex = 0;
 
     for (const entry of manifest) {
@@ -49,25 +49,25 @@ export class ProfilePhotosService {
         if (!file) {
           throw new BadRequestException('A photo file is missing.');
         }
-        urls.push(await this.storage.uploadImage(file));
+        keys.push(await this.storage.uploadImage(file));
         continue;
       }
       if (entry.startsWith(KEEP_PREFIX)) {
-        const url = entry.slice(KEEP_PREFIX.length);
-        if (!ownedUrls.has(url)) {
+        const key = ownedKeys.get(entry.slice(KEEP_PREFIX.length));
+        if (!key) {
           throw new BadRequestException('Invalid photo reference.');
         }
-        urls.push(url);
+        keys.push(key);
       }
     }
-    return urls;
+    return keys;
   }
 
-  private assertCount(urls: string[]): void {
-    if (urls.length < 1) {
+  private assertCount(keys: string[]): void {
+    if (keys.length < 1) {
       throw new BadRequestException('At least one photo is required.');
     }
-    if (urls.length > MAX_PHOTOS) {
+    if (keys.length > MAX_PHOTOS) {
       throw new BadRequestException(
         `At most ${MAX_PHOTOS} photos are allowed.`,
       );

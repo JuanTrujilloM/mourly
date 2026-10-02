@@ -1,6 +1,7 @@
 import { PrismaService } from '../../config/prisma.service';
 import { ProfilePhotosService } from './profile-photos.service';
 import { ProfileService } from './profile.service';
+import { setupPhotoUrlService } from '../storage/storage.test-helpers';
 import { UniversitiesService } from '../universities/universities.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 
@@ -14,11 +15,24 @@ const DTO = {
   semester: '6',
 } as CreateProfileDto;
 
+const SAVED_PROFILE = {
+  id: 'p1',
+  photos: [{ id: 'photo-1', key: 'profiles/a.jpg', isPrimary: true }],
+};
+
+const SIGNED_PHOTOS = [
+  {
+    id: 'photo-1',
+    isPrimary: true,
+    url: 'https://signed/page/profiles/a.jpg',
+  },
+];
+
 function setup(existing: unknown = null) {
   const profileFindUnique = jest.fn().mockResolvedValue(existing);
   const upsert = jest.fn().mockResolvedValue({ id: 'p1' });
-  const findUniqueOrThrow = jest.fn().mockResolvedValue({ id: 'p1' });
-  const profileUpdate = jest.fn().mockResolvedValue({ id: 'p1' });
+  const findUniqueOrThrow = jest.fn().mockResolvedValue(SAVED_PROFILE);
+  const profileUpdate = jest.fn().mockResolvedValue(SAVED_PROFILE);
   const photoDeleteMany = jest.fn().mockResolvedValue({ count: 0 });
   const photoCreateMany = jest.fn().mockResolvedValue({ count: 1 });
 
@@ -33,7 +47,7 @@ function setup(existing: unknown = null) {
   } as unknown as PrismaService;
 
   const photos = {
-    resolveUrls: jest.fn().mockResolvedValue(['https://cdn/a.jpg']),
+    resolveKeys: jest.fn().mockResolvedValue(['profiles/a.jpg']),
     removeUnused: jest.fn().mockResolvedValue(undefined),
   };
 
@@ -48,6 +62,7 @@ function setup(existing: unknown = null) {
     prisma,
     photos as unknown as ProfilePhotosService,
     universities as unknown as UniversitiesService,
+    setupPhotoUrlService().photoUrls,
   );
   return {
     service,
@@ -78,10 +93,7 @@ describe('ProfileService', () => {
 
   it('marks the first photo as primary', async () => {
     const { service, photos, photoCreateMany } = setup();
-    photos.resolveUrls.mockResolvedValue([
-      'https://cdn/a.jpg',
-      'https://cdn/b.jpg',
-    ]);
+    photos.resolveKeys.mockResolvedValue(['profiles/a.jpg', 'profiles/b.jpg']);
 
     await service.save('u1', 'ana@eafit.edu.co', DTO, []);
 
@@ -91,30 +103,30 @@ describe('ProfileService', () => {
     expect(rows.map((row) => row.isPrimary)).toEqual([true, false]);
   });
 
-  it('passes the previously owned urls to the photo resolver', async () => {
+  it('passes the owned photo keys, by photo id, to the resolver', async () => {
     const { service, photos } = setup({
       id: 'p1',
-      photos: [{ url: 'https://cdn/old.jpg' }],
+      photos: [{ id: 'photo-1', key: 'profiles/old.jpg' }],
     });
 
     await service.save('u1', 'ana@eafit.edu.co', DTO, []);
 
-    expect(photos.resolveUrls.mock.calls[0][2]).toEqual(
-      new Set(['https://cdn/old.jpg']),
+    expect(photos.resolveKeys.mock.calls[0][2]).toEqual(
+      new Map([['photo-1', 'profiles/old.jpg']]),
     );
   });
 
   it('cleans up dropped photos after the write commits', async () => {
     const { service, photos } = setup({
       id: 'p1',
-      photos: [{ url: 'https://cdn/old.jpg' }],
+      photos: [{ id: 'photo-1', key: 'profiles/old.jpg' }],
     });
 
     await service.save('u1', 'ana@eafit.edu.co', DTO, []);
 
     expect(photos.removeUnused).toHaveBeenCalledWith(
-      new Set(['https://cdn/old.jpg']),
-      ['https://cdn/a.jpg'],
+      ['profiles/old.jpg'],
+      ['profiles/a.jpg'],
     );
   });
 
@@ -143,6 +155,24 @@ describe('ProfileService', () => {
       where: { userId: 'u1' },
       include: { photos: true },
     });
+  });
+
+  it('answers with signed photo urls instead of storage keys', async () => {
+    const { service } = setup(SAVED_PROFILE);
+
+    expect((await service.getByUserId('u1'))?.photos).toEqual(SIGNED_PHOTOS);
+    expect(
+      (await service.save('u1', 'a@eafit.edu.co', DTO, [])).photos,
+    ).toEqual(SIGNED_PHOTOS);
+    expect((await service.setAvailability('u1', 'PAUSED')).photos).toEqual(
+      SIGNED_PHOTOS,
+    );
+  });
+
+  it('answers null when the user has no profile yet', async () => {
+    const { service } = setup(null);
+
+    expect(await service.getByUserId('u1')).toBeNull();
   });
 
   it('updates only the status when toggling availability', async () => {
