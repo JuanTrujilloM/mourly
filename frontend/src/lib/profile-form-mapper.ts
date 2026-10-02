@@ -33,7 +33,7 @@ export function buildProfileFormData(values: ProfileValues): FormData {
       data.append('photos', photo.file);
       return 'new';
     }
-    return `keep:${photo.url}`;
+    return `keep:${photo.id}`;
   });
   data.append('photoManifest', JSON.stringify(manifest));
 

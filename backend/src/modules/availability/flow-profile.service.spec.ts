@@ -5,6 +5,7 @@ import {
   LinkValidation,
 } from '../availability-link/availability-link.service';
 import { AvailabilityLinkResolver } from './availability-link-resolver.service';
+import { setupPhotoUrlService } from '../storage/storage.test-helpers';
 import { FlowProfileService } from './flow-profile.service';
 
 const CREATED_AT = new Date('2026-09-24T00:00:00.000Z');
@@ -20,7 +21,7 @@ const okLink = (
 function userWith(
   name: string,
   hobbies: string[],
-  photos: { url: string; isPrimary: boolean }[] = [],
+  photos: { key: string; isPrimary: boolean }[] = [],
 ) {
   return {
     profile: {
@@ -45,8 +46,8 @@ const MATCH = {
     'Miguel Ángel Torres',
     ['Senderismo', 'Teatro', 'Cine'],
     [
-      { url: 'https://cdn/second.jpg', isPrimary: false },
-      { url: 'https://cdn/primary.jpg', isPrimary: true },
+      { key: 'profiles/second.jpg', isPrimary: false },
+      { key: 'profiles/primary.jpg', isPrimary: true },
     ],
   ),
 };
@@ -58,6 +59,7 @@ function build(validation: LinkValidation, match: unknown = MATCH) {
   const service = new FlowProfileService(
     prisma,
     new AvailabilityLinkResolver(links as unknown as AvailabilityLinkService),
+    setupPhotoUrlService().photoUrls,
   );
   return { service, findUnique };
 }
@@ -77,7 +79,10 @@ describe('FlowProfileService', () => {
       major: 'Psicología',
       semester: '7',
       biography: 'Teatro, cine club y caminatas.',
-      photos: ['https://cdn/primary.jpg', 'https://cdn/second.jpg'],
+      photos: [
+        'https://signed/page/profiles/primary.jpg',
+        'https://signed/page/profiles/second.jpg',
+      ],
     });
   });
 

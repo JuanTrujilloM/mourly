@@ -7,7 +7,7 @@ export type InviteUser = {
     dateOfBirth: Date;
     university: string;
     major: string;
-    photos: { url: string; isPrimary: boolean }[];
+    photos: { key: string; isPrimary: boolean }[];
   } | null;
 };
 
@@ -19,7 +19,7 @@ export type MatchWithUsers = {
   userB: InviteUser;
 };
 
-export const INVITE_USER_SELECT = {
+const INVITE_USER_SELECT = {
   select: {
     id: true,
     email: true,
@@ -30,10 +30,18 @@ export const INVITE_USER_SELECT = {
         dateOfBirth: true,
         university: true,
         major: true,
-        photos: { select: { url: true, isPrimary: true } },
+        photos: { select: { key: true, isPrimary: true } },
       },
     },
   },
+};
+
+export const MATCH_WITH_USERS_SELECT = {
+  id: true,
+  userAId: true,
+  userBId: true,
+  userA: INVITE_USER_SELECT,
+  userB: INVITE_USER_SELECT,
 };
 
 export interface InviteResult {

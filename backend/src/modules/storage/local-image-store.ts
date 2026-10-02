@@ -10,19 +10,18 @@ const DEFAULT_BACKEND_URL = 'http://localhost:3001';
 export class LocalImageStore implements ImageStore {
   constructor(private readonly config: ConfigService) {}
 
-  async save(key: string, file: Express.Multer.File): Promise<string> {
+  async save(key: string, file: Express.Multer.File): Promise<void> {
     const absolutePath = this.pathFor(key);
     await mkdir(dirname(absolutePath), { recursive: true });
     await writeFile(absolutePath, file.buffer);
-    return `${this.baseUrl()}${LOCAL_PREFIX}${key}`;
   }
 
-  async remove(url: string): Promise<void> {
-    const index = url.indexOf(LOCAL_PREFIX);
-    if (index === -1) {
-      return;
-    }
-    await unlink(this.pathFor(url.slice(index + LOCAL_PREFIX.length)));
+  async remove(key: string): Promise<void> {
+    await unlink(this.pathFor(key));
+  }
+
+  urlFor(key: string): Promise<string> {
+    return Promise.resolve(`${this.baseUrl()}${LOCAL_PREFIX}${key}`);
   }
 
   private pathFor(key: string): string {

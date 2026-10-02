@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MatchesModule } from '../matches/matches.module';
 import { AvailabilityLinkModule } from '../availability-link/availability-link.module';
+import { StorageModule } from '../storage/storage.module';
 import { AvailabilityController } from './availability.controller';
 import { AvailabilityService } from './availability.service';
 import { AvailabilityViewService } from './availability-view.service';
@@ -9,7 +10,7 @@ import { MatchContextService } from './match-context.service';
 import { FlowProfileService } from './flow-profile.service';
 
 @Module({
-  imports: [MatchesModule, AvailabilityLinkModule],
+  imports: [MatchesModule, AvailabilityLinkModule, StorageModule],
   controllers: [AvailabilityController],
   providers: [
     AvailabilityService,

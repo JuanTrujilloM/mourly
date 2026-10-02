@@ -9,12 +9,15 @@ function file(name: string): Express.Multer.File {
   } as Express.Multer.File;
 }
 
+const NO_PHOTOS = new Map<string, string>();
+const OWNED = new Map([['photo-1', 'profiles/old.jpg']]);
+
 function setup() {
   const storage = {
     uploadImage: jest
       .fn()
       .mockImplementation((uploaded: Express.Multer.File) =>
-        Promise.resolve(`https://cdn/${uploaded.originalname}`),
+        Promise.resolve(`profiles/${uploaded.originalname}`),
       ),
     deleteImage: jest.fn().mockResolvedValue(undefined),
   };
@@ -25,24 +28,24 @@ function setup() {
 }
 
 describe('ProfilePhotosService', () => {
-  describe('resolveUrls', () => {
+  describe('resolveKeys', () => {
     it('uploads every file when there is no manifest', async () => {
       const { service } = setup();
 
-      const urls = await service.resolveUrls(
+      const keys = await service.resolveKeys(
         undefined,
         [file('a.jpg'), file('b.jpg')],
-        new Set(),
+        NO_PHOTOS,
       );
 
-      expect(urls).toEqual(['https://cdn/a.jpg', 'https://cdn/b.jpg']);
+      expect(keys).toEqual(['profiles/a.jpg', 'profiles/b.jpg']);
     });
 
     it('requires at least one photo', async () => {
       const { service } = setup();
 
       await expect(
-        service.resolveUrls(undefined, [], new Set()),
+        service.resolveKeys(undefined, [], NO_PHOTOS),
       ).rejects.toThrow('At least one photo is required.');
     });
 
@@ -53,21 +56,20 @@ describe('ProfilePhotosService', () => {
       );
 
       await expect(
-        service.resolveUrls(undefined, files, new Set()),
+        service.resolveKeys(undefined, files, NO_PHOTOS),
       ).rejects.toThrow('At most 5 photos are allowed.');
     });
 
-    it('keeps an existing photo the profile already owns', async () => {
+    it('keeps an existing photo the profile owns, by photo id', async () => {
       const { service, storage } = setup();
-      const owned = new Set(['https://cdn/old.jpg']);
 
-      const urls = await service.resolveUrls(
-        JSON.stringify(['keep:https://cdn/old.jpg']),
+      const keys = await service.resolveKeys(
+        JSON.stringify(['keep:photo-1']),
         [],
-        owned,
+        OWNED,
       );
 
-      expect(urls).toEqual(['https://cdn/old.jpg']);
+      expect(keys).toEqual(['profiles/old.jpg']);
       expect(storage.uploadImage).not.toHaveBeenCalled();
     });
 
@@ -75,28 +77,39 @@ describe('ProfilePhotosService', () => {
       const { service } = setup();
 
       await expect(
-        service.resolveUrls(
-          JSON.stringify(['keep:https://cdn/someone-else.jpg']),
+        service.resolveKeys(
+          JSON.stringify(['keep:someone-elses-photo']),
           [],
-          new Set(),
+          OWNED,
+        ),
+      ).rejects.toThrow('Invalid photo reference.');
+    });
+
+    it('refuses a url where a photo id belongs', async () => {
+      const { service } = setup();
+
+      await expect(
+        service.resolveKeys(
+          JSON.stringify(['keep:https://storage.googleapis.com/x/old.jpg']),
+          [],
+          OWNED,
         ),
       ).rejects.toThrow('Invalid photo reference.');
     });
 
     it('interleaves kept photos and new uploads in manifest order', async () => {
       const { service } = setup();
-      const owned = new Set(['https://cdn/old.jpg']);
 
-      const urls = await service.resolveUrls(
-        JSON.stringify(['new', 'keep:https://cdn/old.jpg', 'new']),
+      const keys = await service.resolveKeys(
+        JSON.stringify(['new', 'keep:photo-1', 'new']),
         [file('a.jpg'), file('b.jpg')],
-        owned,
+        OWNED,
       );
 
-      expect(urls).toEqual([
-        'https://cdn/a.jpg',
-        'https://cdn/old.jpg',
-        'https://cdn/b.jpg',
+      expect(keys).toEqual([
+        'profiles/a.jpg',
+        'profiles/old.jpg',
+        'profiles/b.jpg',
       ]);
     });
 
@@ -104,10 +117,10 @@ describe('ProfilePhotosService', () => {
       const { service } = setup();
 
       await expect(
-        service.resolveUrls(
+        service.resolveKeys(
           JSON.stringify(['new', 'new']),
           [file('a.jpg')],
-          new Set(),
+          NO_PHOTOS,
         ),
       ).rejects.toThrow('A photo file is missing.');
     });
@@ -115,56 +128,57 @@ describe('ProfilePhotosService', () => {
     it('falls back to uploading everything on malformed manifest json', async () => {
       const { service } = setup();
 
-      const urls = await service.resolveUrls(
+      const keys = await service.resolveKeys(
         'not-json',
         [file('a.jpg')],
-        new Set(),
+        NO_PHOTOS,
       );
 
-      expect(urls).toEqual(['https://cdn/a.jpg']);
+      expect(keys).toEqual(['profiles/a.jpg']);
     });
 
     it('ignores non string entries in the manifest', async () => {
       const { service } = setup();
 
-      const urls = await service.resolveUrls(
+      const keys = await service.resolveKeys(
         JSON.stringify([1, 'new']),
         [file('a.jpg')],
-        new Set(),
+        NO_PHOTOS,
       );
 
-      expect(urls).toEqual(['https://cdn/a.jpg']);
+      expect(keys).toEqual(['profiles/a.jpg']);
     });
 
     it('falls back to uploading everything when the manifest is not an array', async () => {
       const { service } = setup();
 
-      const urls = await service.resolveUrls(
+      const keys = await service.resolveKeys(
         JSON.stringify({ nope: true }),
         [file('a.jpg')],
-        new Set(),
+        NO_PHOTOS,
       );
 
-      expect(urls).toEqual(['https://cdn/a.jpg']);
+      expect(keys).toEqual(['profiles/a.jpg']);
     });
   });
 
   describe('removeUnused', () => {
     it('deletes only the photos that were dropped', async () => {
       const { service, storage } = setup();
-      const owned = new Set(['https://cdn/a.jpg', 'https://cdn/b.jpg']);
 
-      await service.removeUnused(owned, ['https://cdn/a.jpg']);
+      await service.removeUnused(
+        ['profiles/a.jpg', 'profiles/b.jpg'],
+        ['profiles/a.jpg'],
+      );
 
       expect(storage.deleteImage).toHaveBeenCalledTimes(1);
-      expect(storage.deleteImage).toHaveBeenCalledWith('https://cdn/b.jpg');
+      expect(storage.deleteImage).toHaveBeenCalledWith('profiles/b.jpg');
     });
 
     it('deletes nothing when every photo was kept', async () => {
       const { service, storage } = setup();
-      const owned = new Set(['https://cdn/a.jpg']);
 
-      await service.removeUnused(owned, ['https://cdn/a.jpg']);
+      await service.removeUnused(['profiles/a.jpg'], ['profiles/a.jpg']);
 
       expect(storage.deleteImage).not.toHaveBeenCalled();
     });

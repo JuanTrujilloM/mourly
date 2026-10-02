@@ -6,7 +6,6 @@ type PartnerProfile = {
   dateOfBirth: Date;
   university: string;
   major: string;
-  photos: { url: string; isPrimary: boolean }[];
 } | null;
 
 export const UNKNOWN_PARTNER_NAME = 'tu match';
@@ -19,19 +18,19 @@ const UNKNOWN_PARTNER: PartnerSummary = {
   photoUrl: null,
 };
 
-export function buildPartnerSummary(profile: PartnerProfile): PartnerSummary {
+export function buildPartnerSummary(
+  profile: PartnerProfile,
+  photoUrl: string | null,
+): PartnerSummary {
   if (!profile) {
     return UNKNOWN_PARTNER;
   }
-
-  const primary =
-    profile.photos.find((photo) => photo.isPrimary) ?? profile.photos[0];
 
   return {
     name: profile.name,
     age: ageFrom(profile.dateOfBirth),
     university: profile.university,
     major: profile.major,
-    photoUrl: primary?.url ?? null,
+    photoUrl,
   };
 }

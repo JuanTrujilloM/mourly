@@ -33,9 +33,15 @@ type DetailMatch = {
   availabilities: { userId: string; date: Date; timeSlot: string }[];
 };
 
-export function toMatchDetail(match: DetailMatch, feedback: FeedbackEntry[]) {
-  const userA = mapUserDetail(match.userA);
-  const userB = mapUserDetail(match.userB);
+type PhotoUrlsByUser = { userA: string[]; userB: string[] };
+
+export function toMatchDetail(
+  match: DetailMatch,
+  feedback: FeedbackEntry[],
+  photoUrls: PhotoUrlsByUser,
+) {
+  const userA = mapUserDetail(match.userA, photoUrls.userA);
+  const userB = mapUserDetail(match.userB, photoUrls.userB);
 
   return {
     id: match.id,

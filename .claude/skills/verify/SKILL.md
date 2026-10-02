@@ -19,7 +19,7 @@ Local Postgres: `postgresql://mourly:mourly@localhost:5432/mourly`.
 ## Getting a session as a seeded user
 Codes are bcrypt-hashed in `EmailVerificationCode`. Issue one, overwrite its hash with a known code, then verify:
 ```bash
-curl -s -X POST http://localhost:3001/auth/login -H 'Content-Type: application/json' -d '{"email":"camila.herrera@uniandes.edu.co"}'
+curl -s -X POST http://localhost:3001/auth/request-code -H 'Content-Type: application/json' -d '{"email":"camila.herrera@uniandes.edu.co"}'
 HASH=$(node -e "console.log(require('/path/to/backend/node_modules/bcryptjs').hashSync('123456',10))")
 psql "postgresql://mourly:mourly@localhost:5432/mourly" -c "UPDATE \"EmailVerificationCode\" SET \"codeHash\"='$HASH' WHERE \"userId\"=(SELECT id FROM \"User\" WHERE email='camila.herrera@uniandes.edu.co') AND \"consumedAt\" IS NULL;"
 curl -s -c cookies.txt -X POST http://localhost:3001/auth/verify -H 'Content-Type: application/json' -d '{"email":"camila.herrera@uniandes.edu.co","code":"123456"}'

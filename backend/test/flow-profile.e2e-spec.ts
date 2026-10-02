@@ -14,7 +14,7 @@ function partner(name: string) {
       major: 'Psicología',
       semester: '7',
       biography: 'Teatro y cine club.',
-      photos: [{ url: 'https://cdn/b.jpg', isPrimary: true }],
+      photos: [{ key: 'https://cdn/b.jpg', isPrimary: true }],
       hobbies: [{ hobby: { name: 'Teatro' } }],
     },
   };

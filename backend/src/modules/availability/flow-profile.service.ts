@@ -2,6 +2,7 @@ import { GoneException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { isActiveStatus } from '../matches/match-scheduling';
 import { otherHobbyNames, sharedHobbyNames } from '../matches/shared-hobbies';
+import { PhotoUrlService } from '../storage/photo-url.service';
 import { AvailabilityLinkResolver } from './availability-link-resolver.service';
 import {
   FLOW_PARTNER_SELECTION,
@@ -29,6 +30,7 @@ export class FlowProfileService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly resolver: AvailabilityLinkResolver,
+    private readonly photoUrls: PhotoUrlService,
   ) {}
 
   async getProfileView(token: string): Promise<FlowProfileView> {
@@ -63,7 +65,10 @@ export class FlowProfileService {
 
     return {
       step: link.step,
-      partner: toFlowPartner(other.profile),
+      partner: toFlowPartner(
+        other.profile,
+        await this.photoUrls.orderedUrls(other.profile.photos),
+      ),
       sharedHobbies: sharedHobbyNames(viewer, other),
       otherHobbies: otherHobbyNames(viewer, other),
     };

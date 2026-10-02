@@ -33,9 +33,9 @@ export async function seedStudents(
     });
 
     await prisma.photo.createMany({
-      data: student.photos.map((url, index) => ({
+      data: student.photos.map((key, index) => ({
         profileId: profile.id,
-        url,
+        key,
         isPrimary: index === 0,
       })),
     });

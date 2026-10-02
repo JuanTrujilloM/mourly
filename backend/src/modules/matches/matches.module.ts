@@ -4,6 +4,7 @@ import { VenuesModule } from '../venues/venues.module';
 import { AvailabilityLinkModule } from '../availability-link/availability-link.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { SchedulingModule } from '../scheduling/scheduling.module';
+import { StorageModule } from '../storage/storage.module';
 import { MatchesController } from './matches.controller';
 import { MatchesService } from './matches.service';
 import { VenueSelectionService } from './venue-selection.service';
@@ -30,6 +31,7 @@ import { DateViewController } from './date-view.controller';
     AvailabilityLinkModule,
     NotificationsModule,
     SchedulingModule,
+    StorageModule,
   ],
   controllers: [MatchesController, DateViewController],
   providers: [
