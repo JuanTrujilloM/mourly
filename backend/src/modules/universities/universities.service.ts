@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
+import { isReviewEmail } from '../../common/constants/review-account';
 import { getEmailDomain } from './email-domain';
 import { CreateUniversityDto } from './dto/create-university.dto';
 import { UpdateUniversityDto } from './dto/update-university.dto';
@@ -32,6 +33,7 @@ export class UniversitiesService {
   }
 
   async isSupportedEmail(email: string): Promise<boolean> {
+    if (isReviewEmail(email)) return true;
     const university = await this.findByEmail(email);
     return university !== null && university.active;
   }
