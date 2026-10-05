@@ -78,6 +78,32 @@ describe('UniversitiesService', () => {
 
       expect(await service.isSupportedEmail('a@eafit.edu.co')).toBe(false);
     });
+
+    describe('with a review account configured', () => {
+      beforeEach(() => {
+        process.env.REVIEW_ACCOUNT_EMAIL = 'revision@mourly.com';
+        process.env.REVIEW_ACCOUNT_CODE = '482913';
+      });
+
+      afterEach(() => {
+        delete process.env.REVIEW_ACCOUNT_EMAIL;
+        delete process.env.REVIEW_ACCOUNT_CODE;
+      });
+
+      it('accepts the review email even though its domain is not a university', async () => {
+        const { service } = setup(null);
+
+        expect(await service.isSupportedEmail('revision@mourly.com')).toBe(
+          true,
+        );
+      });
+
+      it('still rejects any other address on that domain', async () => {
+        const { service } = setup(null);
+
+        expect(await service.isSupportedEmail('otro@mourly.com')).toBe(false);
+      });
+    });
   });
 
   describe('nameForEmail', () => {

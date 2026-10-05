@@ -37,4 +37,38 @@ describe('VerificationDeliveryService', () => {
 
     expect(mail.sendVerificationCode).not.toHaveBeenCalled();
   });
+
+  describe('for the review account', () => {
+    beforeEach(() => {
+      process.env.REVIEW_ACCOUNT_EMAIL = 'revision@mourly.com';
+      process.env.REVIEW_ACCOUNT_CODE = '482913';
+    });
+
+    afterEach(() => {
+      delete process.env.REVIEW_ACCOUNT_EMAIL;
+      delete process.env.REVIEW_ACCOUNT_CODE;
+    });
+
+    it('issues the fixed code and mails nothing, since nobody reads that inbox', async () => {
+      const { service, issuer, mail } = setup('482913');
+
+      await service.sendIfAllowed('u1', 'revision@mourly.com');
+
+      expect(issuer.issueIfAllowed).toHaveBeenCalledWith('u1', '482913');
+      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
+    });
+
+    it('keeps mailing a random code to everyone else', async () => {
+      const { service, issuer, mail } = setup('123456');
+
+      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
+
+      expect(issuer.issueIfAllowed).toHaveBeenCalledWith('u1');
+      expect(mail.sendVerificationCode).toHaveBeenCalledWith(
+        'ana@eafit.edu.co',
+        '123456',
+        10,
+      );
+    });
+  });
 });

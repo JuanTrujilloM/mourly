@@ -40,6 +40,26 @@ describe('VerificationCodeIssuerService', () => {
     expect(bcrypt.compareSync(code as string, stored)).toBe(true);
   });
 
+  it('stores a fixed code it is handed instead of a random one', async () => {
+    const { service, table } = setup();
+
+    const code = await service.issueIfAllowed('u1', '482913');
+
+    expect(code).toBe('482913');
+    const stored = table.create.mock.calls[0][1].codeHash as string;
+    expect(bcrypt.compareSync('482913', stored)).toBe(true);
+  });
+
+  it('holds a fixed code to the same resend policy', async () => {
+    const { service, table } = setup();
+    table.findLatestPending.mockResolvedValue(
+      pendingCode({ createdAt: new Date() }),
+    );
+
+    expect(await service.issueIfAllowed('u1', '482913')).toBeNull();
+    expect(table.create).not.toHaveBeenCalled();
+  });
+
   it('locks the user row before reading, then replaces the pending code', async () => {
     const { service, tx, table, $transaction } = setup();
 
