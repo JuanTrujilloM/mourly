@@ -27,6 +27,33 @@ describe('CandidateLoaderService', () => {
     expect(where.preferences).toEqual({ isNot: null });
   });
 
+  describe('review account', () => {
+    afterEach(() => {
+      delete process.env.REVIEW_ACCOUNT_EMAIL;
+      delete process.env.REVIEW_ACCOUNT_CODE;
+    });
+
+    it('never puts the review account in the pool, so no student is matched with a reviewer', async () => {
+      process.env.REVIEW_ACCOUNT_EMAIL = 'revision@mourly.com';
+      process.env.REVIEW_ACCOUNT_CODE = '482913';
+      const { service, findMany } = setup();
+
+      await service.load();
+
+      const where = findMany.mock.calls[0][0].where as Record<string, unknown>;
+      expect(where.email).toEqual({ not: 'revision@mourly.com' });
+    });
+
+    it('adds no email filter when no review account is configured', async () => {
+      const { service, findMany } = setup();
+
+      await service.load();
+
+      const where = findMany.mock.calls[0][0].where as Record<string, unknown>;
+      expect(where.email).toBeUndefined();
+    });
+  });
+
   it('maps loaded rows into engine candidates', async () => {
     const { service } = setup();
 

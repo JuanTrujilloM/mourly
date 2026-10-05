@@ -16,8 +16,12 @@ export class VerificationCodeIssuerService {
     readonly ttlMinutes: number,
   ) {}
 
-  async issueIfAllowed(userId: string): Promise<string | null> {
-    const code = randomInt(0, 1_000_000).toString().padStart(6, '0');
+  async issueIfAllowed(
+    userId: string,
+    fixedCode?: string,
+  ): Promise<string | null> {
+    const code =
+      fixedCode ?? randomInt(0, 1_000_000).toString().padStart(6, '0');
     const codeHash = await bcrypt.hash(code, SALT_ROUNDS);
     const issued = await this.prisma.$transaction((tx) =>
       this.replacePendingCode(tx, userId, codeHash),
