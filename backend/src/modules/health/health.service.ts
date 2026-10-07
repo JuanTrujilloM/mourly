@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 
+const DATABASE_UNREACHABLE_MESSAGE = 'Database unreachable.';
+
 export interface HealthStatus {
-  status: 'ok' | 'error';
+  status: 'ok';
   service: string;
   timestamp: string;
-  database: 'connected' | 'disconnected';
+  database: 'connected';
 }
 
 @Injectable()
@@ -13,20 +15,20 @@ export class HealthService {
   constructor(private readonly prisma: PrismaService) {}
 
   async check(): Promise<HealthStatus> {
-    let database: 'connected' | 'disconnected' = 'disconnected';
-
-    try {
-      await this.prisma.$queryRaw`SELECT 1`;
-      database = 'connected';
-    } catch {
-      database = 'disconnected';
-    }
-
+    await this.pingDatabase();
     return {
-      status: database === 'connected' ? 'ok' : 'error',
+      status: 'ok',
       service: 'mourly-api',
       timestamp: new Date().toISOString(),
-      database,
+      database: 'connected',
     };
+  }
+
+  private async pingDatabase(): Promise<void> {
+    try {
+      await this.prisma.$queryRaw`SELECT 1`;
+    } catch {
+      throw new ServiceUnavailableException(DATABASE_UNREACHABLE_MESSAGE);
+    }
   }
 }
