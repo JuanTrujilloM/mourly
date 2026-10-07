@@ -129,15 +129,32 @@ email to be in `ADMIN_EMAILS`.
 | Weekly match | `GET /matches/current`, `POST /matches/current/reject`, `POST /matches/:id/report` |
 | Tokenized flow | `GET` and `POST /availability/:token`, `GET` and `POST /availability/:token/venues` |
 | Post-date | `POST /dates/:id/feedback` |
-| Admin | `/admin/users`, `/admin/matches`, `/admin/feedback`, `/admin/reports`, `/admin/stats`, `POST /admin/matching/run` |
+| Admin | `/admin/users`, `/admin/matches`, `/admin/feedback`, `/admin/reports`, `/admin/stats`, `POST /admin/matching/run`, `POST /admin/review-account/close` |
 | Admin catalogs | `/admin/venues`, `/admin/universities`, `/admin/hobbies` |
+
+---
+
+## Backward-compatible migrations
+
+The deploy runs `prisma migrate deploy` while the previous API image is still serving,
+and a rollback puts the old image back on the migrated schema. Every migration must
+therefore work with both releases:
+
+- **Expand:** add the new column or table (nullable or with a default) and ship code that
+  writes both shapes and reads the new one.
+- **Contract:** in a later release, once nothing running reads the old shape, drop or
+  rename it. Mark that migration with `-- contract-step: <why it is safe now>`.
+
+`RENAME`, `DROP COLUMN`/`TABLE` and column `TYPE` changes without that marker fail the
+`migrations` job in CI (`.github/scripts/check-migrations.sh`), as does editing a
+migration that is already merged.
 
 ---
 
 ## Useful commands
 
 ```bash
-# Add a migration after changing the schema
+# Add a migration after changing the schema (see "Backward-compatible migrations")
 cd backend && npx prisma migrate dev --name <name>
 
 # Regenerate the Prisma client
