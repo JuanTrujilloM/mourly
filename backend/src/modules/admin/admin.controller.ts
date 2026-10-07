@@ -17,6 +17,7 @@ import { AdminMatchDetailService } from './admin-match-detail.service';
 import { AdminModerationService } from './admin-moderation.service';
 import { AdminStatsService } from './admin-stats.service';
 import { AdminOperationsService } from './admin-operations.service';
+import { AdminReviewAccountService } from './admin-review-account.service';
 import { UpdateUserStatusDto } from './dto/update-user-status.dto';
 
 @Controller('admin')
@@ -29,6 +30,7 @@ export class AdminController {
     private readonly moderation: AdminModerationService,
     private readonly stats: AdminStatsService,
     private readonly operations: AdminOperationsService,
+    private readonly reviewAccount: AdminReviewAccountService,
   ) {}
 
   @Get('users')
@@ -80,5 +82,11 @@ export class AdminController {
   @HttpCode(HttpStatus.OK)
   runMatching() {
     return this.operations.runWeeklyMatching();
+  }
+
+  @Post('review-account/close')
+  @HttpCode(HttpStatus.OK)
+  closeReviewAccount() {
+    return this.reviewAccount.close();
   }
 }
