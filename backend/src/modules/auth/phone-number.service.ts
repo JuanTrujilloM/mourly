@@ -65,12 +65,20 @@ export class PhoneNumberService {
   private async currentNumberOf(userId: string): Promise<CurrentNumber> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { email: true, cellphone: true, cellphoneVerifiedAt: true },
+      select: {
+        email: true,
+        isReviewAccount: true,
+        cellphone: true,
+        cellphoneVerifiedAt: true,
+      },
     });
+    const openReview = Boolean(
+      user?.isReviewAccount && isReviewEmail(user.email),
+    );
     return {
       cellphone: user?.cellphone ?? null,
       verified: Boolean(user?.cellphoneVerifiedAt),
-      needsSms: this.smsVerification && !isReviewEmail(user?.email ?? ''),
+      needsSms: this.smsVerification && !openReview,
     };
   }
 

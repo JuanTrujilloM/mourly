@@ -2,9 +2,13 @@ import { CELLPHONE, setupPhoneNumber } from './phone-number.test-helpers';
 
 const REVIEW_EMAIL = 'revision@mourly.com';
 
-const setup = (email: string, cellphone: string | null = null) =>
+const setup = (
+  email: string,
+  cellphone: string | null = null,
+  isReviewAccount = email === REVIEW_EMAIL,
+) =>
   setupPhoneNumber({
-    current: { email, cellphone, cellphoneVerifiedAt: null },
+    current: { email, isReviewAccount, cellphone, cellphoneVerifiedAt: null },
   });
 
 describe('PhoneNumberService.assign for the review account', () => {
@@ -45,6 +49,14 @@ describe('PhoneNumberService.assign for the review account', () => {
 
   it('still asks every other account for the SMS', async () => {
     const { service } = setup('ana@eafit.edu.co');
+
+    const result = await service.assign('u1', '3001112233');
+
+    expect(result.cellphoneVerified).toBe(false);
+  });
+
+  it('asks for the SMS when the row was never marked as a review account', async () => {
+    const { service } = setup(REVIEW_EMAIL, null, false);
 
     const result = await service.assign('u1', '3001112233');
 

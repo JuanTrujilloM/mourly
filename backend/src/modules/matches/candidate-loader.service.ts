@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
-import { reviewAccountEmail } from '../../common/constants/review-account';
 import { ACTIVE_MATCH_STATUSES } from '../chatbot/user-context/match-status';
 import { MatchHistoryService } from './match-history.service';
 import { toCandidate } from './candidate.mapper';
@@ -15,10 +14,9 @@ export class CandidateLoaderService {
   ) {}
 
   async load(): Promise<MatchCandidate[]> {
-    const reviewEmail = reviewAccountEmail();
     const users = await this.prisma.user.findMany({
       where: {
-        ...(reviewEmail && { email: { not: reviewEmail } }),
+        isReviewAccount: false,
         isVerified: true,
         cellphoneVerifiedAt: { not: null },
         profile: { is: { status: SEARCHING_PROFILE_STATUS } },

@@ -1,17 +1,22 @@
 import { MailService } from '../mail/mail.service';
+import { ReviewAccountService } from './review-account.service';
 import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationDeliveryService } from './verification-delivery.service';
 
-function setup(issued: string | null) {
+function setup(issued: string | null, fixedCode: string | null = null) {
   const issuer = {
     issueIfAllowed: jest.fn().mockResolvedValue(issued),
     ttlMinutes: 10,
   };
   const mail = { sendVerificationCode: jest.fn().mockResolvedValue(undefined) };
+  const reviewAccounts = {
+    fixedCodeFor: jest.fn().mockResolvedValue(fixedCode),
+  };
 
   const service = new VerificationDeliveryService(
     issuer as unknown as VerificationCodeIssuerService,
     mail as unknown as MailService,
+    reviewAccounts as unknown as ReviewAccountService,
   );
   return { service, issuer, mail };
 }
@@ -38,37 +43,12 @@ describe('VerificationDeliveryService', () => {
     expect(mail.sendVerificationCode).not.toHaveBeenCalled();
   });
 
-  describe('for the review account', () => {
-    beforeEach(() => {
-      process.env.REVIEW_ACCOUNT_EMAIL = 'revision@mourly.com';
-      process.env.REVIEW_ACCOUNT_CODE = '482913';
-    });
+  it('issues the fixed code and mails nothing, since nobody reads that inbox', async () => {
+    const { service, issuer, mail } = setup('482913', '482913');
 
-    afterEach(() => {
-      delete process.env.REVIEW_ACCOUNT_EMAIL;
-      delete process.env.REVIEW_ACCOUNT_CODE;
-    });
+    await service.sendIfAllowed('u1', 'revision@mourly.com');
 
-    it('issues the fixed code and mails nothing, since nobody reads that inbox', async () => {
-      const { service, issuer, mail } = setup('482913');
-
-      await service.sendIfAllowed('u1', 'revision@mourly.com');
-
-      expect(issuer.issueIfAllowed).toHaveBeenCalledWith('u1', '482913');
-      expect(mail.sendVerificationCode).not.toHaveBeenCalled();
-    });
-
-    it('keeps mailing a random code to everyone else', async () => {
-      const { service, issuer, mail } = setup('123456');
-
-      await service.sendIfAllowed('u1', 'ana@eafit.edu.co');
-
-      expect(issuer.issueIfAllowed).toHaveBeenCalledWith('u1');
-      expect(mail.sendVerificationCode).toHaveBeenCalledWith(
-        'ana@eafit.edu.co',
-        '123456',
-        10,
-      );
-    });
+    expect(issuer.issueIfAllowed).toHaveBeenCalledWith('u1', '482913');
+    expect(mail.sendVerificationCode).not.toHaveBeenCalled();
   });
 });
