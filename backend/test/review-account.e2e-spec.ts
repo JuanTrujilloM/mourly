@@ -60,4 +60,27 @@ describe('Review account entry (e2e)', () => {
     expect(response.body.message).toContain(UNSUPPORTED_UNIVERSITY_MESSAGE);
     expect(context.prisma.user.upsert).not.toHaveBeenCalled();
   });
+
+  it('verifies the reviewer cellphone without sending an SMS', async () => {
+    context.prisma.user.findUnique.mockResolvedValue({
+      email: REVIEW_EMAIL,
+      cellphone: null,
+      cellphoneVerifiedAt: null,
+    });
+    context.prisma.user.findFirst.mockResolvedValue(null);
+    context.prisma.user.update.mockResolvedValue({ id: 'u-review' });
+    const cookie = await context.accessCookie('u-review', REVIEW_EMAIL);
+
+    const response = await request(server())
+      .patch('/auth/phone')
+      .set('Cookie', cookie)
+      .send({ cellphone: '3001112233' })
+      .expect(200);
+
+    expect(response.body).toEqual({
+      cellphone: '+573001112233',
+      cellphoneVerified: true,
+    });
+    expect(context.prisma.phoneVerificationCode.create).not.toHaveBeenCalled();
+  });
 });
