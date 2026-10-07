@@ -44,23 +44,37 @@ describe.each(CASES)('%s verification code table', (_, table, model) => {
       userId: 'u1',
       codeHash: 'hash',
       resendCount: 2,
+      attempts: 3,
       expiresAt,
     });
 
     expect(delegate.create).toHaveBeenCalledWith({
-      data: { userId: 'u1', codeHash: 'hash', resendCount: 2, expiresAt },
+      data: {
+        userId: 'u1',
+        codeHash: 'hash',
+        resendCount: 2,
+        attempts: 3,
+        expiresAt,
+      },
     });
   });
 
-  it('counts a failed attempt', async () => {
+  it('claims an attempt only while the code is under the limit', async () => {
     const { db, delegate } = setup(model);
 
-    await table.countAttempt(db, 'code-1');
+    expect(await table.claimAttempt(db, 'code-1', 5)).toBe(true);
 
-    expect(delegate.update).toHaveBeenCalledWith({
-      where: { id: 'code-1' },
+    expect(delegate.updateMany).toHaveBeenCalledWith({
+      where: { id: 'code-1', attempts: { lt: 5 } },
       data: { attempts: { increment: 1 } },
     });
+  });
+
+  it('reports a refused claim when the limit is already reached', async () => {
+    const { db, delegate } = setup(model);
+    delegate.updateMany.mockResolvedValue({ count: 0 });
+
+    expect(await table.claimAttempt(db, 'code-1', 5)).toBe(false);
   });
 
   it('consumes a code', async () => {
