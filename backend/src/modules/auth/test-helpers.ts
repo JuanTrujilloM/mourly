@@ -6,6 +6,7 @@ import { SafeUserService } from './safe-user.service';
 import { SessionService } from './session.service';
 import { UserLookupService } from './user-lookup.service';
 import { PhoneCodeQuotaService } from './phone-code-quota.service';
+import { ReviewAccountService } from './review-account.service';
 import { VerificationCodeIssuerService } from './verification-code-issuer.service';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationDispatcherService } from './verification-dispatcher.service';
@@ -23,6 +24,9 @@ export function setupAuthService() {
   };
   const safeUsers = { getById: jest.fn().mockResolvedValue(AUTH_USER) };
   const users = { findByEmail: jest.fn().mockResolvedValue(AUTH_USER) };
+  const reviewAccounts = {
+    isReviewAccount: jest.fn().mockResolvedValue(false),
+  };
   const service = new AuthService(
     prisma,
     codes as unknown as VerificationCodeService,
@@ -30,9 +34,11 @@ export function setupAuthService() {
     sessions as unknown as SessionService,
     safeUsers as unknown as SafeUserService,
     users as unknown as UserLookupService,
+    reviewAccounts as unknown as ReviewAccountService,
   );
   return {
     service,
+    reviewAccounts,
     codes,
     dispatcher,
     sessions,

@@ -50,14 +50,16 @@ no existe. Cuentas que nunca verifican el correo se borran a los 7 días
 lógica vive una sola vez:
 
 - `verification-code-table.ts` — interfaz `VerificationCodeTable` (leer pendiente,
-  retirar pendientes, crear, contar intento, consumir) con una implementación
+  retirar pendientes, crear, reclamar intento, consumir) con una implementación
   delgada por tabla. Correo borra los pendientes al retirarlos; teléfono los
   marca con `consumedAt` y conserva la fila, que es lo que cuenta la cuota diaria.
 - `VerificationCodeIssuerService(prisma, table, ttlMinutes)` — bloquea la fila del
   usuario, aplica `decideResend` (60 s de espera, máximo 3 reenvíos), reemplaza el
   código pendiente.
 - `VerificationCodeService(prisma, table)` — valida (expirado, 5 intentos, bcrypt) y
-  consume.
+  consume. Cada intento se reclama antes del bcrypt con un `updateMany` condicionado a
+  `attempts < 5`: peticiones en paralelo no pueden pasarse del límite, y un reclamo
+  perdido responde "demasiados intentos" aunque el código sea correcto.
 - `verification.providers.ts` — registra dos instancias de cada uno con los tokens
   `EMAIL_CODE_ISSUER`, `EMAIL_CODE_VALIDATOR`, `PHONE_CODE_ISSUER`,
   `PHONE_CODE_VALIDATOR`. TTL: `EMAIL_CODE_TTL_MINUTES` y `PHONE_CODE_TTL_MINUTES`
@@ -86,7 +88,8 @@ lógica vive una sola vez:
 
 ## 5. Pool semanal y notificaciones
 
-`CandidateLoaderService` exige `cellphoneVerifiedAt` no nulo. `Recipient.cellphone`
+`CandidateLoaderService` exige `cellphoneVerifiedAt` no nulo y `isReviewAccount`
+falso. `Recipient.cellphone`
 puede ser `null` en tipos; `SmsChannel` rechaza esos envíos con un error que el
 fan-out loguea (en la práctica nadie llega a un match sin celular verificado).
 
@@ -139,3 +142,48 @@ cd backend && npm run db:seed          # estudiantes con celular verificado
 
 Tests: `cd backend && npx jest src/modules/auth && npm run test:e2e`,
 `cd frontend && npm test`.
+
+---
+
+## 9. Cuenta revisora (revisión de anuncios de Meta u otra plataforma)
+
+Un revisor externo no tiene correo institucional ni línea colombiana. Mientras dure
+la revisión, **un** correo entra con un código fijo de seis dígitos y salta el SMS.
+
+**Abrir la revisión**
+
+1. En `api.env` (VM) poner las dos variables y reiniciar el API:
+   `REVIEW_ACCOUNT_EMAIL=revision@mourly.com`, `REVIEW_ACCOUNT_CODE=482913`.
+   El API no arranca si falta una, si el código no tiene seis dígitos exactos o si el
+   correo está en `ADMIN_EMAILS` (`review-account-env.rules.ts`).
+2. Pasarle al revisor el correo, el código y un celular colombiano **del equipo**:
+   se guarda verificado sin SMS y queda tomado para cualquier otra cuenta.
+
+**Qué hace el API**
+
+- `POST /auth/request-code` acepta ese correo aunque su dominio no sea universitario,
+  guarda el código fijo (bcrypt, como cualquier otro) y no manda correo.
+  `ReviewAccountService` lo ignora si el dominio del correo está en la tabla
+  `University` (activa o no): así el código nunca abre la cuenta de un estudiante.
+- El `upsert` marca la fila con `isReviewAccount = true`. La marca no se borra:
+  `CandidateLoaderService` saca esas cuentas del matching aunque las variables ya no
+  estén.
+- `PATCH /auth/phone` estampa `cellphoneVerifiedAt` sin SMS solo si la fila está
+  marcada **y** las variables siguen apuntando a ese correo.
+  `PHONE_SMS_VERIFICATION_ENABLED` no se toca.
+- Fuerza bruta: un reenvío del código fijo hereda los intentos del código vivo que
+  reemplaza y solo vuelve a cero cuando ese código vence. Son 5 intentos por TTL
+  (unos 720 al día), sumados al `AUTH_THROTTLE` por IP. Quien conozca el correo puede
+  bloquear al revisor durante un TTL como mucho.
+
+**Cerrar la revisión**
+
+1. Quitar `REVIEW_ACCOUNT_EMAIL` y `REVIEW_ACCOUNT_CODE` y reiniciar el API.
+2. Como admin, `POST /admin/review-account/close`. En una transacción revoca los
+   refresh tokens de las cuentas marcadas, pone su perfil en `PAUSED` y borra los
+   códigos de correo pendientes. Responde los conteos y `reviewLoginStillOpen`, que
+   sigue en `true` mientras las variables existan.
+3. El access token (15 min) que el revisor ya tenga sigue valiendo hasta vencer.
+
+No hay match de demo: el revisor ve el onboarding completo y la cuenta regresiva al
+siguiente matching.

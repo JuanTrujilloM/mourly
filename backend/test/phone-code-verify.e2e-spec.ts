@@ -2,6 +2,7 @@ import * as bcrypt from 'bcryptjs';
 import request from 'supertest';
 import type { Server } from 'http';
 import { INVALID_PHONE_CODE_MESSAGE } from '../src/modules/auth/phone-verification.messages';
+import { MAX_ATTEMPTS } from '../src/modules/auth/verification-code.service';
 import { createTestApp, type TestApp } from './setup-app';
 
 const CODE = '123456';
@@ -45,6 +46,9 @@ describe('POST /auth/phone/verify (e2e)', () => {
     context.prisma.phoneVerificationCode.findFirst.mockResolvedValue(
       PENDING_CODE,
     );
+    context.prisma.phoneVerificationCode.updateMany.mockResolvedValue({
+      count: 1,
+    });
   });
 
   const server = () => context.app.getHttpServer() as Server;
@@ -69,9 +73,12 @@ describe('POST /auth/phone/verify (e2e)', () => {
     const response = await verifyCode({ code: '654321' }).expect(400);
 
     expect(response.body.message).toBe(INVALID_PHONE_CODE_MESSAGE);
-    expect(context.prisma.phoneVerificationCode.update).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { attempts: { increment: 1 } } }),
-    );
+    expect(
+      context.prisma.phoneVerificationCode.updateMany,
+    ).toHaveBeenCalledWith({
+      where: { id: 'code-1', attempts: { lt: MAX_ATTEMPTS } },
+      data: { attempts: { increment: 1 } },
+    });
     expect(context.prisma.user.update).not.toHaveBeenCalled();
   });
 

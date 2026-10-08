@@ -22,15 +22,16 @@ export class VerificationCodeService {
 
     if (!record) return 'not_found';
     if (record.expiresAt.getTime() < Date.now()) return 'expired';
-    if (record.attempts >= MAX_ATTEMPTS) return 'too_many_attempts';
+    if (!(await this.claimAttempt(record.id))) return 'too_many_attempts';
 
     const matches = await bcrypt.compare(code, record.codeHash);
-    if (!matches) {
-      await this.table.countAttempt(this.prisma, record.id);
-      return 'mismatch';
-    }
+    if (!matches) return 'mismatch';
 
     await this.table.consume(this.prisma, record.id);
     return 'ok';
+  }
+
+  private claimAttempt(id: string): Promise<boolean> {
+    return this.table.claimAttempt(this.prisma, id, MAX_ATTEMPTS);
   }
 }

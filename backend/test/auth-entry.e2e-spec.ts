@@ -6,6 +6,7 @@ import { UNSUPPORTED_UNIVERSITY_MESSAGE } from '../src/modules/universities/univ
 import { createTestApp, type TestApp } from './setup-app';
 
 const EMAIL = 'ana@eafit.edu.co';
+const FORGED_FIELDS = { isVerified: true, isReviewAccount: true };
 
 describe('POST /auth/request-code (e2e)', () => {
   let context: TestApp;
@@ -38,7 +39,7 @@ describe('POST /auth/request-code (e2e)', () => {
     expect(context.prisma.user.upsert).toHaveBeenCalledWith({
       where: { email: EMAIL },
       update: {},
-      create: { email: EMAIL },
+      create: { email: EMAIL, isReviewAccount: false },
     });
     expect(context.prisma.emailVerificationCode.create).toHaveBeenCalled();
   });
@@ -66,11 +67,12 @@ describe('POST /auth/request-code (e2e)', () => {
   });
 
   it('strips unknown fields instead of trusting them', async () => {
-    await requestCode({ email: EMAIL, isVerified: true }).expect(200);
+    await requestCode({ email: EMAIL, ...FORGED_FIELDS }).expect(200);
 
     await drainDeliveries();
     expect(context.prisma.user.upsert.mock.calls[0][0].create).toEqual({
       email: EMAIL,
+      isReviewAccount: false,
     });
   });
 

@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { isReviewEmail } from '../../common/constants/review-account';
 import { PrismaService } from '../../config/prisma.service';
 import { toE164Colombia } from '../sms/colombian-phone';
 import { CELLPHONE_TAKEN_MESSAGE } from './phone-verification.messages';
@@ -18,6 +19,7 @@ export interface AssignedCellphone {
 interface CurrentNumber {
   cellphone: string | null;
   verified: boolean;
+  needsSms: boolean;
 }
 
 @Injectable()
@@ -43,7 +45,7 @@ export class PhoneNumberService {
     if (await this.users.isCellphoneVerifiedByAnother(cellphone, userId)) {
       throw new BadRequestException(CELLPHONE_TAKEN_MESSAGE);
     }
-    const cellphoneVerifiedAt = this.smsVerification ? null : new Date();
+    const cellphoneVerifiedAt = current.needsSms ? null : new Date();
     await this.prisma.$transaction([
       this.releaseFromUnverifiedHolders(userId, cellphone),
       this.prisma.user.update({
@@ -57,17 +59,26 @@ export class PhoneNumberService {
 
   private hasNothingToChange(current: CurrentNumber, cellphone: string) {
     const sameNumber = current.cellphone === cellphone;
-    return sameNumber && (current.verified || this.smsVerification);
+    return sameNumber && (current.verified || current.needsSms);
   }
 
   private async currentNumberOf(userId: string): Promise<CurrentNumber> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { cellphone: true, cellphoneVerifiedAt: true },
+      select: {
+        email: true,
+        isReviewAccount: true,
+        cellphone: true,
+        cellphoneVerifiedAt: true,
+      },
     });
+    const openReview = Boolean(
+      user?.isReviewAccount && isReviewEmail(user.email),
+    );
     return {
       cellphone: user?.cellphone ?? null,
       verified: Boolean(user?.cellphoneVerifiedAt),
+      needsSms: this.smsVerification && !openReview,
     };
   }
 

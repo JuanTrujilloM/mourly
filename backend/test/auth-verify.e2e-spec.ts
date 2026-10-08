@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import request from 'supertest';
 import type { Server } from 'http';
+import { MAX_ATTEMPTS } from '../src/modules/auth/verification-code.service';
 import { INVALID_CODE_MESSAGE } from '../src/modules/auth/verification-messages';
 import { createTestApp, type TestApp } from './setup-app';
 
@@ -46,6 +47,9 @@ describe('POST /auth/verify (e2e)', () => {
     context.prisma.emailVerificationCode.findFirst.mockResolvedValue(
       PENDING_CODE,
     );
+    context.prisma.emailVerificationCode.updateMany.mockResolvedValue({
+      count: 1,
+    });
     context.prisma.refreshToken.create.mockResolvedValue({ id: 'rt1' });
   });
 
@@ -75,9 +79,12 @@ describe('POST /auth/verify (e2e)', () => {
     const response = await verify({ email: EMAIL, code: '654321' }).expect(400);
 
     expect(response.body.message).toBe(INVALID_CODE_MESSAGE);
-    expect(context.prisma.emailVerificationCode.update).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { attempts: { increment: 1 } } }),
-    );
+    expect(
+      context.prisma.emailVerificationCode.updateMany,
+    ).toHaveBeenCalledWith({
+      where: { id: 'code-1', attempts: { lt: MAX_ATTEMPTS } },
+      data: { attempts: { increment: 1 } },
+    });
     expect(context.prisma.user.update).not.toHaveBeenCalled();
   });
 

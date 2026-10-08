@@ -25,14 +25,14 @@ describe('Health (e2e)', () => {
     });
   });
 
-  it('reports error when the database is unreachable', async () => {
+  it('answers 503 when the database is unreachable, so the deploy rolls back', async () => {
     context.prisma.$queryRaw.mockRejectedValueOnce(new Error('down'));
 
-    const response = await request(server()).get('/health').expect(200);
+    const response = await request(server()).get('/health').expect(503);
 
-    expect(response.body).toMatchObject({
-      status: 'error',
-      database: 'disconnected',
+    expect(response.body).toEqual({
+      statusCode: 503,
+      message: 'Database unreachable.',
     });
   });
 
