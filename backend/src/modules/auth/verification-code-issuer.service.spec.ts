@@ -1,32 +1,8 @@
 import * as bcrypt from 'bcryptjs';
-import { PrismaService } from '../../config/prisma.service';
-import { VerificationCodeIssuerService } from './verification-code-issuer.service';
-
-function setup(ttlMinutes = 10) {
-  const tx = { $queryRaw: jest.fn().mockResolvedValue([{ id: 'u1' }]) };
-  const table = {
-    findLatestPending: jest.fn().mockResolvedValue(null),
-    retirePending: jest.fn().mockResolvedValue(undefined),
-    create: jest.fn().mockResolvedValue(undefined),
-    countAttempt: jest.fn(),
-    consume: jest.fn(),
-  };
-  const $transaction = jest.fn((work: (client: typeof tx) => unknown) =>
-    work(tx),
-  );
-  const prisma = { $transaction } as unknown as PrismaService;
-  const service = new VerificationCodeIssuerService(prisma, table, ttlMinutes);
-  return { service, tx, $transaction, table };
-}
-
-function pendingCode(overrides: Record<string, unknown> = {}) {
-  return {
-    resendCount: 0,
-    createdAt: new Date(Date.now() - 120_000),
-    expiresAt: new Date(Date.now() + 300_000),
-    ...overrides,
-  };
-}
+import {
+  pendingCode,
+  setupIssuer as setup,
+} from './verification-code-issuer.test-helpers';
 
 describe('VerificationCodeIssuerService', () => {
   it('returns a six digit code and stores only its hash', async () => {
@@ -38,26 +14,6 @@ describe('VerificationCodeIssuerService', () => {
     const stored = table.create.mock.calls[0][1].codeHash as string;
     expect(stored).not.toBe(code);
     expect(bcrypt.compareSync(code as string, stored)).toBe(true);
-  });
-
-  it('stores a fixed code it is handed instead of a random one', async () => {
-    const { service, table } = setup();
-
-    const code = await service.issueIfAllowed('u1', '482913');
-
-    expect(code).toBe('482913');
-    const stored = table.create.mock.calls[0][1].codeHash as string;
-    expect(bcrypt.compareSync('482913', stored)).toBe(true);
-  });
-
-  it('holds a fixed code to the same resend policy', async () => {
-    const { service, table } = setup();
-    table.findLatestPending.mockResolvedValue(
-      pendingCode({ createdAt: new Date() }),
-    );
-
-    expect(await service.issueIfAllowed('u1', '482913')).toBeNull();
-    expect(table.create).not.toHaveBeenCalled();
   });
 
   it('locks the user row before reading, then replaces the pending code', async () => {
@@ -83,6 +39,15 @@ describe('VerificationCodeIssuerService', () => {
     await service.issueIfAllowed('u1');
 
     expect(table.create.mock.calls[0][1].resendCount).toBe(2);
+  });
+
+  it('starts a random code with a fresh attempt budget', async () => {
+    const { service, table } = setup();
+    table.findLatestPending.mockResolvedValue(pendingCode({ attempts: 4 }));
+
+    await service.issueIfAllowed('u1');
+
+    expect(table.create.mock.calls[0][1].attempts).toBe(0);
   });
 
   it('writes nothing and returns null when the policy refuses', async () => {

@@ -26,3 +26,4 @@ export const MAX_PHOTOS = 5;
 export const MAX_BIO_LENGTH = 150;
 
 export const AVAILABILITY_STATUSES = ['SEARCHING', 'PAUSED'] as const;
+export const PAUSED_PROFILE_STATUS = 'PAUSED';

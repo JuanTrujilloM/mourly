@@ -4,6 +4,7 @@ model User {
   cellphone           String?   @unique
   cellphoneVerifiedAt DateTime?
   isVerified          Boolean   @default(false)
+  isReviewAccount     Boolean   @default(false)
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 

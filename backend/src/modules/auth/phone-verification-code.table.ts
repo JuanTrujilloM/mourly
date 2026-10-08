@@ -15,11 +15,12 @@ export const phoneVerificationCodeTable: VerificationCodeTable = {
   create: async (db, code) => {
     await db.phoneVerificationCode.create({ data: code });
   },
-  countAttempt: async (db, id) => {
-    await db.phoneVerificationCode.update({
-      where: { id },
+  claimAttempt: async (db, id, limit) => {
+    const { count } = await db.phoneVerificationCode.updateMany({
+      where: { id, attempts: { lt: limit } },
       data: { attempts: { increment: 1 } },
     });
+    return count === 1;
   },
   consume: async (db, id) => {
     await db.phoneVerificationCode.update({

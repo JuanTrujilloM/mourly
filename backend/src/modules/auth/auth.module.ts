@@ -20,6 +20,7 @@ import { VerificationDeliveryService } from './verification-delivery.service';
 import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { verificationProviders } from './verification.providers';
 import { RefreshTokenService } from './refresh-token.service';
+import { ReviewAccountService } from './review-account.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-university-email.validator';
 
@@ -51,6 +52,7 @@ import { IsSupportedUniversityEmailConstraint } from './validators/is-supported-
     VerificationDispatcherService,
     UnverifiedAccountCleanupService,
     RefreshTokenService,
+    ReviewAccountService,
     JwtStrategy,
     IsSupportedUniversityEmailConstraint,
   ],

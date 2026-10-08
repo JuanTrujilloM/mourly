@@ -14,11 +14,12 @@ export const emailVerificationCodeTable: VerificationCodeTable = {
   create: async (db, code) => {
     await db.emailVerificationCode.create({ data: code });
   },
-  countAttempt: async (db, id) => {
-    await db.emailVerificationCode.update({
-      where: { id },
+  claimAttempt: async (db, id, limit) => {
+    const { count } = await db.emailVerificationCode.updateMany({
+      where: { id, attempts: { lt: limit } },
       data: { attempts: { increment: 1 } },
     });
+    return count === 1;
   },
   consume: async (db, id) => {
     await db.emailVerificationCode.update({

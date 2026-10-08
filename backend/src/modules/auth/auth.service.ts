@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
+import { ReviewAccountService } from './review-account.service';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationDispatcherService } from './verification-dispatcher.service';
 import { SessionService, type Session } from './session.service';
@@ -25,14 +26,16 @@ export class AuthService {
     private readonly sessions: SessionService,
     private readonly safeUsers: SafeUserService,
     private readonly users: UserLookupService,
+    private readonly reviewAccounts: ReviewAccountService,
   ) {}
 
   async requestCode(dto: RequestCodeDto): Promise<Acknowledgement> {
     const email = normalizeEmail(dto.email);
+    const isReviewAccount = await this.reviewAccounts.isReviewAccount(email);
     const user = await this.prisma.user.upsert({
       where: { email },
-      update: {},
-      create: { email },
+      update: isReviewAccount ? { isReviewAccount } : {},
+      create: { email, isReviewAccount },
     });
     this.dispatcher.dispatch(user.id, email);
     return { message: CODE_SENT_MESSAGE };

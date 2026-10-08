@@ -6,7 +6,12 @@ import { UserLookupService } from './user-lookup.service';
 export const CELLPHONE = '+573001112233';
 
 interface PhoneNumberSetup {
-  current?: { cellphone: string | null; cellphoneVerifiedAt: Date | null };
+  current?: {
+    email?: string;
+    isReviewAccount?: boolean;
+    cellphone: string | null;
+    cellphoneVerifiedAt: Date | null;
+  };
   smsVerification?: string;
 }
 

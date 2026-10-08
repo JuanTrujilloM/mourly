@@ -8,6 +8,7 @@ import { AdminMatchDetailService } from './admin-match-detail.service';
 import { AdminModerationService } from './admin-moderation.service';
 import { AdminStatsService } from './admin-stats.service';
 import { AdminOperationsService } from './admin-operations.service';
+import { AdminReviewAccountService } from './admin-review-account.service';
 
 @Module({
   imports: [MatchesModule, StorageModule],
@@ -19,6 +20,7 @@ import { AdminOperationsService } from './admin-operations.service';
     AdminModerationService,
     AdminStatsService,
     AdminOperationsService,
+    AdminReviewAccountService,
   ],
 })
 export class AdminModule {}

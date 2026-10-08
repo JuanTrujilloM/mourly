@@ -1,3 +1,4 @@
+import { ServiceUnavailableException } from '@nestjs/common';
 import { PrismaService } from '../../config/prisma.service';
 import { HealthService } from './health.service';
 
@@ -20,12 +21,11 @@ describe('HealthService', () => {
     expect(new Date(status.timestamp).toString()).not.toBe('Invalid Date');
   });
 
-  it('reports error when the database is unreachable', async () => {
+  it('fails when the database is unreachable, so a broken release never passes the healthcheck', async () => {
     const service = setup(jest.fn().mockRejectedValue(new Error('down')));
 
-    expect(await service.check()).toMatchObject({
-      status: 'error',
-      database: 'disconnected',
-    });
+    await expect(service.check()).rejects.toBeInstanceOf(
+      ServiceUnavailableException,
+    );
   });
 });

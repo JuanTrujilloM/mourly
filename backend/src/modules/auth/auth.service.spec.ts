@@ -11,13 +11,26 @@ describe('AuthService', () => {
       expect(upsert).toHaveBeenCalledWith({
         where: { email: 'ana@eafit.edu.co' },
         update: {},
-        create: { email: 'ana@eafit.edu.co' },
+        create: { email: 'ana@eafit.edu.co', isReviewAccount: false },
       });
       expect(dispatcher.dispatch).toHaveBeenCalledWith(
         'u1',
         'ana@eafit.edu.co',
       );
       expect(result).toEqual({ message: CODE_SENT_MESSAGE });
+    });
+
+    it('marks the review account in its row, so matching skips it after the review', async () => {
+      const { service, upsert, reviewAccounts } = setup();
+      reviewAccounts.isReviewAccount.mockResolvedValue(true);
+
+      await service.requestCode({ email: 'revision@mourly.com' });
+
+      expect(upsert).toHaveBeenCalledWith({
+        where: { email: 'revision@mourly.com' },
+        update: { isReviewAccount: true },
+        create: { email: 'revision@mourly.com', isReviewAccount: true },
+      });
     });
   });
 

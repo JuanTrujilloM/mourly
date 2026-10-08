@@ -1,3 +1,4 @@
+import { reviewAccountErrors } from './review-account-env.rules';
 import { smsProductionErrors } from './sms-env.rules';
 
 const MIN_JWT_SECRET_LENGTH = 32;
@@ -56,6 +57,7 @@ export function validateEnv(
     ...databaseUrlErrors(readString(source, 'DATABASE_URL')),
     ...jwtSecretErrors(readString(source, 'JWT_SECRET')),
     ...productionErrors(source),
+    ...reviewAccountErrors((key) => readString(source, key)),
   ];
 
   if (errors.length > 0) {
